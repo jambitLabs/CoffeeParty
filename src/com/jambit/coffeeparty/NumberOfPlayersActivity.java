@@ -5,63 +5,86 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.jambit.coffeeparty.model.Player;
+
 public class NumberOfPlayersActivity extends Activity {
     
-    private List<String> playerNames;
+    private final static int AVATAR_SET = 1;
+    
+    private List<Player> mPlayers;
+    private int mNumPlayers;
+    private int mCurrentPlayer = 1;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.numplayers);
-        playerNames = new ArrayList<String>(4);
+        mPlayers = new ArrayList<Player>();
     }
     
     public void onButton2Clicked(View v){
-        createAlertDialog(1, 2).show();
+        mNumPlayers = 2;
+        createAlertDialog(mCurrentPlayer, this).show();
     }
     
     public void onButton3Clicked(View v){
-        createAlertDialog(1, 3).show();
+        mNumPlayers = 3;
+        createAlertDialog(mCurrentPlayer, this).show();
     }
     
     public void onButton4Clicked(View v){
-        createAlertDialog(1, 4).show();
+        mNumPlayers = 4;
+        createAlertDialog(mCurrentPlayer, this).show();
     }
     
     private void returnPlayerData(){
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("players", playerNames.toArray());
-
-        // set the result code and data
-        setResult(1, resultIntent);
+        resultIntent.putExtra("players", mPlayers.toArray());
+        setResult(RESULT_OK, resultIntent);
         finish();
     }
     
-    private AlertDialog createAlertDialog(final int player, final int total){
+    private AlertDialog createAlertDialog(final int playerIndex, final Context packageContext){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final EditText input = new EditText(this);
-        builder.setMessage("Enter name of player " + player)
+        builder.setMessage("Enter name of player " + playerIndex)
             .setView(input)
             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String name = input.getText().toString();
-                    playerNames.add(name);
                     dialog.dismiss();
-                    if(player < total)
-                        createAlertDialog(player + 1, total).show();
-                    else
-                        returnPlayerData();
+                    Intent avatarIntent = new Intent(packageContext, AvatarActivity.class);
+                    avatarIntent.putExtra(AvatarActivity.PLAYERNAME_EXTRA, name);
+                    startActivityForResult(avatarIntent, AVATAR_SET);
                 }
             });
         return builder.create();
     }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AVATAR_SET) {
+            String name = data.getExtras().get(AvatarActivity.PLAYERNAME_EXTRA).toString();
+            //TODO: add avatar
+            Player player = new Player(name, null);
+            mPlayers.add(player);
+            
+            if(mCurrentPlayer < mNumPlayers)
+                createAlertDialog(++mCurrentPlayer, this).show();
+            else
+                returnPlayerData();
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }
