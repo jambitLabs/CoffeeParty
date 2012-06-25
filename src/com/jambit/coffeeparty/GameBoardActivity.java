@@ -1,5 +1,8 @@
 package com.jambit.coffeeparty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.options.EngineOptions;
@@ -17,6 +20,7 @@ import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import com.jambit.coffeeparty.model.Field;
 import com.jambit.coffeeparty.model.Game;
+import com.jambit.coffeeparty.model.Player;
 
 public class GameBoardActivity extends BaseGameActivity {
 
@@ -25,6 +29,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
     private BitmapTextureAtlas bitmapTextureAtlas;
     private TextureRegion fieldSpriteTexture;
+    private TextureRegion playerSpriteTexture;
 
     private class FieldSprite extends Sprite {
         private final Field field;
@@ -39,6 +44,30 @@ public class GameBoardActivity extends BaseGameActivity {
         }
     }
 
+    private class PlayerSprite extends Sprite {
+        private final Player player;
+
+        PlayerSprite(Player player, int x, int y) {
+            super(x, y, playerSpriteTexture);
+            this.player = player;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+    }
+
+    // TODO: This is complicated. Better use maps...
+    private List<FieldSprite> fieldSprites = new ArrayList<FieldSprite>();
+    private List<PlayerSprite> playerSprites = new ArrayList<PlayerSprite>();
+
+    public void movePlayer(Player player, Field toField) {
+        FieldSprite fieldSprite = getFieldSpriteForField(toField);
+        PlayerSprite playerSprite = getPlayerSpriteForPlayer(player);
+
+        playerSprite.setPosition(fieldSprite.getX() + 5, fieldSprite.getY() + 5);
+    }
+
     @Override
     public Engine onLoadEngine() {
         Camera camera = new Camera(0, 0, BOARDWIDTH, BOARDHEIGHT);
@@ -49,7 +78,9 @@ public class GameBoardActivity extends BaseGameActivity {
     @Override
     public void onLoadResources() {
         this.bitmapTextureAtlas = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        this.fieldSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas,
+        this.fieldSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas, this,
+                "face_box.png", 0, 0);
+        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas,
                 this, "face_box.png", 0, 0);
 
         this.mEngine.getTextureManager().loadTexture(this.bitmapTextureAtlas);
@@ -63,6 +94,8 @@ public class GameBoardActivity extends BaseGameActivity {
         scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
 
         createFields(scene);
+        createPlayers(scene);
+        placePlayers();
 
         return scene;
     }
@@ -71,12 +104,15 @@ public class GameBoardActivity extends BaseGameActivity {
         Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
 
         int fieldsPerLine = 6;
-        
+
         int lineStartX = 10;
         int lineStartY = 10;
         int fieldWithinLine = 0;
         for (Field field : gameState.getBoard()) {
-            scene.attachChild(new FieldSprite(field, lineStartX, lineStartY));
+            FieldSprite fieldSprite = new FieldSprite(field, lineStartX, lineStartY);
+            fieldSprites.add(fieldSprite);
+            scene.attachChild(fieldSprite);
+
             lineStartX += 100;
             if (++fieldWithinLine > fieldsPerLine) {
                 lineStartX = 10;
@@ -84,6 +120,52 @@ public class GameBoardActivity extends BaseGameActivity {
                 fieldWithinLine = 0;
             }
         }
+    }
+
+    private void createPlayers(Scene scene) {
+        Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
+
+        for (Player player : gameState.getPlayers()) {
+            PlayerSprite playerSprite = new PlayerSprite(player, 0, 0);
+            playerSprites.add(playerSprite);
+            scene.attachChild(playerSprite);
+        }
+    }
+
+    private void placePlayers() {
+        Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
+
+        for (Player player : gameState.getPlayers()) {
+            movePlayer(player, getFieldForPosition(player.getPosition()));
+        }
+    }
+
+    private PlayerSprite getPlayerSpriteForPlayer(Player player) {
+        for (PlayerSprite playerSprite : playerSprites) {
+            if (playerSprite.getPlayer() == player) {
+                return playerSprite;
+            }
+        }
+
+        return null;
+    }
+
+    private FieldSprite getFieldSpriteForField(Field field) {
+        for (FieldSprite fieldSprite : fieldSprites) {
+            if (fieldSprite.getField() == field) {
+                return fieldSprite;
+            }
+        }
+
+        return null;
+    }
+
+    private Field getFieldForPosition(int position) {
+        if (position >= fieldSprites.size()) {
+            return null;
+        }
+
+        return fieldSprites.get(position).getField();
     }
 
     @Override
