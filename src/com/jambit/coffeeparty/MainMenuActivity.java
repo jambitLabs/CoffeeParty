@@ -26,6 +26,7 @@ public class MainMenuActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == NUM_PLAYERS_SET) {
             int numPlayers = data.getIntExtra("numPlayers", 2);
             Log.d("mainMenu", "Num Players set to " + numPlayers);
@@ -33,9 +34,8 @@ public class MainMenuActivity extends Activity {
             avatarIntent.putExtra(AvatarActivity.PLAYERNAME_EXTRA, "TestPlayer");
             startActivityForResult(avatarIntent, SET_AVATAR);
         } else if (requestCode == SET_AVATAR) {
-            Log.i("mainMenu", "AvatarActivity returned.");
+            Log.i("mainMenu", "AvatarActivity returned: " + data.getLongExtra(AvatarActivity.SELECTED_AVATAR_EXTRA, 0));
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
