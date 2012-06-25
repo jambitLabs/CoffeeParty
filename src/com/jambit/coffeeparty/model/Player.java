@@ -1,14 +1,13 @@
 package com.jambit.coffeeparty.model;
 
-import android.graphics.Color;
 
 public final class Player {
     private final String name;
-    private final Color color;
+    private final int color;
     private int score;
     private int position;
     
-    public Player(String name, Color color) {
+    public Player(String name, int color) {
         super();
         this.name = name;
         this.color = color;
@@ -33,7 +32,7 @@ public final class Player {
         return name;
     }
     
-    public Color getColor() {
+    public int getColor() {
         return color;
     }
 
