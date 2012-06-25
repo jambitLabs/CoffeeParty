@@ -6,5 +6,8 @@
     <string name="newGameButton">New Game</string>
     <string name="enterNumPlayers">Enter number of players</string>
     <string name="apply">Apply</string>
+    <string name="button_confirm">OK</string>
+    <string name="roll_dice_hint">Shake to roll dice</string>
+    <string name="dice_result">Result</string>
 
 </resources>

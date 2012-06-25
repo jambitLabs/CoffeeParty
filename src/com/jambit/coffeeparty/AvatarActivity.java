@@ -35,7 +35,12 @@ public class AvatarActivity extends Activity {
 
         g.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(@SuppressWarnings("rawtypes") AdapterView parent, View v, int position, long id) {
-                data.putExtra(SELECTED_AVATAR_EXTRA, imageAdapter.getItemId(position));
+                Drawable selectedDrawable = (Drawable) imageAdapter.getItem(position);
+                if (selectedDrawable instanceof BitmapDrawable) {
+                    data.putExtra(SELECTED_AVATAR_EXTRA, ((BitmapDrawable) selectedDrawable).getBitmap());
+                } else {
+                    Log.e("AvatarActivity", "Selected drawable is not a Bitmap.");
+                }
             }
         });
     }
