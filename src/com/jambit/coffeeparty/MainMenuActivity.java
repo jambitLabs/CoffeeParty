@@ -10,6 +10,7 @@ public class MainMenuActivity extends Activity {
 
     private final static int NUM_PLAYERS_SET = 0;
     private final static int SET_AVATAR = 1;
+    private final static int GAME_BOARD = 3;
 
     /** Called when the activity is first created. */
     @Override
@@ -24,6 +25,11 @@ public class MainMenuActivity extends Activity {
 
     }
 
+    public void showBoard() {
+        Intent intent = new Intent(this, GameBoardActivity.class);
+        startActivityForResult(intent, GAME_BOARD);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == NUM_PLAYERS_SET) {
@@ -33,7 +39,9 @@ public class MainMenuActivity extends Activity {
             avatarIntent.putExtra(AvatarActivity.PLAYERNAME_EXTRA, "TestPlayer");
             startActivityForResult(avatarIntent, SET_AVATAR);
         } else if (requestCode == SET_AVATAR) {
-            Log.i("mainMenu", "AvatarActivity returned.");
+            showBoard();
+        } else if (requestCode == GAME_BOARD) {
+            // Nothig to do now
         }
 
         super.onActivityResult(requestCode, resultCode, data);
