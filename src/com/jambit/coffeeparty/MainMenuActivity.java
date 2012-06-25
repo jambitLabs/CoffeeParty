@@ -25,8 +25,9 @@ public class MainMenuActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == NUM_PLAYERS_SET) {
-            int numPlayers = data.getIntExtra("numPlayers", 2);
-            Log.d("mainMenu", "Num Players set to " + numPlayers);
+            for(Object name : (Object[])data.getExtras().get("players"))
+                Log.d("NUM_PLAYERS", "Player " + name);
+            
         }
 
         super.onActivityResult(requestCode, resultCode, data);
