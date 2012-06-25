@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <TextView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dice_roll_textview"
+        android:text="@string/roll_dice_hint"
+        android:layout_gravity="center_horizontal"/>
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dice_roll_result_textview"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        android:textSize="100dp"/>
+    <Button android:id="@+id/dice_roll_confirmbutton"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/button_confirm"
+        android:visibility="gone"
+        android:onClick="onConfirmClicked"/>
+</LinearLayout>

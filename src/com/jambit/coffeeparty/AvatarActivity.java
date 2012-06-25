@@ -31,21 +31,17 @@ public class AvatarActivity extends Activity {
         TextView playerNameTextView = (TextView) findViewById(R.id.playerNameTextView);
         CharSequence playerName = getIntent().getCharSequenceExtra(PLAYERNAME_EXTRA);
         playerNameTextView.setText(playerName);
+        data.putExtra(PLAYERNAME_EXTRA, playerName);
 
         g.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(@SuppressWarnings("rawtypes") AdapterView parent, View v, int position, long id) {
-                Drawable selectedDrawable = (Drawable) imageAdapter.getItem(position);
-                if (selectedDrawable instanceof BitmapDrawable) {
-                    data.putExtra(SELECTED_AVATAR_EXTRA, ((BitmapDrawable) selectedDrawable).getBitmap());
-                } else {
-                    Log.e("AvatarActivity", "Selected drawable is not a Bitmap.");
-                }
+                data.putExtra(SELECTED_AVATAR_EXTRA, imageAdapter.getItemId(position));
             }
         });
     }
 
-    public void onApplyButtonOnClick(View v) {
-        setResult(1, data);
+    public void onApplyButtonClicked(View v) {
+        setResult(RESULT_OK, data);
         finish();
     }
 
