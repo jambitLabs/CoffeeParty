@@ -23,6 +23,9 @@
         <activity 
             android:name=".NumberOfPlayersActivity"
             android:screenOrientation="landscape" />
-    </application>
+        <activity 
+            android:name=".GameBoardActivity"
+            android:screenOrientation="landscape" />
+        </application>
 
 </manifest>
