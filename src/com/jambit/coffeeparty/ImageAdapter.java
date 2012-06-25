@@ -30,14 +30,11 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
-        assert (false); // Not implemented
-        return null;
+        return mContext.getResources().getDrawable(mImageIds[position]);
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return mImageIds[position];
     }
 
