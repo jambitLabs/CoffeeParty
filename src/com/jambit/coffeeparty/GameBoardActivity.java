@@ -2,6 +2,7 @@ package com.jambit.coffeeparty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
@@ -10,12 +11,14 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
+import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import com.jambit.coffeeparty.model.Field;
@@ -29,7 +32,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
     private BitmapTextureAtlas bitmapTextureAtlas;
     private TextureRegion fieldSpriteTexture;
-    private TextureRegion playerSpriteTexture;
+    private TiledTextureRegion playerSpriteTexture;
 
     private class FieldSprite extends Sprite {
         private final Field field;
@@ -44,12 +47,13 @@ public class GameBoardActivity extends BaseGameActivity {
         }
     }
 
-    private class PlayerSprite extends Sprite {
+    private class PlayerSprite extends AnimatedSprite {
         private final Player player;
 
         PlayerSprite(Player player, int x, int y) {
             super(x, y, playerSpriteTexture);
             this.player = player;
+            animate(new Random().nextInt(10) + 100);
         }
 
         public Player getPlayer() {
@@ -77,11 +81,11 @@ public class GameBoardActivity extends BaseGameActivity {
 
     @Override
     public void onLoadResources() {
-        this.bitmapTextureAtlas = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        this.bitmapTextureAtlas = new BitmapTextureAtlas(512, 256, TextureOptions.BILINEAR);
         this.fieldSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas, this,
                 "face_box.png", 0, 0);
-        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas,
-                this, "face_box.png", 0, 0);
+        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.bitmapTextureAtlas,
+                this, "face_box_tiled.png", 132, 180, 2, 1);
 
         this.mEngine.getTextureManager().loadTexture(this.bitmapTextureAtlas);
     }
