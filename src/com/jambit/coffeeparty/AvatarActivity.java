@@ -2,7 +2,10 @@ package com.jambit.coffeeparty;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -28,13 +31,22 @@ public class AvatarActivity extends Activity {
 
         g.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(@SuppressWarnings("rawtypes") AdapterView parent, View v, int position, long id) {
-                data.putExtra(SELECTED_AVATAR_EXTRA, imageAdapter.getItemId(position));
+                Drawable selectedDrawable = (Drawable) imageAdapter.getItem(position);
+                if (selectedDrawable instanceof BitmapDrawable) {
+                    data.putExtra(SELECTED_AVATAR_EXTRA, ((BitmapDrawable) selectedDrawable).getBitmap());
+                } else {
+                    Log.e("AvatarActivity", "Selected drawable is not a Bitmap.");
+                }
             }
         });
     }
 
-    public void onApplyButtonClicked(View v) {
+    public void onApplyButtonOnClick(View v) {
         setResult(1, data);
         finish();
+    }
+
+    public void cameraButtonOnClick(View v) {
+
     }
 }
