@@ -15,25 +15,44 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextur
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import com.jambit.coffeeparty.model.Field;
+import com.jambit.coffeeparty.model.Game;
+
 public class GameBoardActivity extends BaseGameActivity {
 
-    private BitmapTextureAtlas mBitmapTextureAtlas;
-    private TextureRegion mFaceTextureRegion;
+    private static int BOARDWIDTH = 720;
+    private static int BOARDHEIGHT = 480;
+
+    private BitmapTextureAtlas bitmapTextureAtlas;
+    private TextureRegion fieldSpriteTexture;
+
+    private class FieldSprite extends Sprite {
+        private final Field field;
+
+        FieldSprite(Field field, int x, int y) {
+            super(x, y, fieldSpriteTexture);
+            this.field = field;
+        }
+
+        public Field getField() {
+            return field;
+        }
+    }
 
     @Override
     public Engine onLoadEngine() {
-        Camera camera = new Camera(0, 0, 720, 480);
-        return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(
-                camera.getWidth(), camera.getHeight()), camera));
+        Camera camera = new Camera(0, 0, BOARDWIDTH, BOARDHEIGHT);
+        return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(BOARDWIDTH,
+                BOARDHEIGHT), camera));
     }
 
     @Override
     public void onLoadResources() {
-        this.mBitmapTextureAtlas = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        this.mFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.mBitmapTextureAtlas,
+        this.bitmapTextureAtlas = new BitmapTextureAtlas(32, 32, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        this.fieldSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas,
                 this, "face_box.png", 0, 0);
 
-        this.mEngine.getTextureManager().loadTexture(this.mBitmapTextureAtlas);
+        this.mEngine.getTextureManager().loadTexture(this.bitmapTextureAtlas);
     }
 
     @Override
@@ -43,12 +62,28 @@ public class GameBoardActivity extends BaseGameActivity {
         final Scene scene = new Scene();
         scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
 
-        scene.attachChild(new Sprite(0, 0, this.mFaceTextureRegion));
-        scene.attachChild(new Sprite(0, 100, this.mFaceTextureRegion));
-        scene.attachChild(new Sprite(100, 0, this.mFaceTextureRegion));
-        scene.attachChild(new Sprite(100, 100, this.mFaceTextureRegion));
+        createFields(scene);
 
         return scene;
+    }
+
+    private void createFields(Scene scene) {
+        Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
+
+        int fieldsPerLine = 6;
+        
+        int lineStartX = 10;
+        int lineStartY = 10;
+        int fieldWithinLine = 0;
+        for (Field field : gameState.getBoard()) {
+            scene.attachChild(new FieldSprite(field, lineStartX, lineStartY));
+            lineStartX += 100;
+            if (++fieldWithinLine > fieldsPerLine) {
+                lineStartX = 10;
+                lineStartY += 100;
+                fieldWithinLine = 0;
+            }
+        }
     }
 
     @Override
