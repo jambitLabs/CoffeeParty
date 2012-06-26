@@ -7,6 +7,7 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
+import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.opengl.font.Font;
@@ -26,7 +27,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
 
     protected Camera mCamera;
 
-    private int score = 0;
+    protected int score = 0;
 
     protected BitmapTextureAtlas mFontTexture;
     protected Font mFont;
@@ -101,5 +102,14 @@ public class MinigameBaseActivity extends BaseGameActivity {
         returnIntent.putExtra(getString(R.string.game_result), score);
         setResult(RESULT_OK, returnIntent);
         finish();
+    }
+    
+    protected boolean areCoordinatesInsideSprite(int posX, int posY, Sprite sprite) {
+        if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidth()
+                && posY >= sprite.getY() && posY < sprite.getY() + sprite.getHeight()) {
+        	return true;
+        } else {
+        	return false;
+        }
     }
 }

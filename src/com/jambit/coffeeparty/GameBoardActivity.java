@@ -28,9 +28,11 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 
@@ -42,9 +44,10 @@ import com.jambit.coffeeparty.model.Player;
 public class GameBoardActivity extends BaseGameActivity {
 
     private final static int DICE_ROLLED = 110;
-
+    private final static int MINIGAME_FINISHED = 111;
+    
     private boolean mDiceEnabled = false;
-
+    
     private BitmapTextureAtlas bitmapTextureAtlas;
     private TextureRegion backgroundTexture;
     private TiledTextureRegion playerSpriteTexture;
@@ -80,40 +83,44 @@ public class GameBoardActivity extends BaseGameActivity {
     public void movePlayer(Player player, int oldPosition, int newPosition) {
         Map gameMap = getGame().getMap();
         PlayerSprite playerSprite = getPlayerSpriteForPlayer(player);
-
+        final Context context = this;
+        
         if (oldPosition == newPosition) {
             Field field = gameMap.getFieldForPosition(newPosition);
             playerSprite.setPosition(field.getX(), field.getY());
-        } else {
+        }
+        else
+        {
             int wayPoints = newPosition - oldPosition + 1;
             Path path = new Path(wayPoints);
-
-            for (int position = oldPosition; position <= newPosition; position++) {
+            
+            for (int position = oldPosition; position <= newPosition; position++)
+            {
                 Field field = gameMap.getFieldForPosition(position);
                 path.to(field.getX(), field.getY());
             }
+            
+            playerSprite.registerEntityModifier(new PathModifier(wayPoints * 1.0f, path, null, new IPathModifierListener() {
+                @Override
+                public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
+                }
 
-            playerSprite.registerEntityModifier(new PathModifier(wayPoints * 1.0f, path, null,
-                    new IPathModifierListener() {
-                        @Override
-                        public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
-                        }
+                @Override
+                public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
+                }
 
-                        @Override
-                        public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity,
-                                final int pWaypointIndex) {
-                        }
+                @Override
+                public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
+                }
 
-                        @Override
-                        public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity,
-                                final int pWaypointIndex) {
-                        }
-
-                        @Override
-                        public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
-                            // @Alex: This is for you! :)
-                        }
-                    }));
+                @Override
+                public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
+                    Intent intent = new Intent(context, MinigameStartActivity.class);
+                    Field currentField = getGame().getMap().getFieldOfPlayer(getGame().getCurrentPlayer());
+                    intent.putExtra(getString(R.string.minigameidkey), currentField.getType());
+                    startActivityForResult(intent, MINIGAME_FINISHED);
+                }
+            }));
         }
     }
 
@@ -132,7 +139,7 @@ public class GameBoardActivity extends BaseGameActivity {
     @Override
     public void onLoadResources() {
         String boardImage = getGame().getMap().getBoardImage();
-
+                
         this.bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas, this,
                 boardImage, 0, 0);
@@ -154,23 +161,25 @@ public class GameBoardActivity extends BaseGameActivity {
         reset();
 
         this.mEngine.registerUpdateHandler(new FPSLogger());
-
+        
         final Scene scene = new Scene();
         // scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
         scene.setBackground(new SpriteBackground(new Sprite(0, 0, backgroundTexture)));
 
         createPlayers(scene);
         placePlayers();
-
+           
         mDiceEnabled = true;
         return scene;
     }
 
-    private void reset() {
+    private void reset()
+    {
         playerSprites.clear();
     }
-
-    private Game getGame() {
+    
+    private Game getGame()
+    {
         return ((CoffeePartyApplication) getApplication()).getGameState();
     }
 
@@ -179,7 +188,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
         for (Player player : gameState.getPlayers()) {
             Field fieldOfPlayer = gameState.getMap().getFieldOfPlayer(player);
-
+            
             PlayerSprite playerSprite = new PlayerSprite(player, fieldOfPlayer.getX(), fieldOfPlayer.getY());
             playerSprites.add(playerSprite);
             scene.attachChild(playerSprite);
@@ -206,7 +215,8 @@ public class GameBoardActivity extends BaseGameActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP && mDiceEnabled) {
+        if (event.getAction() == MotionEvent.ACTION_UP && mDiceEnabled)
+        {
             mDiceEnabled = false;
             Intent intent = new Intent(this, DiceRollActivity.class);
             startActivityForResult(intent, DICE_ROLLED);
@@ -214,19 +224,24 @@ public class GameBoardActivity extends BaseGameActivity {
         }
         return false;
     }
-
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == DICE_ROLLED) {
+        Game gameState = getGame();
+        Player currentPlayer = gameState.getCurrentPlayer();
+        
+        if(requestCode == DICE_ROLLED){
             int diceResult = data.getExtras().getInt(getString(R.string.dice_result));
-            Game gameState = getGame();
-            Player currentPlayer = gameState.getCurrentPlayer();
             int oldPosition = currentPlayer.getPosition();
             currentPlayer.setPosition(currentPlayer.getPosition() + diceResult);
             int newPosition = currentPlayer.getPosition();
             movePlayer(currentPlayer, oldPosition, newPosition);
+        }
+        else if(requestCode == MINIGAME_FINISHED){
+            int points = data.getExtras().getInt(getString(R.string.game_result));
+            currentPlayer.changeScoreBy(points);
+            Log.i("GAME_BOARD", "New score for player " + currentPlayer.getName() + ": " + currentPlayer.getScore());
             gameState.nextRound();
-            // TODO: move this to after minigame finished
             mDiceEnabled = true;
         }
     }
