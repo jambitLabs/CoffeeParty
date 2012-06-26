@@ -1,5 +1,9 @@
 package com.jambit.coffeeparty;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.jambit.coffeeparty.model.Field;
 import com.jambit.coffeeparty.model.Player;
 
 import android.app.Activity;
@@ -24,13 +28,16 @@ public class MainMenuActivity extends Activity {
     public void onStartNewGame(View v) {
         Intent intent = new Intent(this, NumberOfPlayersActivity.class);
         startActivityForResult(intent, NUM_PLAYERS_SET);
-
     }
 
-    public void showBoard() {
+    private void showBoard() {
         Intent intent = new Intent(this, GameBoardActivity.class);
         startActivityForResult(intent, GAME_BOARD);
-
+    }
+    
+    private void showSettings(){
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivityForResult(intent, GAME_SETTINGS);
     }
 
     @Override
@@ -41,13 +48,23 @@ public class MainMenuActivity extends Activity {
                 Log.d("MAIN_MENU", player.toString());
                 ((CoffeePartyApplication)getApplication()).getGameState().getPlayers().add((Player)player);
             }
-            // player data entered and added to the game. Proceed to board
+            showSettings();
+        }
+        else if(requestCode == GAME_SETTINGS){
+            int numRounds = data.getExtras().getInt("numRounds");
+            ((CoffeePartyApplication)getApplication()).getGameState().startGame(numRounds, generateBoard());
+            // player data and settings entered. Proceed to board
             showBoard();
-            
-        } else if (requestCode == GAME_BOARD) {
+        }
+        else if (requestCode == GAME_BOARD) {
             // Nothing to do now
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
+    
+    private List<Field> generateBoard(){
+        List<Field> board = new ArrayList<Field>();
+        
+        return board;
+    }
 }

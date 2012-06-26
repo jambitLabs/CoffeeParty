@@ -14,4 +14,5 @@ public class CoffeePartyApplication extends Application {
     public Game getGameState() {
         return gameState;
     }
+    
 }

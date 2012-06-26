@@ -9,9 +9,20 @@
         android:layout_height="wrap_content"
         android:text="@string/numRounds" />
 
-    <Spinner
-        android:id="@+id/spinnerRounds"
+    <EditText
+        android:id="@+id/inputRounds"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="@string/numRounds"
+        android:imeOptions="actionDone" />
+    
+    <Button
+       android:id="@+id/buttonSettingsOk"
+       android:layout_width="0dp"
+       android:layout_weight=".30"
+       android:layout_height="0dp"
+       android:text="@string/button_confirm"
+       android:onClick="onButtonConfirmClicked" />
 
 </LinearLayout>
