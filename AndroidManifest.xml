@@ -7,6 +7,8 @@
     <uses-sdk android:minSdkVersion="8" />
     
     <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    
 
     <application
         android:name=".CoffeePartyApplication"
@@ -36,6 +38,9 @@
         <activity
             android:name=".SettingsActivity"
             android:screenOrientation="landscape" />
+        <activity 
+            android:name=".CatchGameActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".MinigameBaseActivity"
             android:screenOrientation="landscape" />
@@ -43,7 +48,7 @@
             android:name=".MinigameStartActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".MinigameResultActivity"
+            android:name=".DisplayResultActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".MinigameWhackAMole"

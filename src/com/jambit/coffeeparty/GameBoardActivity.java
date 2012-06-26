@@ -58,8 +58,8 @@ public class GameBoardActivity extends BaseGameActivity {
         PlayerSprite playerSprite = getPlayerSpriteForPlayer(player);
         Point fieldPosition = fieldPositions.get(player.getPosition() % fieldPositions.size());
 
-        fieldPosition.x += new Random().nextInt(30) - 30;
-        fieldPosition.y += new Random().nextInt(30) - 30;
+        fieldPosition.x += new Random().nextInt(10) - 5;
+        fieldPosition.y += new Random().nextInt(10) - 5;
 
         // playerSprite.setPosition(fieldPosition.x, fieldPosition.y);
         playerSprite.registerEntityModifier(new MoveModifier(3, playerSprite.getX(), fieldPosition.x, playerSprite
@@ -142,7 +142,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getPressure() == 0)
+        if (event.getAction() != MotionEvent.ACTION_DOWN)
         {
             return false;
         }

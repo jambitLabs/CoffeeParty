@@ -3,6 +3,7 @@ package com.jambit.coffeeparty;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -29,6 +30,7 @@ public class AvatarActivity extends Activity {
         CharSequence playerName = getIntent().getCharSequenceExtra(PLAYERNAME_EXTRA);
         playerNameTextView.setText(playerName);
         data.putExtra(PLAYERNAME_EXTRA, playerName);
+        data.putExtra(SELECTED_AVATAR_EXTRA, (Bitmap) imageAdapter.getItem(0));
 
         g.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(@SuppressWarnings("rawtypes") AdapterView parent, View v, int position, long id) {
@@ -51,9 +53,22 @@ public class AvatarActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Bundle extras = data.getExtras();
         if (requestCode == TAKE_PHOTO_ACTIONCODE) {
-            Bitmap mImageBitmap = (Bitmap) extras.get("data");
-            data.putExtra(SELECTED_AVATAR_EXTRA, mImageBitmap);
-            imageAdapter.addBitmap(mImageBitmap);
+            Bitmap originalBitmap = (Bitmap) extras.get("data");
+            Matrix matrix = new Matrix();
+            float aspectRatio = (float) originalBitmap.getHeight() / (float) originalBitmap.getWidth();
+            float xScale = 100.0f / (float) originalBitmap.getWidth();
+            float yScale = 100.0f / (float) originalBitmap.getHeight() * aspectRatio;
+            matrix.postScale(xScale, yScale);
+            Bitmap scaledBitmap = Bitmap.createBitmap(originalBitmap,
+                                                      0,
+                                                      0,
+                                                      originalBitmap.getWidth(),
+                                                      originalBitmap.getHeight(),
+                                                      matrix,
+                                                      true);
+            data.putExtra(SELECTED_AVATAR_EXTRA, scaledBitmap);
+            imageAdapter.addBitmap(scaledBitmap);
+            ((Gallery) findViewById(R.id.gallery1)).setSelection(imageAdapter.getCount());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
