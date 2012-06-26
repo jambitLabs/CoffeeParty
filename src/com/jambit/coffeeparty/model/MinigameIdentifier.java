@@ -1,5 +1,6 @@
 package com.jambit.coffeeparty.model;
 
+import com.jambit.coffeeparty.CatchGameActivity;
 import com.jambit.coffeeparty.MinigameWhackAMole;
 
 public enum MinigameIdentifier {
@@ -11,6 +12,13 @@ public enum MinigameIdentifier {
 	    }
 	},
 	
+    MINI_GAME_IDENTIFIER_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class){
+        @Override
+        public String toString(){
+            return "Catch-The-Fly";
+        }
+    },
+    
 	RANDOM_MINIGAME("Random minigame", null){
         @Override
         public String toString() {
