@@ -48,6 +48,7 @@ public class ImageAdapter extends BaseAdapter {
 
     public void addBitmap(Bitmap bitmap) {
         bitmaps.add(bitmap);
+        notifyDataSetChanged();
     }
 
     @Override
