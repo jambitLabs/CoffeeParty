@@ -9,5 +9,7 @@
     <string name="button_confirm">OK</string>
     <string name="roll_dice_hint">Shake to roll dice</string>
     <string name="dice_result">Result</string>
+    <string name="choose_avatar_for_player_">"Choose avatar for player: "</string>
+    <string name="take_a_photo">Take a photo</string>
 
 </resources>
