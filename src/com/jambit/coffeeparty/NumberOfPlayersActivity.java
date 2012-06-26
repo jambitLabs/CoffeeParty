@@ -55,6 +55,7 @@ public class NumberOfPlayersActivity extends Activity {
     private AlertDialog createAlertDialog(final int playerIndex, final Context packageContext){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final EditText input = new EditText(this);
+        input.setText("Player " + playerIndex );
         input.setSingleLine();
         builder.setMessage("Enter name of player " + playerIndex)
             .setView(input)
