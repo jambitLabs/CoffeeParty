@@ -22,6 +22,7 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -32,6 +33,10 @@ import com.jambit.coffeeparty.model.Player;
 
 public class GameBoardActivity extends BaseGameActivity {
 
+    private final static int DICE_ROLLED = 110;
+    
+    private boolean mDiceEnabled = false;
+    
     private BitmapTextureAtlas bitmapTextureAtlas;
     private TextureRegion backgroundTexture;
     private TiledTextureRegion playerSpriteTexture;
@@ -73,7 +78,7 @@ public class GameBoardActivity extends BaseGameActivity {
         int cameraWidth = display.getWidth();
         int cameraHeight = display.getHeight();
 
-        Camera camera = new Camera(0, 0, cameraWidth, cameraHeight);
+        Camera camera = new Camera(0, 0, 800, 480);
         return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(cameraWidth,
                 cameraHeight), camera));
     }
@@ -102,7 +107,8 @@ public class GameBoardActivity extends BaseGameActivity {
         createFields();
         createPlayers(scene);
         placePlayers();
-
+           
+        mDiceEnabled = true;
         return scene;
     }
 
@@ -142,19 +148,30 @@ public class GameBoardActivity extends BaseGameActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() != MotionEvent.ACTION_DOWN)
+        if (event.getAction() == MotionEvent.ACTION_UP && mDiceEnabled)
         {
-            return false;
+            mDiceEnabled = false;
+            Intent intent = new Intent(this, DiceRollActivity.class);
+            startActivityForResult(intent, DICE_ROLLED);
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == DICE_ROLLED){
+            int diceResult = data.getExtras().getInt(getString(R.string.dice_result));
+            Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
+            Player currentPlayer = gameState.getCurrentPlayer();
+            currentPlayer.setPosition(currentPlayer.getPosition() + diceResult);
+            movePlayer(currentPlayer, gameState.getMap().getFieldOfPlayer(currentPlayer));
+            gameState.nextRound();
+            //TODO: move this to after minigame finished
+            mDiceEnabled = true;
         }
         
-        Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
-
-        for (Player player : gameState.getPlayers()) {
-            player.setPosition(player.getPosition() + 1);
-            movePlayer(player, gameState.getMap().getFieldOfPlayer(player));
-        }
-        
-        return true;
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

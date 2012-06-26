@@ -10,7 +10,7 @@
             <y>180</y>
         </field>
         <field id="1">
-            <type>RANDOM</type>
+            <type>RANDOM_MINIGAME</type>
             <x>320</x>
             <y>110</y>
         </field>
@@ -35,7 +35,7 @@
             <y>147</y>
         </field>
         <field id="6">
-            <type>RANDOM</type>
+            <type>RANDOM_MINIGAME</type>
             <x>613</x>
             <y>184</y>
         </field>
@@ -50,7 +50,7 @@
             <y>283</y>
         </field>
         <field id="9">
-            <type>RANDOM</type>
+            <type>RANDOM_MINIGAME</type>
             <x>722</x>
             <y>359</y>
         </field>
@@ -100,7 +100,7 @@
             <y>255</y>
         </field>
         <field id="19">
-            <type>RANDOM</type>
+            <type>RANDOM_MINIGAME</type>
             <x>50</x>
             <y>152</y>
         </field>

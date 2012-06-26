@@ -38,6 +38,9 @@
         <activity
             android:name=".SettingsActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".DiceRollActivity"
+            android:screenOrientation="landscape" />
         <activity 
             android:name=".CatchGameActivity"
             android:screenOrientation="landscape" />

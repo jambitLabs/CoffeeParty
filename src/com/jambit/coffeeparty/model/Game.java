@@ -10,6 +10,7 @@ public final class Game {
 
     private List<Player> players = new ArrayList<Player>();
     private Player currentPlayer = null;
+    private int currentPlayerIndex = 0;
     private Map mMap;
     private int mTotalRounds = 0;
     private int mRoundsPlayed = 0;
@@ -34,9 +35,15 @@ public final class Game {
         this.mTotalRounds = rounds;
         this.mRoundsPlayed = 0;
         this.mMap = Map.loadFromXML(xml);
+        this.currentPlayer = players.get(0);
     }
     
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+    
+    public void nextRound(){
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        currentPlayer = players.get(currentPlayerIndex);
     }
 }
