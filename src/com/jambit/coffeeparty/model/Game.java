@@ -3,6 +3,8 @@ package com.jambit.coffeeparty.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jambit.coffeeparty.CoffeePartyApplication;
+
 import android.graphics.Color;
 
 public final class Game {
@@ -45,4 +47,11 @@ public final class Game {
         return players;
     }
 
+    public Field getFieldForPosition(int position) {
+        return board.get(position % board.size());    
+    }
+
+    public Field getFieldOfPlayer(Player player) {
+        return getFieldForPosition(player.getPosition());  
+    }
 }
