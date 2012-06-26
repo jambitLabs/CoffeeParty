@@ -59,7 +59,8 @@ public class MainMenuActivity extends Activity {
         }
         else if(requestCode == GAME_SETTINGS){
             int numRounds = data.getExtras().getInt("numRounds");
-            InputStream mapXml = this.getResources().openRawResource(R.raw.settlersmap);
+            int mapId = data.getExtras().getInt("mapId");
+            InputStream mapXml = this.getResources().openRawResource(mapId);
             try {
                 ((CoffeePartyApplication)getApplication()).getGameState().startGame(numRounds, mapXml);
             } catch (XPathExpressionException e) {

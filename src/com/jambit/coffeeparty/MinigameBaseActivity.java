@@ -17,42 +17,51 @@ import org.anddev.andengine.ui.activity.BaseGameActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-
+import android.view.Display;
 
 public class MinigameBaseActivity extends BaseGameActivity {
 
-	
-	public static String name;
-	public static String description;
-	
-	
-	protected Camera mCamera;
-	private static final int CAMERA_WIDTH = 800;
-    private static final int CAMERA_HEIGHT = 480;
-    
+    public static String name;
+    public static String description;
+
+    protected Camera mCamera;
+
     private int score = 0;
-	
+
     protected BitmapTextureAtlas mFontTexture;
     protected Font mFont;
-    
-    private ChangeableText scoreText; 
-    
-    @Override
-	public Engine onLoadEngine() {
-		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-        return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), this.mCamera));
-	}
 
-	@Override
-	public void onLoadResources() {
-        
+    private ChangeableText scoreText;
+    protected int cameraWidth;
+    protected int cameraHeight;
+
+    @Override
+    public Engine onLoadEngine() {
+        final Display display = getWindowManager().getDefaultDisplay();
+        cameraWidth = display.getWidth();
+        cameraHeight = display.getHeight();
+        this.mCamera = new Camera(0, 0, cameraWidth, cameraHeight);
+        return new Engine(new EngineOptions(true,
+                                            ScreenOrientation.LANDSCAPE,
+                                            new RatioResolutionPolicy(cameraWidth, cameraHeight),
+                                            this.mCamera));
+    }
+
+    @Override
+    public void onLoadResources() {
+
         this.mFontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 
-        this.mFont = new Font(this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, true, Color.BLACK);
+        this.mFont = new Font(this.mFontTexture,
+                              Typeface.create(Typeface.DEFAULT, Typeface.BOLD),
+                              32,
+                              true,
+                              Color.BLACK);
 
         this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
         this.mEngine.getFontManager().loadFont(this.mFont);
-	}
+
+    }
 
 	@Override
 	public Scene onLoadScene() {
@@ -65,10 +74,10 @@ public class MinigameBaseActivity extends BaseGameActivity {
         scene.attachChild(scoreText);
         
         return scene;
-	}
+    }
 
-	@Override
-	public void onLoadComplete() {
+    @Override
+    public void onLoadComplete() {
         updateScoreDisplay();
 	}
 	
@@ -87,10 +96,10 @@ public class MinigameBaseActivity extends BaseGameActivity {
 	    scoreText.setText("Score: " + score);
 	}
 	
-	private void onGameFinished () {
-		Intent returnIntent = new Intent();
+    private void onGameFinished() {
+        Intent returnIntent = new Intent();
         returnIntent.putExtra(getString(R.string.game_result), score);
         setResult(RESULT_OK, returnIntent);
         finish();
-	}
+    }
 }

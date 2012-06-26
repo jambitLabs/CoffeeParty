@@ -48,7 +48,7 @@
             android:name=".MinigameStartActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".MinigameResultActivity"
+            android:name=".DisplayResultActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".MinigameWhackAMole"
