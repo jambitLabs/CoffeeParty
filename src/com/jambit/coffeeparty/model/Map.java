@@ -40,7 +40,7 @@ public final class Map {
         String fieldsExpr = "/map/fields/field";
         NodeList fields = (NodeList) xpath.evaluate(fieldsExpr, root, XPathConstants.NODESET);
         for(int i = 0; i < fields.getLength(); i++){
-            FieldType type = null;
+            MinigameIdentifier type = null;
             int x = 0, y = 0;
             Node fieldNode = fields.item(i);
             NodeList children = fieldNode.getChildNodes();
@@ -48,7 +48,7 @@ public final class Map {
                 Node child = children.item(k);
                 String childName = child.getNodeName();
                 if(childName.equals("type"))
-                    type = FieldType.valueOf(child.getTextContent());
+                    type = MinigameIdentifier.valueOf(child.getTextContent());
                 else if(childName.equals("x"))
                     x = Integer.parseInt(child.getTextContent());
                 else if(childName.equals("y"))

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.jambit.coffeeparty.model.MinigameIdentifier;
 import com.jambit.coffeeparty.model.Player;
 
 public class MainMenuActivity extends Activity {
