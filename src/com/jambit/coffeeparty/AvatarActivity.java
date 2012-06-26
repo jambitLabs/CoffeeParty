@@ -68,6 +68,7 @@ public class AvatarActivity extends Activity {
                                                       true);
             data.putExtra(SELECTED_AVATAR_EXTRA, scaledBitmap);
             imageAdapter.addBitmap(scaledBitmap);
+            ((Gallery) findViewById(R.id.gallery1)).setSelection(imageAdapter.getCount());
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
