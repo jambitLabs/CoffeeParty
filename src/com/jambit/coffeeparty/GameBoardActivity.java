@@ -80,9 +80,11 @@ public class GameBoardActivity extends BaseGameActivity {
 
     @Override
     public void onLoadResources() {
+        String boardImage = ((CoffeePartyApplication) getApplication()).getGameState().getMap().getBoardImage();
+                
         this.bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas, this,
-                "gameboard.png", 0, 0);
+                boardImage, 0, 0);
         this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.bitmapTextureAtlas,
                 this, "face_box_tiled.png", 132, 180, 2, 1);
 
@@ -105,29 +107,9 @@ public class GameBoardActivity extends BaseGameActivity {
     }
 
     private void createFields() {
-        fieldPositions.add(new Point(284, 180));
-        fieldPositions.add(new Point(320, 110));
-        fieldPositions.add(new Point(359, 69));
-        fieldPositions.add(new Point(432, 21));
-        fieldPositions.add(new Point(474, 108));
-        fieldPositions.add(new Point(537, 147));
-        fieldPositions.add(new Point(613, 184));
-        fieldPositions.add(new Point(681, 214));
-        fieldPositions.add(new Point(716, 283));
-        fieldPositions.add(new Point(722, 359));
-        fieldPositions.add(new Point(691, 438));
-        fieldPositions.add(new Point(605, 462));
-        fieldPositions.add(new Point(517, 419));
-        fieldPositions.add(new Point(483, 353));
-        fieldPositions.add(new Point(430, 323));
-        fieldPositions.add(new Point(348, 356));
-        fieldPositions.add(new Point(273, 310));
-        fieldPositions.add(new Point(188, 264));
-        fieldPositions.add(new Point(65, 255));
-        fieldPositions.add(new Point(50, 152));
-        fieldPositions.add(new Point(105, 94));
-        fieldPositions.add(new Point(137, 173));
-        fieldPositions.add(new Point(207, 199));
+        List<Field> board = ((CoffeePartyApplication) getApplication()).getGameState().getMap().getBoard();
+        for(Field field : board)
+            fieldPositions.add(new Point(field.getX(), field.getY()));
     }
 
     private void createPlayers(Scene scene) {
@@ -144,7 +126,7 @@ public class GameBoardActivity extends BaseGameActivity {
         Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
 
         for (Player player : gameState.getPlayers()) {
-            movePlayer(player, gameState.getFieldOfPlayer(player));
+            movePlayer(player, gameState.getMap().getFieldOfPlayer(player));
         }
     }
 
@@ -169,7 +151,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
         for (Player player : gameState.getPlayers()) {
             player.setPosition(player.getPosition() + 1);
-            movePlayer(player, gameState.getFieldOfPlayer(player));
+            movePlayer(player, gameState.getMap().getFieldOfPlayer(player));
         }
         
         return true;

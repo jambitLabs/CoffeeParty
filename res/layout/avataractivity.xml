@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="30dp" >
+    android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="20dp" >
 
         <TextView
             android:id="@+id/textView1"
@@ -21,39 +22,77 @@
             android:layout_height="wrap_content"
             android:text="PlayerName" />
     </LinearLayout>
-
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.48" >
-
-        <Button
-            android:id="@+id/cameraButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/take_a_photo" 
-            android:onClick="cameraButtonOnClick"/>
-
-
-
+        android:layout_weight="0.30"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="20dp" >
+
         <Gallery
             android:id="@+id/gallery1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" android:spacing="10dp"/>
+            android:layout_width="350dp"
+            android:layout_height="fill_parent"
+            android:background="@drawable/spinner_press"
+            android:padding="5dp"
+            android:soundEffectsEnabled="true"
+            android:spacing="5dp"
+            android:unselectedAlpha="0.5" />
+
+        <RelativeLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/gallery1" >
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/cameraButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/jog_tab_bar_right_end_confirm_yellow"
+                android:contentDescription="@string/take_a_photo"
+                android:onClick="cameraButtonOnClick"
+                android:paddingRight="50dp"
+                android:text="@string/take_a_photo" />
 
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/take_a_photo"
+                android:src="@drawable/ic_menu_camera" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right" >
-
-        <Button
-            android:id="@+id/avatarApplyButton"
+
+        <RelativeLayout
+            android:id="@+id/RelativeLayout1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="applyButtonOnClick"
-            android:text="@string/apply" />
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/avatarApplyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:onClick="applyButtonOnClick"
+                android:text="@string/apply" android:background="@drawable/jog_tab_bar_left_end_confirm_yellow"/>
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
