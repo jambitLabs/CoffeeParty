@@ -17,6 +17,11 @@
         android:hint="@string/numRounds"
         android:imeOptions="actionDone" />
     
+    <Spinner 
+		android:id="@+id/mapChoices"
+		android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
     <Button
        android:id="@+id/buttonSettingsOk"
        android:layout_width="wrap_content"
