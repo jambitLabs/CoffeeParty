@@ -31,4 +31,12 @@ public final class Game {
         this.mRoundsPlayed = 0;
         this.board = board;
     }
+    
+    public Field getFieldForPosition(int position) {
+        return board.get(position % board.size());    
+    }
+
+    public Field getFieldOfPlayer(Player player) {
+        return getFieldForPosition(player.getPosition());  
+    }
 }
