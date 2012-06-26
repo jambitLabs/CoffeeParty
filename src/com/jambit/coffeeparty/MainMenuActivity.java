@@ -32,6 +32,7 @@ public class MainMenuActivity extends Activity {
     
     public void onStartMinigame(View v) {
     	Intent intent = new Intent(this, MinigameStartActivity.class);
+    	intent.putExtra(getString(R.string.minigameidkey), MinigameIdentifier.MINI_GAME_IDENTIFIER_WHACKAMOLE);
         startActivity(intent);
     }
 

@@ -7,16 +7,38 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
+import org.anddev.andengine.entity.text.ChangeableText;
+import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
+import org.anddev.andengine.opengl.font.Font;
+import org.anddev.andengine.opengl.texture.TextureOptions;
+import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
+import org.anddev.andengine.util.HorizontalAlign;
+
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 
 
 public class MinigameBaseActivity extends BaseGameActivity {
 
+	
+	public static String name;
+	public static String description;
+	
+	
 	private Camera mCamera;
 	private static final int CAMERA_WIDTH = 800;
     private static final int CAMERA_HEIGHT = 480;
+    
+    private int score = 0;
 	
+    protected BitmapTextureAtlas mFontTexture;
+    protected Font mFont;
+    
+    private ChangeableText scoreText; 
+    
     @Override
 	public Engine onLoadEngine() {
 		this.mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
@@ -25,7 +47,13 @@ public class MinigameBaseActivity extends BaseGameActivity {
 
 	@Override
 	public void onLoadResources() {
-		// TODO Auto-generated method stub
+        
+        this.mFontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+
+        this.mFont = new Font(this.mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, true, Color.BLACK);
+
+        this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
+        this.mEngine.getFontManager().loadFont(this.mFont);
 
 	}
 
@@ -40,9 +68,33 @@ public class MinigameBaseActivity extends BaseGameActivity {
 
 	@Override
 	public void onLoadComplete() {
-		// TODO Auto-generated method stub
-
+        updateScoreDisplay();
 	}
 	
-
+	private void addScore(int i) {
+		score += i;
+	}
+	
+	private void reduceScore(int i) {
+		score -= i;
+		if (score < 0) {
+			score = 0;
+		}
+	}
+	
+	protected void updateScoreDisplay() {
+		if (scoreText == null) {
+			scoreText = new ChangeableText(20f, 20f, this.mFont, ""+score);
+			mEngine.getScene().attachChild(scoreText);
+		} else {
+			scoreText.setText(""+score);
+		}
+	}
+	
+	private void onGameFinished () {
+		Intent returnIntent = new Intent();
+        returnIntent.putExtra(getString(R.string.game_result), score);
+        setResult(RESULT_OK, returnIntent);
+        finish();
+	}
 }

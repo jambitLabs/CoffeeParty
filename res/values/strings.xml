@@ -15,5 +15,8 @@
     <string name="start_minigame_">Start Minigame!</string>
     <string name="get_ready">GET READY</string>
     <string name="participants">participants</string>
+    <string name="results">RESULTS</string>
+    <string name="game_result">game_result</string>
+    <string name="minigameidkey">miniGameIdKey</string>
 
 </resources>
