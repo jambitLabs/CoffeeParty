@@ -1,23 +1,22 @@
 package com.jambit.coffeeparty;
 
 import org.anddev.andengine.entity.scene.Scene;
-import org.anddev.andengine.entity.sprite.AnimatedSprite;
+import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
 public class BallMazeMinigame extends MinigameBaseActivity {
 
     private BitmapTextureAtlas bitmapTextureAtlas;
     private TextureRegion backgroundTexture;
-    private TiledTextureRegion playerSpriteTexture;
+    private TextureRegion playerSpriteTexture;
 
     public Scene onLoadScene() {
         final Scene scene = super.onLoadScene();
 
-        AnimatedSprite test = new AnimatedSprite(30, 80, playerSpriteTexture);
+        Sprite test = new Sprite(50, 50, playerSpriteTexture);
         scene.attachChild(test);
 
         return scene;
@@ -34,13 +33,11 @@ public class BallMazeMinigame extends MinigameBaseActivity {
                                                                                         0,
                                                                                         0);
 
-        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.bitmapTextureAtlas,
-                                                                                               this,
-                                                                                               "",
-                                                                                               132,
-                                                                                               180,
-                                                                                               2,
-                                                                                               1);
+        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromResource(bitmapTextureAtlas,
+                                                                                             getBaseContext(),
+                                                                                             R.drawable.droid_green,
+                                                                                             0,
+                                                                                             0);
 
         this.mEngine.getTextureManager().loadTexture(this.bitmapTextureAtlas);
 

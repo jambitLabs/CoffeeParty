@@ -30,10 +30,10 @@ public class MainMenuActivity extends Activity {
         Intent intent = new Intent(this, NumberOfPlayersActivity.class);
         startActivityForResult(intent, NUM_PLAYERS_SET);
     }
-    
+
     public void onStartMinigame(View v) {
-    	Intent intent = new Intent(this, MinigameStartActivity.class);
-    	intent.putExtra(getString(R.string.minigameidkey), MinigameIdentifier.MINI_GAME_IDENTIFIER_WHACKAMOLE);
+        Intent intent = new Intent(this, MinigameStartActivity.class);
+        intent.putExtra(getString(R.string.minigameidkey), MinigameIdentifier.MINI_GAME_IDENTIFIER_BALLMAZE);
         startActivity(intent);
     }
 
@@ -41,8 +41,8 @@ public class MainMenuActivity extends Activity {
         Intent intent = new Intent(this, GameBoardActivity.class);
         startActivityForResult(intent, GAME_BOARD);
     }
-    
-    private void showSettings(){
+
+    private void showSettings() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivityForResult(intent, GAME_SETTINGS);
     }
@@ -51,28 +51,26 @@ public class MainMenuActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == NUM_PLAYERS_SET) {
-            for(Object player : (Object[])data.getExtras().get("players")){
+            for (Object player : (Object[]) data.getExtras().get("players")) {
                 Log.d("MAIN_MENU", player.toString());
-                ((CoffeePartyApplication)getApplication()).getGameState().getPlayers().add((Player)player);
+                ((CoffeePartyApplication) getApplication()).getGameState().getPlayers().add((Player) player);
             }
             showSettings();
-        }
-        else if(requestCode == GAME_SETTINGS){
+        } else if (requestCode == GAME_SETTINGS) {
             int numRounds = data.getExtras().getInt("numRounds");
             InputStream mapXml = this.getResources().openRawResource(R.raw.settlersmap);
             try {
-                ((CoffeePartyApplication)getApplication()).getGameState().startGame(numRounds, mapXml);
+                ((CoffeePartyApplication) getApplication()).getGameState().startGame(numRounds, mapXml);
             } catch (XPathExpressionException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             // player data and settings entered. Proceed to board
             showBoard();
-        }
-        else if (requestCode == GAME_BOARD) {
+        } else if (requestCode == GAME_BOARD) {
             // Nothing to do now
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
+
 }

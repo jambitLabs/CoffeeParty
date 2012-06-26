@@ -53,5 +53,8 @@
         <activity
             android:name=".MinigameWhackAMole"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".BallMazeMinigame"
+            android:screenOrientation="landscape" />
         </application>
 </manifest>
