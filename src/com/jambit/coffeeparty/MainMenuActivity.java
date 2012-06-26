@@ -1,16 +1,17 @@
 package com.jambit.coffeeparty;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.InputStream;
 
-import com.jambit.coffeeparty.model.Field;
-import com.jambit.coffeeparty.model.Player;
+import javax.xml.xpath.XPathExpressionException;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import com.jambit.coffeeparty.model.MinigameIdentifier;
+import com.jambit.coffeeparty.model.Player;
 
 public class MainMenuActivity extends Activity {
 
@@ -28,6 +29,12 @@ public class MainMenuActivity extends Activity {
     public void onStartNewGame(View v) {
         Intent intent = new Intent(this, NumberOfPlayersActivity.class);
         startActivityForResult(intent, NUM_PLAYERS_SET);
+    }
+    
+    public void onStartMinigame(View v) {
+    	Intent intent = new Intent(this, MinigameStartActivity.class);
+    	intent.putExtra(getString(R.string.minigameidkey), MinigameIdentifier.MINI_GAME_IDENTIFIER_WHACKAMOLE);
+        startActivity(intent);
     }
 
     private void showBoard() {
@@ -52,7 +59,13 @@ public class MainMenuActivity extends Activity {
         }
         else if(requestCode == GAME_SETTINGS){
             int numRounds = data.getExtras().getInt("numRounds");
-            ((CoffeePartyApplication)getApplication()).getGameState().startGame(numRounds, generateBoard());
+            InputStream mapXml = this.getResources().openRawResource(R.raw.settlersmap);
+            try {
+                ((CoffeePartyApplication)getApplication()).getGameState().startGame(numRounds, mapXml);
+            } catch (XPathExpressionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             // player data and settings entered. Proceed to board
             showBoard();
         }
@@ -62,9 +75,4 @@ public class MainMenuActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
     
-    private List<Field> generateBoard(){
-        List<Field> board = new ArrayList<Field>();
-        
-        return board;
-    }
 }

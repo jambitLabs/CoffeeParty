@@ -1,21 +1,24 @@
 package com.jambit.coffeeparty.model;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.xpath.XPathExpressionException;
 
 public final class Game {
 
     private List<Player> players = new ArrayList<Player>();
-    private List<Field> board = new ArrayList<Field>();
+    private Map mMap;
     private int mTotalRounds = 0;
     private int mRoundsPlayed = 0;
-
-    public List<Field> getBoard() {
-        return board;
-    }
-
+    
     public List<Player> getPlayers() {
         return players;
+    }
+    
+    public Map getMap(){
+        return this.mMap;
     }
     
     public int getmTotalRounds() {
@@ -26,17 +29,14 @@ public final class Game {
         return mRoundsPlayed;
     }
 
-    public void startGame(int rounds, List<Field> board){
+    public void startGame(int rounds, InputStream xml) throws XPathExpressionException{
         this.mTotalRounds = rounds;
         this.mRoundsPlayed = 0;
-        this.board = board;
+        this.mMap = Map.loadFromXML(xml);
     }
     
-    public Field getFieldForPosition(int position) {
-        return board.get(position % board.size());    
-    }
-
-    public Field getFieldOfPlayer(Player player) {
-        return getFieldForPosition(player.getPosition());  
+    public Player getCurrentPlayer() {
+    	//placeholder
+    	return new Player("Horst", null);
     }
 }
