@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -75,8 +76,8 @@ public class NumberOfPlayersActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AVATAR_SET) {
             String name = data.getExtras().get(AvatarActivity.PLAYERNAME_EXTRA).toString();
-            //TODO: add avatar
-            Player player = new Player(name, null);
+            Bitmap avatar = (Bitmap)data.getExtras().get(AvatarActivity.SELECTED_AVATAR_EXTRA);
+            Player player = new Player(name, avatar);
             mPlayers.add(player);
             
             if(mCurrentPlayer < mNumPlayers)
