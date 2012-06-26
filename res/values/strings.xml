@@ -18,5 +18,7 @@
     <string name="results">RESULTS</string>
     <string name="game_result">game_result</string>
     <string name="minigameidkey">miniGameIdKey</string>
+    <string name="playerkey">playerKey</string>
+    <string name="scorekey">scoreKey</string>
 
 </resources>
