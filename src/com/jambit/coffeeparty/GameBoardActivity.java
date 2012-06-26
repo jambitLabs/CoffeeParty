@@ -23,7 +23,6 @@ import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.content.Intent;
-import android.graphics.Point;
 import android.view.Display;
 import android.view.MotionEvent;
 
@@ -55,20 +54,17 @@ public class GameBoardActivity extends BaseGameActivity {
         }
     }
 
-    // TODO: This is complicated. Better use maps...
-    private List<Point> fieldPositions = new ArrayList<Point>();
     private List<PlayerSprite> playerSprites = new ArrayList<PlayerSprite>();
 
     public void movePlayer(Player player, Field toField) {
         PlayerSprite playerSprite = getPlayerSpriteForPlayer(player);
-        Point fieldPosition = fieldPositions.get(player.getPosition() % fieldPositions.size());
 
-        fieldPosition.x += new Random().nextInt(10) - 5;
-        fieldPosition.y += new Random().nextInt(10) - 5;
+        int fieldX = toField.getX() + new Random().nextInt(20) - 10;
+        int fieldY = toField.getY() + new Random().nextInt(20) - 10;
 
         // playerSprite.setPosition(fieldPosition.x, fieldPosition.y);
-        playerSprite.registerEntityModifier(new MoveModifier(3, playerSprite.getX(), fieldPosition.x, playerSprite
-                .getY(), fieldPosition.y));
+        playerSprite.registerEntityModifier(new MoveModifier(3, playerSprite.getX(), fieldX, playerSprite.getY(),
+                fieldY));
     }
 
     @Override
@@ -98,13 +94,14 @@ public class GameBoardActivity extends BaseGameActivity {
 
     @Override
     public Scene onLoadScene() {
-        this.mEngine.registerUpdateHandler(new FPSLogger());
+        reset();
 
+        this.mEngine.registerUpdateHandler(new FPSLogger());
+        
         final Scene scene = new Scene();
         // scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
         scene.setBackground(new SpriteBackground(new Sprite(0, 0, backgroundTexture)));
 
-        createFields();
         createPlayers(scene);
         placePlayers();
            
@@ -112,17 +109,18 @@ public class GameBoardActivity extends BaseGameActivity {
         return scene;
     }
 
-    private void createFields() {
-        List<Field> board = ((CoffeePartyApplication) getApplication()).getGameState().getMap().getBoard();
-        for(Field field : board)
-            fieldPositions.add(new Point(field.getX(), field.getY()));
+    private void reset()
+    {
+        playerSprites.clear();
     }
-
+    
     private void createPlayers(Scene scene) {
         Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
 
         for (Player player : gameState.getPlayers()) {
-            PlayerSprite playerSprite = new PlayerSprite(player, 0, 0);
+            Field fieldOfPlayer = gameState.getMap().getFieldOfPlayer(player);
+            
+            PlayerSprite playerSprite = new PlayerSprite(player, fieldOfPlayer.getX(), fieldOfPlayer.getY());
             playerSprites.add(playerSprite);
             scene.attachChild(playerSprite);
         }
@@ -170,8 +168,6 @@ public class GameBoardActivity extends BaseGameActivity {
             //TODO: move this to after minigame finished
             mDiceEnabled = true;
         }
-        
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
