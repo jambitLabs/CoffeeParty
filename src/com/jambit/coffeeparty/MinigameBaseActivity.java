@@ -26,7 +26,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
 	public static String description;
 	
 	
-	private Camera mCamera;
+	protected Camera mCamera;
 	private static final int CAMERA_WIDTH = 800;
     private static final int CAMERA_HEIGHT = 480;
     
@@ -52,15 +52,18 @@ public class MinigameBaseActivity extends BaseGameActivity {
 
         this.mEngine.getTextureManager().loadTexture(this.mFontTexture);
         this.mEngine.getFontManager().loadFont(this.mFont);
-
 	}
 
 	@Override
 	public Scene onLoadScene() {
 		this.mEngine.registerUpdateHandler(new FPSLogger());
 		 
-        final Scene scene = new Scene(1);
+        final Scene scene = new Scene();
         scene.setBackground(new ColorBackground(0, 0, 0.8784f));
+        
+        scoreText = new ChangeableText(20f, 20f, this.mFont, "            ");
+        scene.attachChild(scoreText);
+        
         return scene;
 	}
 
@@ -69,11 +72,11 @@ public class MinigameBaseActivity extends BaseGameActivity {
         updateScoreDisplay();
 	}
 	
-	private void addScore(int i) {
+	protected void addScore(int i) {
 		score += i;
 	}
 	
-	private void reduceScore(int i) {
+	protected void reduceScore(int i) {
 		score -= i;
 		if (score < 0) {
 			score = 0;
@@ -81,12 +84,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
 	}
 	
 	protected void updateScoreDisplay() {
-		if (scoreText == null) {
-			scoreText = new ChangeableText(20f, 20f, this.mFont, ""+score);
-			mEngine.getScene().attachChild(scoreText);
-		} else {
-			scoreText.setText(""+score);
-		}
+	    scoreText.setText("Score: " + score);
 	}
 	
 	private void onGameFinished () {
