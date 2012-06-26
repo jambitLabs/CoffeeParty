@@ -28,8 +28,8 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -39,6 +39,7 @@ import android.view.MotionEvent;
 import com.jambit.coffeeparty.model.Field;
 import com.jambit.coffeeparty.model.Game;
 import com.jambit.coffeeparty.model.Map;
+import com.jambit.coffeeparty.model.MinigameIdentifier;
 import com.jambit.coffeeparty.model.Player;
 
 public class GameBoardActivity extends BaseGameActivity {
@@ -46,7 +47,10 @@ public class GameBoardActivity extends BaseGameActivity {
     private final static int DICE_ROLLED = 110;
     private final static int MINIGAME_FINISHED = 111;
     
+    private final static int MAX_SCORE_FIELD_POINTS = 10;
+    
     private boolean mDiceEnabled = false;
+    private List<MinigameIdentifier> mMinigames = new ArrayList<MinigameIdentifier>();
     
     private BitmapTextureAtlas bitmapTextureAtlas;
     private TextureRegion backgroundTexture;
@@ -77,13 +81,22 @@ public class GameBoardActivity extends BaseGameActivity {
             return player;
         }
     }
+    
+    @Override
+    protected void onCreate(final Bundle pSavedInstanceState) {
+        // find all "real" minigames
+        for(MinigameIdentifier id : MinigameIdentifier.values()){
+            if(id != MinigameIdentifier.POINTS && id != MinigameIdentifier.RANDOM_MINIGAME)
+                mMinigames.add(id);
+        }
+        super.onCreate(pSavedInstanceState);
+    }
 
     private List<PlayerSprite> playerSprites = new ArrayList<PlayerSprite>();
 
-    public void movePlayer(Player player, int oldPosition, int newPosition) {
+    private void movePlayer(Player player, int oldPosition, int newPosition) {
         Map gameMap = getGame().getMap();
         PlayerSprite playerSprite = getPlayerSpriteForPlayer(player);
-        final Context context = this;
         
         if (oldPosition == newPosition) {
             Field field = gameMap.getFieldForPosition(newPosition);
@@ -115,12 +128,38 @@ public class GameBoardActivity extends BaseGameActivity {
 
                 @Override
                 public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
-                    Intent intent = new Intent(context, MinigameStartActivity.class);
-                    Field currentField = getGame().getMap().getFieldOfPlayer(getGame().getCurrentPlayer());
-                    intent.putExtra(getString(R.string.minigameidkey), currentField.getType());
-                    startActivityForResult(intent, MINIGAME_FINISHED);
+                    doFieldAction();
                 }
             }));
+        }
+    }
+    
+    private void doFieldAction(){
+        Random r = new Random(System.currentTimeMillis());
+        Intent minigameIntent = new Intent(this, MinigameStartActivity.class);
+        MinigameIdentifier currentFieldType = getGame().getMap().getFieldOfPlayer(getGame().getCurrentPlayer()).getType();
+        switch(currentFieldType){
+            case POINTS:
+                Player currentPlayer = getGame().getCurrentPlayer();
+                boolean negativePoints = r.nextBoolean();
+                int points = r.nextInt(MAX_SCORE_FIELD_POINTS + 1);
+                if(negativePoints)
+                    points = 0 - points;
+                currentPlayer.changeScoreBy(points);
+                Intent resultIntent = new Intent(this, DisplayResultActivity.class);
+                resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
+                resultIntent.putExtra(getString(R.string.scorekey), points);
+                startActivityForResult(resultIntent, MINIGAME_FINISHED);
+                break;
+            case RANDOM_MINIGAME:
+                int gameIndex = r.nextInt(mMinigames.size());
+                minigameIntent.putExtra(getString(R.string.minigameidkey), mMinigames.get(gameIndex));
+                startActivityForResult(minigameIntent, MINIGAME_FINISHED);
+                break;
+            default:
+                minigameIntent.putExtra(getString(R.string.minigameidkey), currentFieldType);
+                startActivityForResult(minigameIntent, MINIGAME_FINISHED);
+                break;
         }
     }
 
@@ -238,8 +277,14 @@ public class GameBoardActivity extends BaseGameActivity {
             movePlayer(currentPlayer, oldPosition, newPosition);
         }
         else if(requestCode == MINIGAME_FINISHED){
-            int points = data.getExtras().getInt(getString(R.string.game_result));
-            currentPlayer.changeScoreBy(points);
+            // TODO: maybe disable return button in minigames
+            if(data != null){
+                int points = data.getExtras().getInt(getString(R.string.game_result));
+                currentPlayer.changeScoreBy(points);
+            }
+            else
+                Log.d("GAME_BOARD", "Return button pressed during minigame? Zero points for player " + currentPlayer.getName());
+            
             Log.i("GAME_BOARD", "New score for player " + currentPlayer.getName() + ": " + currentPlayer.getScore());
             gameState.nextRound();
             mDiceEnabled = true;

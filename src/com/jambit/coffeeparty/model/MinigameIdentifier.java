@@ -26,10 +26,10 @@ public enum MinigameIdentifier {
         }
 	},
 	
-	SCORE("Score field. You win or lose points at random", null){
+	POINTS("Points field. You win or lose points at random", null){
         @Override
         public String toString() {
-            return "Score";
+            return "Points";
         }
 	};
 	
