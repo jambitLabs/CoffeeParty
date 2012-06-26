@@ -63,40 +63,39 @@ public class MinigameBaseActivity extends BaseGameActivity {
 
     }
 
-    @Override
-    public Scene onLoadScene() {
-        this.mEngine.registerUpdateHandler(new FPSLogger());
-
-        final Scene scene = new Scene(1);
+	@Override
+	public Scene onLoadScene() {
+		this.mEngine.registerUpdateHandler(new FPSLogger());
+		 
+        final Scene scene = new Scene();
         scene.setBackground(new ColorBackground(0, 0, 0.8784f));
+        
+        scoreText = new ChangeableText(20f, 20f, this.mFont, "            ");
+        scene.attachChild(scoreText);
+        
         return scene;
     }
 
     @Override
     public void onLoadComplete() {
         updateScoreDisplay();
-    }
-
-    private void addScore(int i) {
-        score += i;
-    }
-
-    private void reduceScore(int i) {
-        score -= i;
-        if (score < 0) {
-            score = 0;
-        }
-    }
-
-    protected void updateScoreDisplay() {
-        if (scoreText == null) {
-            scoreText = new ChangeableText(20f, 20f, this.mFont, "" + score);
-            mEngine.getScene().attachChild(scoreText);
-        } else {
-            scoreText.setText("" + score);
-        }
-    }
-
+	}
+	
+	protected void addScore(int i) {
+		score += i;
+	}
+	
+	protected void reduceScore(int i) {
+		score -= i;
+		if (score < 0) {
+			score = 0;
+		}
+	}
+	
+	protected void updateScoreDisplay() {
+	    scoreText.setText("Score: " + score);
+	}
+	
     private void onGameFinished() {
         Intent returnIntent = new Intent();
         returnIntent.putExtra(getString(R.string.game_result), score);

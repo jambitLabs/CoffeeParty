@@ -45,7 +45,7 @@
             <y>214</y>
         </field>
         <field id="8">
-            <type>MINI_GAME_WHACKAMOLE</type>
+            <type>MINI_GAME_CATCHTHEFLY</type>
             <x>716</x>
             <y>283</y>
         </field>
@@ -80,7 +80,7 @@
             <y>323</y>
         </field>
         <field id="15">
-            <type>SCORE</type>
+            <type>MINI_GAME_CATCHTHEFLY</type>
             <x>348</x>
             <y>356</y>
         </field>

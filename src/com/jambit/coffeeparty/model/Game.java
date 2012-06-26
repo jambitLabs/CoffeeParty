@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathExpressionException;
 public final class Game {
 
     private List<Player> players = new ArrayList<Player>();
+    private Player currentPlayer = null;
     private Map mMap;
     private int mTotalRounds = 0;
     private int mRoundsPlayed = 0;
@@ -36,7 +37,6 @@ public final class Game {
     }
     
     public Player getCurrentPlayer() {
-    	//placeholder
-    	return new Player("Horst", null);
+        return currentPlayer;
     }
 }
