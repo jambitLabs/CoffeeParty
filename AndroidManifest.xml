@@ -5,6 +5,8 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="8" />
+    
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:name=".CoffeePartyApplication"
@@ -30,6 +32,9 @@
             android:screenOrientation="landscape" />
         <activity 
             android:name=".GameBoardActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".SettingsActivity"
             android:screenOrientation="landscape" />
         </application>
 

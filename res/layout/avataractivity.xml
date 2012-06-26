@@ -13,7 +13,7 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Choose avatar for player: " />
+            android:text="@string/choose_avatar_for_player_" />
 
         <TextView
             android:id="@+id/playerNameTextView"
@@ -31,13 +31,15 @@
             android:id="@+id/cameraButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Take a photo" 
+            android:text="@string/take_a_photo" 
             android:onClick="cameraButtonOnClick"/>
-
+
+
+
         <Gallery
             android:id="@+id/gallery1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" android:spacing="10dp"/>
 
     </LinearLayout>
 
@@ -50,7 +52,7 @@
             android:id="@+id/avatarApplyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onApplyButtonOnClick"
+            android:onClick="applyButtonOnClick"
             android:text="@string/apply" />
     </LinearLayout>
 

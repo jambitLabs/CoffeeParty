@@ -1,8 +1,9 @@
 package com.jambit.coffeeparty;
 
+import com.jambit.coffeeparty.model.Player;
+
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,8 +11,8 @@ import android.view.View;
 public class MainMenuActivity extends Activity {
 
     private final static int NUM_PLAYERS_SET = 0;
-    private final static int SET_AVATAR = 1;
-    private final static int GAME_BOARD = 3;
+    private final static int GAME_SETTINGS = 1;
+    private final static int GAME_BOARD = 2;
 
     /** Called when the activity is first created. */
     @Override
@@ -36,15 +37,13 @@ public class MainMenuActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == NUM_PLAYERS_SET) {
-            for (Object name : (Object[]) data.getExtras().get("players"))
-                Log.d("MAIN_MENU", "Player " + name);
-
-            Intent avatarIntent = new Intent(this, AvatarActivity.class);
-            avatarIntent.putExtra(AvatarActivity.PLAYERNAME_EXTRA, "TestPlayer");
-            startActivityForResult(avatarIntent, SET_AVATAR);
-        } else if (requestCode == SET_AVATAR) {
-            Bitmap avatarBitmap = data.getParcelableExtra(AvatarActivity.SELECTED_AVATAR_EXTRA);
+            for(Object player : (Object[])data.getExtras().get("players")){
+                Log.d("MAIN_MENU", player.toString());
+                ((CoffeePartyApplication)getApplication()).getGameState().getPlayers().add((Player)player);
+            }
+            // player data entered and added to the game. Proceed to board
             showBoard();
+            
         } else if (requestCode == GAME_BOARD) {
             // Nothing to do now
         }
