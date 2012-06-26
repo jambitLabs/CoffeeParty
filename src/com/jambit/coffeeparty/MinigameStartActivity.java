@@ -23,40 +23,13 @@ public class MinigameStartActivity extends Activity {
 		currentPlayer = ((CoffeePartyApplication) getApplication()).getGameState().getCurrentPlayer();
 		
 		setContentView(R.layout.minigame_start);
-		((TextView) findViewById(R.id.minigameStartTitle)).setText(nameForMinigame(minigameID));
-		((TextView) findViewById(R.id.minigameStartDescription)).setText(descriptionForMinigame(minigameID));
+		((TextView) findViewById(R.id.minigameStartTitle)).setText(minigameID.toString());
+		((TextView) findViewById(R.id.minigameStartDescription)).setText(minigameID.description());
 		((TextView) findViewById(R.id.minigameStartPlayerName)).setText(currentPlayer.getName());
 	}
 	
-	private String nameForMinigame(MinigameIdentifier id) {
-		switch (id) {
-			case MINI_GAME_IDENTIFIER_WHACKAMOLE:
-				return "Whack-A-Mole";
-			default:
-				return "(Game name not found)";
-		}
-	}
-	
-	private String descriptionForMinigame(MinigameIdentifier id) {
-		switch (id) {
-			case MINI_GAME_IDENTIFIER_WHACKAMOLE:
-				return "Hit as many moles as you can before time runs out!";
-			default:
-				return "(Game description not found)";
-		}
-	}
-
-	private Class classForMinigame(MinigameIdentifier id) {
-		switch (id) {
-			case MINI_GAME_IDENTIFIER_WHACKAMOLE:
-				return MinigameWhackAMole.class;
-			default:
-				return null;
-		}
-	}
-	
 	public void onConfirmButtonClicked(View v) {
-		Intent intent = new Intent(this, classForMinigame(minigameID));
+		Intent intent = new Intent(this, minigameID.minigameClass());
 		startActivityForResult(intent, REQUEST_CODE_GAME);
 	}
 	
