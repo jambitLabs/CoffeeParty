@@ -23,6 +23,7 @@ import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 
@@ -33,6 +34,7 @@ import com.jambit.coffeeparty.model.Player;
 public class GameBoardActivity extends BaseGameActivity {
 
     private final static int DICE_ROLLED = 110;
+    private final static int MINIGAME_FINISHED = 111;
     
     private boolean mDiceEnabled = false;
     
@@ -158,14 +160,25 @@ public class GameBoardActivity extends BaseGameActivity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
+        Player currentPlayer = gameState.getCurrentPlayer();
+        
         if(requestCode == DICE_ROLLED){
             int diceResult = data.getExtras().getInt(getString(R.string.dice_result));
-            Game gameState = ((CoffeePartyApplication) getApplication()).getGameState();
-            Player currentPlayer = gameState.getCurrentPlayer();
             currentPlayer.setPosition(currentPlayer.getPosition() + diceResult);
-            movePlayer(currentPlayer, gameState.getMap().getFieldOfPlayer(currentPlayer));
+            Field currentField = gameState.getMap().getFieldOfPlayer(currentPlayer);
+            movePlayer(currentPlayer, currentField);
+            
+            //TODO: start minigame after end of path is reached
+            Intent intent = new Intent(this, MinigameStartActivity.class);
+            intent.putExtra(getString(R.string.minigameidkey), currentField.getType());
+            startActivityForResult(intent, MINIGAME_FINISHED);
+        }
+        else if(requestCode == MINIGAME_FINISHED){
+            int points = data.getExtras().getInt(getString(R.string.game_result));
+            currentPlayer.changeScoreBy(points);
+            Log.i("GAME_BOARD", "New score for player " + currentPlayer.getName() + ": " + currentPlayer.getScore());
             gameState.nextRound();
-            //TODO: move this to after minigame finished
             mDiceEnabled = true;
         }
     }
