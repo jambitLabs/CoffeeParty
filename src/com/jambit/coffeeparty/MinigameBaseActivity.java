@@ -97,7 +97,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
 	    scoreText.setText("Score: " + score);
 	}
 	
-    private void onGameFinished() {
+    protected void onGameFinished() {
         Intent returnIntent = new Intent();
         returnIntent.putExtra(getString(R.string.game_result), score);
         setResult(RESULT_OK, returnIntent);

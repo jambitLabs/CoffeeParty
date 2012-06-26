@@ -21,7 +21,8 @@ public class CatchGameActivity extends MinigameBaseActivity {
     private TextureRegion theThingToCatchTexture;
 
     private Sprite thingToCatchSprite;
-
+    
+    private long startTime = System.currentTimeMillis();
     private long lastMovement = System.currentTimeMillis();
 
     private void catchTheThing() {
@@ -69,12 +70,18 @@ public class CatchGameActivity extends MinigameBaseActivity {
             @Override
             public void onUpdate(float pSecondsElapsed) {
                 long now = System.currentTimeMillis();
-                long timeSinceCatch = now - lastMovement;
+                
+                if (now - startTime > 20 * 1000)
+                {
+                    onGameFinished();
+                } else
+                {
+                    long timeSinceCatch = now - lastMovement;
 
-                if (timeSinceCatch > 1000) {
-                    jumpToNewLocation();
-                    updateScoreDisplay();
-                } else {
+                    if (timeSinceCatch > 1000) {
+                        jumpToNewLocation();
+                        updateScoreDisplay();
+                    }
                 }
             }
         });
