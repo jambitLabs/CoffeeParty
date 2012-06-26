@@ -29,6 +29,12 @@ public class MainMenuActivity extends Activity {
         Intent intent = new Intent(this, NumberOfPlayersActivity.class);
         startActivityForResult(intent, NUM_PLAYERS_SET);
     }
+    
+    public void onStartMinigame(View v) {
+    	Intent intent = new Intent(this, MinigameStartActivity.class);
+    	intent.putExtra(getString(R.string.minigameidkey), MinigameIdentifier.MINI_GAME_IDENTIFIER_WHACKAMOLE);
+        startActivity(intent);
+    }
 
     private void showBoard() {
         Intent intent = new Intent(this, GameBoardActivity.class);

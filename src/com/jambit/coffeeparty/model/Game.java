@@ -35,4 +35,8 @@ public final class Game {
         this.mMap = Map.loadFromXML(xml);
     }
     
+    public Player getCurrentPlayer() {
+    	//placeholder
+    	return new Player("Horst", null);
+    }
 }
