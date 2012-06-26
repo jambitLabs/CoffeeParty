@@ -12,5 +12,8 @@
     <string name="dice_result">Result</string>
     <string name="choose_avatar_for_player_">"Choose avatar for player: "</string>
     <string name="take_a_photo">Take a photo</string>
+    <string name="start_minigame_">Start Minigame!</string>
+    <string name="get_ready">GET READY</string>
+    <string name="participants">participants</string>
 
 </resources>

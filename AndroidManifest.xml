@@ -36,6 +36,11 @@
         <activity
             android:name=".SettingsActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".MinigameBaseActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MinigameStartActivity"
+            android:screenOrientation="landscape" />
         </application>
-
 </manifest>

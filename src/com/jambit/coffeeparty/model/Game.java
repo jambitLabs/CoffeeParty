@@ -39,4 +39,9 @@ public final class Game {
     public Field getFieldOfPlayer(Player player) {
         return getFieldForPosition(player.getPosition());  
     }
+    
+    public Player getCurrentPlayer() {
+    	//placeholder
+    	return new Player("Horst", null);
+    }
 }
