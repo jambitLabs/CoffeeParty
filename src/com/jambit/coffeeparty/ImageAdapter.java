@@ -10,9 +10,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 public class ImageAdapter extends BaseAdapter {
+    private static final int IMAGEVIEW_ID = 0;
     int mGalleryItemBackground;
     private Context mContext;
 
@@ -53,20 +55,17 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // ImageView i = new ImageView(mContext);
-        //
-        // i.setImageResource(mResImageIds[position]);
-        // i.setLayoutParams(new Gallery.LayoutParams(150, 100));
-        // i.setScaleType(ImageView.ScaleType.FIT_XY);
-        // i.setBackgroundResource(mGalleryItemBackground);
-        //
-        // return i;
 
-        if (convertView == null) {
-            convertView = new ImageView(mContext);
-        }
-        ((ImageView) convertView).setImageBitmap(bitmaps.get(position));
-        return convertView;
+        ImageView imageView = new ImageView(mContext);
+        imageView.setId(IMAGEVIEW_ID);
+
+        imageView.setImageBitmap(bitmaps.get(position));
+        FrameLayout borderImg = new FrameLayout(mContext);
+        borderImg.setPadding(1, 1, 1, 1);
+        borderImg.setBackgroundResource(R.drawable.avatarbackground);
+        borderImg.addView(imageView);
+
+        return borderImg;
 
     }
 
