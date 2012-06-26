@@ -37,7 +37,7 @@ public class AvatarActivity extends Activity {
         });
     }
 
-    public void onApplyButtonClicked(View v) {
+    public void applyButtonOnClick(View v) {
         setResult(RESULT_OK, data);
         finish();
     }
