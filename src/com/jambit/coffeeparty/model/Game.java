@@ -7,34 +7,9 @@ public final class Game {
 
     private List<Player> players = new ArrayList<Player>();
     private List<Field> board = new ArrayList<Field>();
+    private int mTotalRounds = 0;
+    private int mRoundsPlayed = 0;
 
-    public Game()
-    {
-        Player alex = new Player("Alex", null);
-        alex.setPosition(3);
-        alex.setScore(15);
-        players.add(alex);
-        
-        Player bene = new Player("Bene", null);
-        bene.setPosition(4);
-        bene.setScore(10);
-        players.add(bene);
-        
-        Player sebi = new Player("Sebi", null);
-        sebi.setPosition(0);
-        sebi.setScore(0);
-        players.add(sebi);
-        
-        board.add(new Field(FieldType.SCORE));
-        board.add(new Field(FieldType.SCORE));
-        board.add(new Field(FieldType.SCORE));
-        board.add(new Field(FieldType.SCORE));
-        board.add(new Field(FieldType.SCORE));
-        board.add(new Field(FieldType.SCORE));
-        board.add(new Field(FieldType.SCORE));
-        board.add(new Field(FieldType.SCORE));
-    }
-    
     public List<Field> getBoard() {
         return board;
     }
@@ -42,5 +17,18 @@ public final class Game {
     public List<Player> getPlayers() {
         return players;
     }
+    
+    public int getmTotalRounds() {
+        return mTotalRounds;
+    }
 
+    public int getmRoundsPlayed() {
+        return mRoundsPlayed;
+    }
+
+    public void startGame(int rounds, List<Field> board){
+        this.mTotalRounds = rounds;
+        this.mRoundsPlayed = 0;
+        this.board = board;
+    }
 }
