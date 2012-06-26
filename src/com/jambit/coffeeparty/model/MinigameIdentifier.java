@@ -5,14 +5,14 @@ import com.jambit.coffeeparty.MinigameWhackAMole;
 
 public enum MinigameIdentifier {
     
-	MINI_GAME_IDENTIFIER_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class){
+	MINI_GAME_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class){
 	    @Override
 	    public String toString(){
 	        return "Whack-A-Mole";
 	    }
 	},
 	
-    MINI_GAME_IDENTIFIER_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class){
+    MINI_GAME_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class){
         @Override
         public String toString(){
             return "Catch-The-Fly";

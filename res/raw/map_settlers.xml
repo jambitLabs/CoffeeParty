@@ -10,7 +10,7 @@
             <y>180</y>
         </field>
         <field id="1">
-            <type>SCORE</type>
+            <type>RANDOM</type>
             <x>320</x>
             <y>110</y>
         </field>
@@ -25,7 +25,7 @@
             <y>21</y>
         </field>
         <field id="4">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>474</x>
             <y>108</y>
         </field>
@@ -35,7 +35,7 @@
             <y>147</y>
         </field>
         <field id="6">
-            <type>SCORE</type>
+            <type>RANDOM</type>
             <x>613</x>
             <y>184</y>
         </field>
@@ -45,12 +45,12 @@
             <y>214</y>
         </field>
         <field id="8">
-            <type>SCORE</type>
+            <type>MINI_GAME_CATCHTHEFLY</type>
             <x>716</x>
             <y>283</y>
         </field>
         <field id="9">
-            <type>SCORE</type>
+            <type>RANDOM</type>
             <x>722</x>
             <y>359</y>
         </field>
@@ -65,7 +65,7 @@
             <y>462</y>
         </field>
         <field id="12">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>517</x>
             <y>419</y>
         </field>
@@ -80,12 +80,12 @@
             <y>323</y>
         </field>
         <field id="15">
-            <type>SCORE</type>
+            <type>MINI_GAME_CATCHTHEFLY</type>
             <x>348</x>
             <y>356</y>
         </field>
         <field id="16">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>273</x>
             <y>310</y>
         </field>
@@ -100,7 +100,7 @@
             <y>255</y>
         </field>
         <field id="19">
-            <type>SCORE</type>
+            <type>RANDOM</type>
             <x>50</x>
             <y>152</y>
         </field>
@@ -110,7 +110,7 @@
             <y>94</y>
         </field>
         <field id="21">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>137</x>
             <y>173</y>
         </field>
