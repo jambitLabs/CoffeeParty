@@ -5,7 +5,7 @@
     
     <fields>
         <field id="0">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>284</x>
             <y>180</y>
         </field>
@@ -15,12 +15,12 @@
             <y>110</y>
         </field>
         <field id="2">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>359</x>
             <y>69</y>
         </field>
         <field id="3">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>432</x>
             <y>21</y>
         </field>
@@ -30,7 +30,7 @@
             <y>108</y>
         </field>
         <field id="5">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>537</x>
             <y>147</y>
         </field>
@@ -40,7 +40,7 @@
             <y>184</y>
         </field>
         <field id="7">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>681</x>
             <y>214</y>
         </field>
@@ -55,12 +55,12 @@
             <y>359</y>
         </field>
         <field id="10">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>691</x>
             <y>438</y>
         </field>
         <field id="11">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>605</x>
             <y>462</y>
         </field>
@@ -70,12 +70,12 @@
             <y>419</y>
         </field>
         <field id="13">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>483</x>
             <y>353</y>
         </field>
         <field id="14">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>430</x>
             <y>323</y>
         </field>
@@ -90,12 +90,12 @@
             <y>310</y>
         </field>
         <field id="17">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>188</x>
             <y>264</y>
         </field>
         <field id="18">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>65</x>
             <y>255</y>
         </field>
@@ -105,7 +105,7 @@
             <y>152</y>
         </field>
         <field id="20">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>105</x>
             <y>94</y>
         </field>
@@ -115,7 +115,7 @@
             <y>173</y>
         </field>
         <field id="22">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>207</x>
             <y>199</y>
         </field>
