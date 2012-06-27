@@ -193,7 +193,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         displayTimer = new DisplayTimer(false, maxTimeSecs);
 
     }
-
+    
     protected void startCountDownTimer(float startTimeSecs) {
         if (displayTimer != null) {
             displayTimer.unregisterUpdateHandler();
