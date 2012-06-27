@@ -4,17 +4,19 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.http.util.EntityUtils;
+import com.jambit.coffeeparty.model.Player;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class HighscoreDataSource {
 	private HighscoreDBHelper dbHelper;
 	private SQLiteDatabase database;
-	HighscoreDataSource(Context context) {
+	public HighscoreDataSource(Context context) {
 		dbHelper = new HighscoreDBHelper(context);
 	}
 	
@@ -29,15 +31,23 @@ public class HighscoreDataSource {
 		dbHelper.close();
 	}
 	
-	public void storeHighscore (String name, int score, Date timestamp, Bitmap avatar) {
-		ContentValues values = new ContentValues();
-		values.put(HighscoreDBHelper.COLUMN_USERNAME, name);
-		values.put(HighscoreDBHelper.COLUMN_SCORE, score);
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		values.put(HighscoreDBHelper.COLUMN_TIMESTAMP, dateFormat.format(timestamp));
-		values.put(HighscoreDBHelper.COLUMN_AVATAR, bitmapToByteArray(avatar));
+	public void storeHighscore (Player p) {
 		
-		database.insert(HighscoreDBHelper.DB_NAME, null, values);
+		Date timestamp = new Date();
+		ContentValues values = new ContentValues();
+		values.put(HighscoreDBHelper.COLUMN_USERNAME, p.getName());
+		values.put(HighscoreDBHelper.COLUMN_SCORE, p.getScore());
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		values.put(HighscoreDBHelper.COLUMN_TIMESTAMP, dateFormat.format(timestamp));
+		values.put(HighscoreDBHelper.COLUMN_AVATAR, bitmapToByteArray(p.getAvatar()));
+		
+		float result = database.insert(HighscoreDBHelper.TABLE_NAME, null, values);
+		Log.d("Test", ""+result);
+	}
+	
+	public Cursor getAllHighscores() {
+		return database.query(HighscoreDBHelper.TABLE_NAME, HighscoreDBHelper.ALL_COLUMNS, 
+				null, null, null, null, HighscoreDBHelper.COLUMN_SCORE + " DESC", "10");
 	}
 	
 	private byte[] bitmapToByteArray (Bitmap bmp) {

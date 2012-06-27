@@ -1,14 +1,24 @@
 package com.jambit.coffeeparty;
 
 import java.io.InputStream;
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.List;
+=======
+import java.util.Date;
+import java.util.Random;
+>>>>>>> Stashed changes
 
 import javax.xml.xpath.XPathExpressionException;
 
 import android.app.Activity;
 import android.content.Intent;
+<<<<<<< Updated upstream
 import android.graphics.drawable.BitmapDrawable;
+=======
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+>>>>>>> Stashed changes
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +27,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.jambit.coffeeparty.db.HighscoreDataSource;
 import com.jambit.coffeeparty.model.MinigameIdentifier;
 import com.jambit.coffeeparty.model.Player;
 
@@ -126,6 +137,8 @@ public class MainMenuActivity extends Activity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+<<<<<<< Updated upstream
+=======
     
     public void onTestDB (View v) {
     	Intent intent = new Intent(this, DisplayHighscoreActivity.class);
@@ -141,4 +154,5 @@ public class MainMenuActivity extends Activity {
     	dataSource.close();
     	*/
     }
+>>>>>>> Stashed changes
 }

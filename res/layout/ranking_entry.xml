@@ -3,7 +3,12 @@
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:padding="6dip" >
-	
+	 <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/player_ranking"
+        android:textSize="35dp"
+        android:layout_marginRight="5dp"/>
     <ImageView
         android:id="@+id/avataricon"
         android:layout_width="wrap_content"

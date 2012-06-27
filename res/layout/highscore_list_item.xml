@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/highscore_rankview"
+        android:textSize="35dp"
+        android:layout_marginRight="5dp"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/highscore_imageview" 
+        android:contentDescription="@string/avatar_image"
+        android:layout_margin="5dp"/>
+    <LinearLayout android:layout_width="0dp"
+        android:layout_weight="1"
+    	    android:layout_height="match_parent"
+    	    android:orientation="vertical"
+    	    android:layout_marginRight="5dp">
+    	    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/highscore_nameview"/>
+    	    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/highscore_dateview"/>
+    	</LinearLayout>
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:textSize="35dp"
+        android:id="@+id/highscore_scoreview"
+        android:layout_gravity="right"/>
+    
+</LinearLayout>
