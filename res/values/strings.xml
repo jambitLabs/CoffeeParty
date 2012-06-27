@@ -23,5 +23,7 @@
     <string name="playernamekey">playerName</string>
     <string name="selectedavatarkey">selectedAvatar</string>
     <string name="defaultrounds">5</string>
+    <string name="finalresults">Final results</string>
+    <string name="avatar_descr">Player avatar</string>
 
 </resources>

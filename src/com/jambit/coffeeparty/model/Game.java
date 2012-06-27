@@ -31,10 +31,11 @@ public final class Game {
         return mRoundsPlayed;
     }
 
-    public void startGame(int rounds, InputStream xml) throws XPathExpressionException{
+    public void startGame(List<Player> players, int rounds, InputStream xml) throws XPathExpressionException{
         this.mTotalRounds = rounds;
         this.mRoundsPlayed = 0;
         this.mMap = Map.loadFromXML(xml);
+        this.players = players;
         this.currentPlayer = players.get(0);
     }
     

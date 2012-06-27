@@ -1,11 +1,13 @@
 package com.jambit.coffeeparty;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -25,6 +27,8 @@ public class SettingsActivity extends Activity {
         setContentView(R.layout.settings);
         
         EditText editText = (EditText) findViewById(R.id.inputRounds);
+        // read default value
+        mNumRounds = Integer.parseInt(editText.getText().toString());
         editText.setOnEditorActionListener(new OnEditorActionListener() {
 
             @Override
@@ -32,6 +36,10 @@ public class SettingsActivity extends Activity {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     mNumRounds = Integer.parseInt(v.getText().toString());
+                    
+                    InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    mgr.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
                     handled = true;
                 }
                 return handled;

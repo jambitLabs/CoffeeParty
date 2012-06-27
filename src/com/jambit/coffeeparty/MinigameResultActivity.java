@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.jambit.coffeeparty.model.Player;
 
-public class DisplayResultActivity extends Activity {
+public class MinigameResultActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

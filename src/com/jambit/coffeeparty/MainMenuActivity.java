@@ -1,6 +1,8 @@
 package com.jambit.coffeeparty;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -18,6 +20,8 @@ public class MainMenuActivity extends Activity {
     private final static int NUM_PLAYERS_SET = 0;
     private final static int GAME_SETTINGS = 1;
     private final static int GAME_BOARD = 2;
+    
+    private List<Player> mPlayers = new ArrayList<Player>();
 
     /** Called when the activity is first created. */
     @Override
@@ -53,22 +57,24 @@ public class MainMenuActivity extends Activity {
         if (requestCode == NUM_PLAYERS_SET) {
             for(Object player : (Object[])data.getExtras().get("players")){
                 Log.d("MAIN_MENU", player.toString());
-                ((CoffeePartyApplication)getApplication()).getGameState().getPlayers().add((Player)player);
+                mPlayers.add((Player)player);
             }
             showSettings();
         }
         else if(requestCode == GAME_SETTINGS){
-            int numRounds = data.getExtras().getInt("numRounds");
-            int mapId = data.getExtras().getInt("mapId");
-            InputStream mapXml = this.getResources().openRawResource(mapId);
-            try {
-                ((CoffeePartyApplication)getApplication()).getGameState().startGame(numRounds, mapXml);
-            } catch (XPathExpressionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if(data != null){
+                int numRounds = data.getExtras().getInt("numRounds");
+                int mapId = data.getExtras().getInt("mapId");
+                InputStream mapXml = this.getResources().openRawResource(mapId);
+                try {
+                    ((CoffeePartyApplication)getApplication()).getGameState().startGame(mPlayers, numRounds, mapXml);
+                } catch (XPathExpressionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                // player data and settings entered. Proceed to board
+                showBoard();
             }
-            // player data and settings entered. Proceed to board
-            showBoard();
         }
         else if (requestCode == GAME_BOARD) {
             // Nothing to do now
