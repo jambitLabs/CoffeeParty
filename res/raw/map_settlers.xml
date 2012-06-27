@@ -20,7 +20,7 @@
             <y>69</y>
         </field>
         <field id="3">
-            <type>POINTS</type>
+            <type>MINI_GAME_BALLMAZE</type>
             <x>432</x>
             <y>21</y>
         </field>
@@ -60,7 +60,7 @@
             <y>438</y>
         </field>
         <field id="11">
-            <type>POINTS</type>
+            <type>MINI_GAME_BALLMAZE</type>
             <x>605</x>
             <y>462</y>
         </field>
@@ -95,7 +95,7 @@
             <y>264</y>
         </field>
         <field id="18">
-            <type>POINTS</type>
+            <type>MINI_GAME_BALLMAZE</type>
             <x>65</x>
             <y>255</y>
         </field>

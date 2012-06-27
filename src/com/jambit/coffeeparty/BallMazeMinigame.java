@@ -46,9 +46,10 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
     private PhysicsWorld mPhysicsWorld;
     private Entity pAccelerometerData;
 
-    private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+    private static final FixtureDef BALL_FIXTURE_DEF = PhysicsFactory.createFixtureDef(0.5f, 0.3f, 0.5f);
     private static final FixtureDef Hole_FIXTURE_DEF = PhysicsFactory.createFixtureDef(0f, 0f, 0f, true);
-    private static final float INITIAL_SCORE = 20;
+    private static final FixtureDef WALL_FIXTURE_DEF = PhysicsFactory.createFixtureDef(0, 0.3f, 0.5f);
+    private static final float INITIAL_SCORE = 40;
 
     private List<Body> holeBodies = new ArrayList<Body>();
     private Body goalBody;
@@ -72,32 +73,49 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
                                                    ballSprite.getWidth() / 2.f,
                                                    0.f,
                                                    BodyType.DynamicBody,
-                                                   FIXTURE_DEF);
+                                                   BALL_FIXTURE_DEF);
 
         this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(ballSprite, ballBody, true, true));
         scene.attachChild(ballSprite);
 
-        final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
-
         // outer walls
-        createWall(0, cameraHeight - 25, cameraWidth, 25, scene, wallFixtureDef);
-        createWall(0, 0, cameraWidth, 25, scene, wallFixtureDef);
-        createWall(0, 0, 25, cameraHeight, scene, wallFixtureDef);
-        createWall(cameraWidth - 25, 0, 25, cameraHeight, scene, wallFixtureDef);
+        createWall(0, cameraHeight - 25, cameraWidth, 25, scene, WALL_FIXTURE_DEF);
+        createWall(0, 0, cameraWidth, 25, scene, WALL_FIXTURE_DEF);
+        createWall(0, 0, 25, cameraHeight, scene, WALL_FIXTURE_DEF);
+        createWall(cameraWidth - 25, 0, 25, cameraHeight, scene, WALL_FIXTURE_DEF);
 
         //
-        createWall(90, 25, 40, 60, scene, wallFixtureDef);
-        createWall(160, 65, 150, 35, scene, wallFixtureDef);
-        createWall(108, 120, 32, 230, scene, wallFixtureDef);
-        createWall(33, 325, 33, 90, scene, wallFixtureDef);
-        createWall(245, 205, 271, 75, scene, wallFixtureDef);
-        createWall(401, 285, 52, 81, scene, wallFixtureDef);
-        createWall(465, 94, 194, 42, scene, wallFixtureDef);
-        createWall(599, 211, 69, 100, scene, wallFixtureDef);
-        createWall(508, 356, 102, 40, scene, wallFixtureDef);
-        createWall(582, 404, 45, 45, scene, wallFixtureDef);
+        createWall(90, 25, 40, 60, scene, WALL_FIXTURE_DEF);
+        createWall(160, 65, 150, 35, scene, WALL_FIXTURE_DEF);
+        createWall(108, 120, 32, 230, scene, WALL_FIXTURE_DEF);
+        createWall(33, 325, 33, 90, scene, WALL_FIXTURE_DEF);
+        createWall(245, 205, 271, 75, scene, WALL_FIXTURE_DEF);
+        createWall(401, 285, 52, 81, scene, WALL_FIXTURE_DEF);
+        createWall(465, 94, 194, 42, scene, WALL_FIXTURE_DEF);
+        createWall(599, 211, 69, 100, scene, WALL_FIXTURE_DEF);
+        createWall(508, 356, 102, 40, scene, WALL_FIXTURE_DEF);
+        createWall(582, 404, 45, 45, scene, WALL_FIXTURE_DEF);
 
         createHole(38, 184, scene, Hole_FIXTURE_DEF);
+        createHole(84, 255, scene, Hole_FIXTURE_DEF);
+        createHole(100, 416, scene, Hole_FIXTURE_DEF);
+        createHole(158, 393, scene, Hole_FIXTURE_DEF);
+        createHole(269, 326, scene, Hole_FIXTURE_DEF);
+
+        createHole(265, 389, scene, Hole_FIXTURE_DEF);
+        createHole(342, 57, scene, Hole_FIXTURE_DEF);
+        createHole(332, 148, scene, Hole_FIXTURE_DEF);
+        createHole(399, 146, scene, Hole_FIXTURE_DEF);
+        createHole(450, 411, scene, Hole_FIXTURE_DEF);
+
+        createHole(539, 238, scene, Hole_FIXTURE_DEF);
+        createHole(663, 52, scene, Hole_FIXTURE_DEF);
+        createHole(687, 133, scene, Hole_FIXTURE_DEF);
+        createHole(711, 221, scene, Hole_FIXTURE_DEF);
+        createHole(666, 277, scene, Hole_FIXTURE_DEF);
+
+        createHole(639, 363, scene, Hole_FIXTURE_DEF);
+        createHole(718, 345, scene, Hole_FIXTURE_DEF);
 
         goalBody = PhysicsFactory.createCircleBody(this.mPhysicsWorld,
                                                    679,
@@ -117,7 +135,7 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
         Body holeBody = PhysicsFactory.createCircleBody(this.mPhysicsWorld,
                                                         x,
                                                         y,
-                                                        15,
+                                                        12,
                                                         0.f,
                                                         BodyType.StaticBody,
                                                         holeFixtureDef);
@@ -155,13 +173,17 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
         super.onLoadResources();
     }
 
+    private int calcCurrentScore() {
+        return (int) Math.floor((1 - getFractionOfPassedTime()) * INITIAL_SCORE);
+    }
+
     @Override
     public void onAccelerometerChanged(AccelerometerData pAccelerometerData) {
         final Vector2 gravity = Vector2Pool.obtain(pAccelerometerData.getX(), pAccelerometerData.getY());
         this.mPhysicsWorld.setGravity(gravity);
         Vector2Pool.recycle(gravity);
 
-        setScore((int) Math.floor(getFractionOfPassedTime() * INITIAL_SCORE));
+        setScore(calcCurrentScore());
         updateScoreDisplay();
     }
 
@@ -183,12 +205,13 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
     public void beginContact(Contact contact) {
         Log.i("BallMazeMinigame", "Contact detected: " + contact.toString());
         if (contact.getFixtureA().getBody() == goalBody || contact.getFixtureB().getBody() == goalBody) {
-            setScore((int) Math.floor(getFractionOfPassedTime() * INITIAL_SCORE));
+            setScore(calcCurrentScore());
             onGameFinished();
-        }
-        if (holeBodies.contains(contact.getFixtureA().getBody())
+
+        } else if (holeBodies.contains(contact.getFixtureA().getBody())
                 || holeBodies.contains(contact.getFixtureB().getBody())) {
             setScore(0);
+            onGameFinished();
         }
     }
 
@@ -212,6 +235,6 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
 
     @Override
     public void onLoadComplete() {
-        startCountDownTimer(20);
+        startCountDownTimer(INITIAL_SCORE);
     }
 }
