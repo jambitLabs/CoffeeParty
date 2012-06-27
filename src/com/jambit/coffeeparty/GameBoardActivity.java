@@ -18,6 +18,7 @@ import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.SpriteBackground;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
+import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.entity.util.FPSLogger;
 import org.anddev.andengine.opengl.font.Font;
@@ -29,9 +30,9 @@ import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -53,8 +54,8 @@ public class GameBoardActivity extends BaseGameActivity {
     private boolean mDiceEnabled = false;
     private List<MinigameIdentifier> mMinigames = new ArrayList<MinigameIdentifier>();
     
-    private BitmapTextureAtlas bitmapTextureAtlas;
     private TextureRegion backgroundTexture;
+    private TextureRegion jambitBeanTexture;
     private TiledTextureRegion playerSpriteTexture;
 
     private Font playerNameFont;
@@ -64,6 +65,8 @@ public class GameBoardActivity extends BaseGameActivity {
 
         private AnimatedSprite figure;
         private Text figureNameText;
+        private ChangeableText playerPointsText;
+        private Sprite bean;
 
         PlayerSprite(Player player, int x, int y) {
             super(x, y);
@@ -76,10 +79,21 @@ public class GameBoardActivity extends BaseGameActivity {
 
             this.figureNameText = new Text(0, -20, playerNameFont, player.getName());
             this.attachChild(figureNameText);
+
+            this.playerPointsText = new ChangeableText(25, 0, playerNameFont, "0       ");
+            this.attachChild(playerPointsText);
+
+            this.bean = new Sprite(5, 5, jambitBeanTexture);
+            this.bean.setSize(16, 16);
+            this.attachChild(bean);
         }
 
         public Player getPlayer() {
             return player;
+        }
+        
+        public void updatePoints() {
+            playerPointsText.setText(Integer.toString(this.player.getScore()));
         }
     }
     
@@ -180,13 +194,16 @@ public class GameBoardActivity extends BaseGameActivity {
     public void onLoadResources() {
         String boardImage = getGame().getMap().getBoardImage();
                 
-        this.bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
-        this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(this.bitmapTextureAtlas, this,
+        BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
+        
+        this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas, this,
                 boardImage, 0, 0);
-        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(this.bitmapTextureAtlas,
+        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas,
                 this, "face_box_tiled.png", 132, 180, 2, 1);
+        this.jambitBeanTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas, this,
+                "jambitbean.png", 0, 0);
 
-        this.mEngine.getTextureManager().loadTexture(this.bitmapTextureAtlas);
+        this.mEngine.getTextureManager().loadTexture(bitmapTextureAtlas);
 
         BitmapTextureAtlas fontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         this.playerNameFont = new Font(fontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 20, true,
@@ -286,7 +303,6 @@ public class GameBoardActivity extends BaseGameActivity {
             }
             else
                 Log.d("GAME_BOARD", "Return button pressed during minigame? Zero points for player " + currentPlayer.getName());
-            
             Log.i("GAME_BOARD", "New score for player " + currentPlayer.getName() + ": " + currentPlayer.getScore());
             Intent resultIntent = new Intent(this, DisplayResultActivity.class);
             resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
@@ -302,6 +318,8 @@ public class GameBoardActivity extends BaseGameActivity {
                 Log.d("GAME_BOARD", "End of game");
             }
         }
+        
+        getPlayerSpriteForPlayer(currentPlayer).updatePoints();
     }
 
     @Override
