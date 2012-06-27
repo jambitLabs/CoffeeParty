@@ -63,7 +63,7 @@ public class FinalResultsActivity extends ListActivity {
                         if(img != null)
                             img.setImageBitmap(p.getAvatar());
                         
-                        pr.setText("" + position + 1);
+                        pr.setText(new Integer(position + 1).toString());
                 }
                 return v;
             }
