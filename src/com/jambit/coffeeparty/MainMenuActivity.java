@@ -8,6 +8,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +22,12 @@ import com.jambit.coffeeparty.model.Player;
 
 public class MainMenuActivity extends Activity {
 
+    private static final String DEVELOPER = "Developer";
     private final static int NUM_PLAYERS_SET = 0;
     private final static int GAME_SETTINGS = 1;
     private final static int GAME_BOARD = 2;
-    
+    private static final int MINIGAME_REQUESTCODE = 3;
+
     private List<Player> mPlayers = new ArrayList<Player>();
 
     private Spinner startDirectGameSpinner;
@@ -38,7 +41,7 @@ public class MainMenuActivity extends Activity {
         startDirectGameSpinner = (Spinner) findViewById(R.id.startDirectGame);
 
         ArrayAdapter<MinigameIdentifier> adapter = new ArrayAdapter<MinigameIdentifier>(this,
-                android.R.layout.simple_spinner_item);
+                                                                                        android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         for (MinigameIdentifier minigameIdentifier : MinigameIdentifier.values()) {
@@ -73,8 +76,8 @@ public class MainMenuActivity extends Activity {
 
         Intent intent = new Intent(this, MinigameStartActivity.class);
         intent.putExtra(getString(R.string.minigameidkey), minigame);
-        intent.putExtra(getString(R.string.playernamekey), "Developer");
-        startActivity(intent);
+        intent.putExtra(getString(R.string.playernamekey), DEVELOPER);
+        startActivityForResult(intent, MINIGAME_REQUESTCODE);
     }
 
     private void showBoard() {
@@ -91,19 +94,18 @@ public class MainMenuActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == NUM_PLAYERS_SET) {
-            for(Object player : (Object[])data.getExtras().get("players")){
+            for (Object player : (Object[]) data.getExtras().get("players")) {
                 Log.d("MAIN_MENU", player.toString());
-                mPlayers.add((Player)player);
+                mPlayers.add((Player) player);
             }
             showSettings();
-        }
-        else if(requestCode == GAME_SETTINGS){
-            if(data != null){
+        } else if (requestCode == GAME_SETTINGS) {
+            if (data != null) {
                 int numRounds = data.getExtras().getInt("numRounds");
                 int mapId = data.getExtras().getInt("mapId");
                 InputStream mapXml = this.getResources().openRawResource(mapId);
                 try {
-                    ((CoffeePartyApplication)getApplication()).getGameState().startGame(mPlayers, numRounds, mapXml);
+                    ((CoffeePartyApplication) getApplication()).getGameState().startGame(mPlayers, numRounds, mapXml);
                 } catch (XPathExpressionException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -111,11 +113,17 @@ public class MainMenuActivity extends Activity {
                 // player data and settings entered. Proceed to board
                 showBoard();
             }
-        }
-        else if (requestCode == GAME_BOARD) {
+        } else if (requestCode == GAME_BOARD) {
             // Nothing to do now
+        } else if (requestCode == MINIGAME_REQUESTCODE) {
+            int points = data.getExtras().getInt(getString(R.string.game_result));
+            Intent resultIntent = new Intent(this, MinigameResultActivity.class);
+            resultIntent.putExtra(getString(R.string.playerkey),
+                                  new Player(DEVELOPER,
+                                             ((BitmapDrawable) this.getResources().getDrawable(R.drawable.droid_green)).getBitmap()));
+            resultIntent.putExtra(getString(R.string.pointskey), points);
+            startActivity(resultIntent);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
 }
