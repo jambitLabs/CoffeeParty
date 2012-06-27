@@ -23,11 +23,11 @@ public final class Game {
         return this.mMap;
     }
     
-    public int getmTotalRounds() {
+    public int getTotalRounds() {
         return mTotalRounds;
     }
 
-    public int getmRoundsPlayed() {
+    public int getRoundsPlayed() {
         return mRoundsPlayed;
     }
 
@@ -42,8 +42,11 @@ public final class Game {
         return currentPlayer;
     }
     
-    public void nextRound(){
+    public void nextPlayer(){
         currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
         currentPlayer = players.get(currentPlayerIndex);
+        
+        if(currentPlayerIndex == players.size() - 1)
+            mRoundsPlayed++;
     }
 }

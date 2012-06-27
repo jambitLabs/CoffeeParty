@@ -66,7 +66,7 @@ public class NumberOfPlayersActivity extends Activity {
                     String name = input.getText().toString();
                     dialog.dismiss();
                     Intent avatarIntent = new Intent(packageContext, AvatarActivity.class);
-                    avatarIntent.putExtra(AvatarActivity.PLAYERNAME_EXTRA, name);
+                    avatarIntent.putExtra(getString(R.string.playernamekey), name);
                     startActivityForResult(avatarIntent, AVATAR_SET);
                 }
             });
@@ -76,8 +76,8 @@ public class NumberOfPlayersActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AVATAR_SET) {
-            String name = data.getExtras().get(AvatarActivity.PLAYERNAME_EXTRA).toString();
-            Bitmap avatar = (Bitmap)data.getExtras().get(AvatarActivity.SELECTED_AVATAR_EXTRA);
+            String name = data.getExtras().get(getString(R.string.playernamekey)).toString();
+            Bitmap avatar = (Bitmap)data.getExtras().get(getString(R.string.selectedavatarkey));
             Player player = new Player(name, avatar);
             mPlayers.add(player);
             
