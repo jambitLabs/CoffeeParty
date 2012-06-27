@@ -20,13 +20,7 @@ public enum MinigameIdentifier {
         }
     },
 
-    MINI_GAME_IDENTIFIER_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class) {
-        @Override
-        public String toString() {
-            return "Whack-A-Mole";
-        }
-    },
-    MINI_GAME_IDENTIFIER_BALLMAZE("Get to the exit, don't fall into the wholes", BallMazeMinigame.class) {
+    MINI_GAME_BALLMAZE("Get to the exit, don't fall into the wholes", BallMazeMinigame.class) {
         @Override
         public String toString() {
             return "Ball Maze";

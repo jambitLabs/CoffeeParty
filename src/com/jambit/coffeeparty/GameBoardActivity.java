@@ -296,7 +296,6 @@ public class GameBoardActivity extends BaseGameActivity {
             movePlayer(currentPlayer, oldPosition, newPosition);
         }
         else if(requestCode == MINIGAME_FINISHED){
-            // TODO: maybe disable return button in minigames
             int points = 0;
             if(data != null){
                 points = data.getExtras().getInt(getString(R.string.game_result));
@@ -319,7 +318,6 @@ public class GameBoardActivity extends BaseGameActivity {
             else{
                 Log.d("GAME_BOARD", "End of game");
                 Intent resultIntent = new Intent(this, FinalResultsActivity.class);
-//                resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
                 startActivityForResult(resultIntent, END_OF_GAME);
             }
         }
