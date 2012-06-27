@@ -17,5 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:visibility="gone"
-        android:onClick="onConfirmClicked"/>
+        android:onClick="onConfirmClicked" 
+        android:text="@string/button_confirm" />
 </LinearLayout>

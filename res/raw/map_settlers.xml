@@ -5,117 +5,117 @@
     
     <fields>
         <field id="0">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>284</x>
             <y>180</y>
         </field>
         <field id="1">
-            <type>SCORE</type>
+            <type>RANDOM_MINIGAME</type>
             <x>320</x>
             <y>110</y>
         </field>
         <field id="2">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>359</x>
             <y>69</y>
         </field>
         <field id="3">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>432</x>
             <y>21</y>
         </field>
         <field id="4">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>474</x>
             <y>108</y>
         </field>
         <field id="5">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>537</x>
             <y>147</y>
         </field>
         <field id="6">
-            <type>SCORE</type>
+            <type>RANDOM_MINIGAME</type>
             <x>613</x>
             <y>184</y>
         </field>
         <field id="7">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>681</x>
             <y>214</y>
         </field>
         <field id="8">
-            <type>SCORE</type>
+            <type>MINI_GAME_CATCHTHEFLY</type>
             <x>716</x>
             <y>283</y>
         </field>
         <field id="9">
-            <type>SCORE</type>
+            <type>RANDOM_MINIGAME</type>
             <x>722</x>
             <y>359</y>
         </field>
         <field id="10">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>691</x>
             <y>438</y>
         </field>
         <field id="11">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>605</x>
             <y>462</y>
         </field>
         <field id="12">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>517</x>
             <y>419</y>
         </field>
         <field id="13">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>483</x>
             <y>353</y>
         </field>
         <field id="14">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>430</x>
             <y>323</y>
         </field>
         <field id="15">
-            <type>SCORE</type>
+            <type>MINI_GAME_CATCHTHEFLY</type>
             <x>348</x>
             <y>356</y>
         </field>
         <field id="16">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>273</x>
             <y>310</y>
         </field>
         <field id="17">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>188</x>
             <y>264</y>
         </field>
         <field id="18">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>65</x>
             <y>255</y>
         </field>
         <field id="19">
-            <type>SCORE</type>
+            <type>RANDOM_MINIGAME</type>
             <x>50</x>
             <y>152</y>
         </field>
         <field id="20">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>105</x>
             <y>94</y>
         </field>
         <field id="21">
-            <type>SCORE</type>
+            <type>MINI_GAME_WHACKAMOLE</type>
             <x>137</x>
             <y>173</y>
         </field>
         <field id="22">
-            <type>SCORE</type>
+            <type>POINTS</type>
             <x>207</x>
             <y>199</y>
         </field>

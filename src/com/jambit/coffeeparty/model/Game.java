@@ -9,6 +9,8 @@ import javax.xml.xpath.XPathExpressionException;
 public final class Game {
 
     private List<Player> players = new ArrayList<Player>();
+    private Player currentPlayer = null;
+    private int currentPlayerIndex = 0;
     private Map mMap;
     private int mTotalRounds = 0;
     private int mRoundsPlayed = 0;
@@ -21,11 +23,11 @@ public final class Game {
         return this.mMap;
     }
     
-    public int getmTotalRounds() {
+    public int getTotalRounds() {
         return mTotalRounds;
     }
 
-    public int getmRoundsPlayed() {
+    public int getRoundsPlayed() {
         return mRoundsPlayed;
     }
 
@@ -33,10 +35,18 @@ public final class Game {
         this.mTotalRounds = rounds;
         this.mRoundsPlayed = 0;
         this.mMap = Map.loadFromXML(xml);
+        this.currentPlayer = players.get(0);
     }
     
     public Player getCurrentPlayer() {
-    	//placeholder
-    	return new Player("Horst", null);
+        return currentPlayer;
+    }
+    
+    public void nextPlayer(){
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        currentPlayer = players.get(currentPlayerIndex);
+        
+        if(currentPlayerIndex == players.size() - 1)
+            mRoundsPlayed++;
     }
 }

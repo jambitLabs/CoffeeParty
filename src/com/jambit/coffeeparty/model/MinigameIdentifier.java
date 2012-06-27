@@ -1,9 +1,24 @@
 package com.jambit.coffeeparty.model;
 
 import com.jambit.coffeeparty.BallMazeMinigame;
+import com.jambit.coffeeparty.CatchGameActivity;
 import com.jambit.coffeeparty.MinigameWhackAMole;
 
 public enum MinigameIdentifier {
+    
+	MINI_GAME_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class){
+	    @Override
+	    public String toString(){
+	        return "Whack-A-Mole";
+	    }
+	},
+	
+    MINI_GAME_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class){
+        @Override
+        public String toString(){
+            return "Catch-The-Fly";
+        }
+    },
 
     MINI_GAME_IDENTIFIER_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class) {
         @Override
@@ -23,12 +38,12 @@ public enum MinigameIdentifier {
         public String toString() {
             return "Random";
         }
-    },
-
-    SCORE("Score field. You win or lose points at random", null) {
+	},
+	
+	POINTS("Points field. You win or lose points at random", null){
         @Override
         public String toString() {
-            return "Score";
+            return "Points";
         }
     };
 

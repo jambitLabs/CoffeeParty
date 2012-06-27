@@ -7,12 +7,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jambit.coffeeparty.model.MinigameIdentifier;
-import com.jambit.coffeeparty.model.Player;
 
 public class MinigameStartActivity extends Activity {
 	private final int REQUEST_CODE_GAME = 123;
 	
-	private Player currentPlayer;
+	private String playerName;
 	private MinigameIdentifier minigameID;
 	
 	@Override
@@ -20,12 +19,12 @@ public class MinigameStartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		minigameID = (MinigameIdentifier) getIntent().getExtras().get(getString(R.string.minigameidkey));
-		currentPlayer = ((CoffeePartyApplication) getApplication()).getGameState().getCurrentPlayer();
+		playerName = getIntent().getExtras().getString(getString(R.string.playernamekey));
 		
 		setContentView(R.layout.minigame_start);
 		((TextView) findViewById(R.id.minigameStartTitle)).setText(minigameID.toString());
 		((TextView) findViewById(R.id.minigameStartDescription)).setText(minigameID.description());
-		((TextView) findViewById(R.id.minigameStartPlayerName)).setText(currentPlayer.getName());
+		((TextView) findViewById(R.id.minigameStartPlayerName)).setText(playerName);
 	}
 	
 	public void onConfirmButtonClicked(View v) {

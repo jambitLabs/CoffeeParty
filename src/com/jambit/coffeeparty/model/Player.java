@@ -37,8 +37,8 @@ public final class Player implements Parcelable{
     public int getScore() {
         return mScore;
     }
-    public void setScore(int score) {
-        this.mScore = score;
+    public void changeScoreBy(int points) {
+        this.mScore += points;
     }
     
     public int getPosition() {
