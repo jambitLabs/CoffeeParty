@@ -1,5 +1,6 @@
 package com.jambit.coffeeparty.model;
 
+import com.jambit.coffeeparty.BallMazeMinigame;
 import com.jambit.coffeeparty.CatchGameActivity;
 import com.jambit.coffeeparty.MinigameWhackAMole;
 
@@ -18,8 +19,21 @@ public enum MinigameIdentifier {
             return "Catch-The-Fly";
         }
     },
-    
-	RANDOM_MINIGAME("Random minigame", null){
+
+    MINI_GAME_IDENTIFIER_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class) {
+        @Override
+        public String toString() {
+            return "Whack-A-Mole";
+        }
+    },
+    MINI_GAME_IDENTIFIER_BALLMAZE("Get to the exit, don't fall into the wholes", BallMazeMinigame.class) {
+        @Override
+        public String toString() {
+            return "Ball Maze";
+        }
+    },
+
+    RANDOM_MINIGAME("Random minigame", null) {
         @Override
         public String toString() {
             return "Random";
@@ -31,23 +45,23 @@ public enum MinigameIdentifier {
         public String toString() {
             return "Points";
         }
-	};
-	
-	private MinigameIdentifier(String descr, Class<?> clazz){
-	    this.description = descr;
-	    this.clazz = clazz;
-	}
-	
-	private final String description;
-	private final Class<?> clazz;
-	
-	public String description(){
-	    return description;
-	}
-	
-	public Class<?> minigameClass(){
-	    return clazz;
-	}
-	
-	public abstract String toString();
+    };
+
+    private MinigameIdentifier(String descr, Class<?> clazz) {
+        this.description = descr;
+        this.clazz = clazz;
+    }
+
+    private final String description;
+    private final Class<?> clazz;
+
+    public String description() {
+        return description;
+    }
+
+    public Class<?> minigameClass() {
+        return clazz;
+    }
+
+    public abstract String toString();
 }

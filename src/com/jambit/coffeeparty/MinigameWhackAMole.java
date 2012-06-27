@@ -3,28 +3,19 @@ package com.jambit.coffeeparty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.entity.IEntity;
 import org.anddev.andengine.entity.modifier.DelayModifier;
 import org.anddev.andengine.entity.modifier.ScaleModifier;
 import org.anddev.andengine.entity.scene.Scene;
-import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.util.modifier.IModifier;
 import org.anddev.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
-
-
-import android.graphics.Point;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.MotionEvent;
 
 public class MinigameWhackAMole extends MinigameBaseActivity {
@@ -135,6 +126,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
             	}
             }
 		}));
+        startCountDownTimer(15);
 		return scene;
 	}
 	
@@ -154,7 +146,6 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		Random r = new Random();
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			for (Mole mole : moles) {
 				if (areCoordinatesInsideSprite((int)event.getX(), (int)event.getY(), mole.sprite)) {
