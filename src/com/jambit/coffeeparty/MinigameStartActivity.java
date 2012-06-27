@@ -20,8 +20,8 @@ public class MinigameStartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		minigameID = (MinigameIdentifier) getIntent().getExtras().get(getString(R.string.minigameidkey));
-		currentPlayer = ((CoffeePartyApplication) getApplication()).getGameState().getCurrentPlayer();
-		
+		//currentPlayer = ((CoffeePartyApplication) getApplication()).getGameState().getCurrentPlayer();
+		currentPlayer = new Player("Horst2", null);
 		setContentView(R.layout.minigame_start);
 		((TextView) findViewById(R.id.minigameStartTitle)).setText(minigameID.toString());
 		((TextView) findViewById(R.id.minigameStartDescription)).setText(minigameID.description());
