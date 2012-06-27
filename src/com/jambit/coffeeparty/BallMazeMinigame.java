@@ -1,5 +1,8 @@
 package com.jambit.coffeeparty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.anddev.andengine.entity.Entity;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
@@ -18,13 +21,18 @@ import org.anddev.andengine.sensor.accelerometer.AccelerometerData;
 import org.anddev.andengine.sensor.accelerometer.IAccelerometerListener;
 
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 
-public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerometerListener {
+public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerometerListener, ContactListener {
 
     private BitmapTextureAtlas bitmapTextureAtlas;
     private BitmapTextureAtlas ballTextureAtlas;
@@ -39,102 +47,89 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
     private Entity pAccelerometerData;
 
     private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+    private static final FixtureDef Hole_FIXTURE_DEF = PhysicsFactory.createFixtureDef(0f, 0f, 0f, true);
+    private static final float INITIAL_SCORE = 20;
+
+    private List<Body> holeBodies = new ArrayList<Body>();
+    private Body goalBody;
 
     @Override
     public Scene onLoadScene() {
 
-        // final Shape ground = new Rectangle(0, CAMERA_HEIGHT - 2, CAMERA_WIDTH, 2);
-
-        // sensorManager = (SensorManager) this.getSystemService(this.SENSOR_SERVICE);
-        // sensorManager.registerListener(this,
-        // sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-        // sensorManager.SENSOR_DELAY_GAME);
-        //
-        //
-        // this.mEngine.registerUpdateHandler(new IUpdateHandler() {
-        // public void onUpdate(float pSecondsElapsed) {
-        // updateSpritePosition();
-        // }
-        //
-        // public void reset() {
-        // // TODO Auto-generated method stub
-        // }
-        // });
         Scene scene = super.onLoadScene();
         Sprite backgroundSprite = new Sprite(0, 0, backgroundTexture);
 
         scene.setBackground(new SpriteBackground(backgroundSprite));
         this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
+        mPhysicsWorld.setContactListener(this);
 
         final Body ballBody;
 
         ballSprite = new Sprite(100, 100, ballSpriteTexture);
-        ballBody = PhysicsFactory.createBoxBody(this.mPhysicsWorld, ballSprite, BodyType.DynamicBody, FIXTURE_DEF);
+        ballBody = PhysicsFactory.createCircleBody(this.mPhysicsWorld,
+                                                   ballSprite.getX(),
+                                                   ballSprite.getY(),
+                                                   ballSprite.getWidth() / 2.f,
+                                                   0.f,
+                                                   BodyType.DynamicBody,
+                                                   FIXTURE_DEF);
 
-        scene.attachChild(ballSprite);
         this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(ballSprite, ballBody, true, true));
-
-        final Shape ground = new Rectangle(0, cameraHeight - 2, cameraWidth, 2);
-        final Shape roof = new Rectangle(0, 0, cameraWidth, 2);
-        final Shape left = new Rectangle(0, 0, 2, cameraHeight);
-        final Shape right = new Rectangle(cameraWidth - 2, 0, 2, cameraHeight);
+        scene.attachChild(ballSprite);
 
         final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
-        PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
 
-        scene.attachChild(ground);
-        scene.attachChild(roof);
-        scene.attachChild(left);
-        scene.attachChild(right);
+        // outer walls
+        createWall(0, cameraHeight - 25, cameraWidth, 25, scene, wallFixtureDef);
+        createWall(0, 0, cameraWidth, 25, scene, wallFixtureDef);
+        createWall(0, 0, 25, cameraHeight, scene, wallFixtureDef);
+        createWall(cameraWidth - 25, 0, 25, cameraHeight, scene, wallFixtureDef);
+
+        //
+        createWall(90, 25, 40, 60, scene, wallFixtureDef);
+        createWall(160, 65, 150, 35, scene, wallFixtureDef);
+        createWall(108, 120, 32, 230, scene, wallFixtureDef);
+        createWall(33, 325, 33, 90, scene, wallFixtureDef);
+        createWall(245, 205, 271, 75, scene, wallFixtureDef);
+        createWall(401, 285, 52, 81, scene, wallFixtureDef);
+        createWall(465, 94, 194, 42, scene, wallFixtureDef);
+        createWall(599, 211, 69, 100, scene, wallFixtureDef);
+        createWall(508, 356, 102, 40, scene, wallFixtureDef);
+        createWall(582, 404, 45, 45, scene, wallFixtureDef);
+
+        createHole(38, 184, scene, Hole_FIXTURE_DEF);
+
+        goalBody = PhysicsFactory.createCircleBody(this.mPhysicsWorld,
+                                                   679,
+                                                   418,
+                                                   15,
+                                                   0.f,
+                                                   BodyType.StaticBody,
+                                                   Hole_FIXTURE_DEF);
 
         scene.registerUpdateHandler(this.mPhysicsWorld);
 
         return scene;
     }
 
-    protected void updateSpritePosition() {
+    private void createHole(int x, int y, Scene scene, FixtureDef holeFixtureDef) {
 
-        if ((accellerometerSpeedX != 0) || (accellerometerSpeedY != 0)) {
-            // Set the Boundary limits
-            int tL = 0;
-            int lL = 0;
-            int rL = cameraWidth - (int) ballSprite.getWidth();
-            int bL = cameraHeight - (int) ballSprite.getHeight();
+        Body holeBody = PhysicsFactory.createCircleBody(this.mPhysicsWorld,
+                                                        x,
+                                                        y,
+                                                        15,
+                                                        0.f,
+                                                        BodyType.StaticBody,
+                                                        holeFixtureDef);
+        holeBodies.add(holeBody);
 
-            // Calculate New X,Y Coordinates within Limits
-            if (sX >= lL)
-                sX += accellerometerSpeedX;
-            else
-                sX = lL;
-            if (sX <= rL)
-                sX += accellerometerSpeedX;
-            else
-                sX = rL;
-            if (sY >= tL)
-                sY += accellerometerSpeedY;
-            else
-                sY = tL;
-            if (sY <= bL)
-                sY += accellerometerSpeedY;
-            else
-                sY = bL;
+    }
 
-            // Double Check That New X,Y Coordinates are within Limits
-            if (sX < lL)
-                sX = lL;
-            else if (sX > rL)
-                sX = rL;
-            if (sY < tL)
-                sY = tL;
-            else if (sY > bL)
-                sY = bL;
+    private void createWall(int x, int y, int dx, int dy, Scene scene, FixtureDef wallFixtureDef) {
 
-            ballSprite.setPosition(sX, sY);
-        }
-
+        final Shape newWall = new Rectangle(x, y, dx, dy);
+        PhysicsFactory.createBoxBody(this.mPhysicsWorld, newWall, BodyType.StaticBody, wallFixtureDef);
+        // scene.attachChild(newWall);
     }
 
     @Override
@@ -166,6 +161,8 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
         this.mPhysicsWorld.setGravity(gravity);
         Vector2Pool.recycle(gravity);
 
+        setScore((int) Math.floor(getFractionOfPassedTime() * INITIAL_SCORE));
+        updateScoreDisplay();
     }
 
     @Override
@@ -182,4 +179,39 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
         this.disableAccelerometerSensor();
     }
 
+    @Override
+    public void beginContact(Contact contact) {
+        Log.i("BallMazeMinigame", "Contact detected: " + contact.toString());
+        if (contact.getFixtureA().getBody() == goalBody || contact.getFixtureB().getBody() == goalBody) {
+            setScore((int) Math.floor(getFractionOfPassedTime() * INITIAL_SCORE));
+            onGameFinished();
+        }
+        if (holeBodies.contains(contact.getFixtureA().getBody())
+                || holeBodies.contains(contact.getFixtureB().getBody())) {
+            setScore(0);
+        }
+    }
+
+    @Override
+    public void endContact(Contact contact) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void preSolve(Contact contact, Manifold oldManifold) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void postSolve(Contact contact, ContactImpulse impulse) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onLoadComplete() {
+        startCountDownTimer(20);
+    }
 }

@@ -5,17 +5,17 @@ import com.jambit.coffeeparty.CatchGameActivity;
 import com.jambit.coffeeparty.MinigameWhackAMole;
 
 public enum MinigameIdentifier {
-    
-	MINI_GAME_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class){
-	    @Override
-	    public String toString(){
-	        return "Whack-A-Mole";
-	    }
-	},
-	
-    MINI_GAME_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class){
+
+    MINI_GAME_WHACKAMOLE("Hit as many moles as you can before time runs out!", MinigameWhackAMole.class) {
         @Override
-        public String toString(){
+        public String toString() {
+            return "Whack-A-Mole";
+        }
+    },
+
+    MINI_GAME_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class) {
+        @Override
+        public String toString() {
             return "Catch-The-Fly";
         }
     },
@@ -26,7 +26,7 @@ public enum MinigameIdentifier {
             return "Whack-A-Mole";
         }
     },
-    MINI_GAME_IDENTIFIER_BALLMAZE("Get to the exit, don't fall into the wholes", BallMazeMinigame.class) {
+    MINI_GAME_IDENTIFIER_BALLMAZE("Get to the exit, don't fall into the holes", BallMazeMinigame.class) {
         @Override
         public String toString() {
             return "Ball Maze";
@@ -38,9 +38,9 @@ public enum MinigameIdentifier {
         public String toString() {
             return "Random";
         }
-	},
-	
-	POINTS("Points field. You win or lose points at random", null){
+    },
+
+    POINTS("Points field. You win or lose points at random", null) {
         @Override
         public String toString() {
             return "Points";
