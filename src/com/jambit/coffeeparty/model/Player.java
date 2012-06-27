@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public final class Player implements Parcelable{
+public final class Player implements Parcelable, Comparable<Player>{
     private final String mName;
     private final Bitmap mAvatar;
     private int mScore;
@@ -29,7 +29,7 @@ public final class Player implements Parcelable{
     
     private Player(Parcel in){
         mName = in.readString();
-        mAvatar = in.readParcelable(getClass().getClassLoader());
+        mAvatar = in.readParcelable(Bitmap.class.getClassLoader());
         mScore = in.readInt();
         mPosition = in.readInt();
     }
@@ -52,7 +52,7 @@ public final class Player implements Parcelable{
         return mName;
     }
     
-    public Bitmap getAvatarId() {
+    public Bitmap getAvatar() {
         return mAvatar;
     }
     
@@ -74,6 +74,8 @@ public final class Player implements Parcelable{
         final int prime = 31;
         int result = 1;
         result = prime * result + ((mName == null) ? 0 : mName.hashCode());
+        result = prime * result + mPosition;
+        result = prime * result + mScore;
         return result;
     }
 
@@ -91,11 +93,26 @@ public final class Player implements Parcelable{
                 return false;
         } else if (!mName.equals(other.mName))
             return false;
+        if (mPosition != other.mPosition)
+            return false;
+        if (mScore != other.mScore)
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
         return String.format("Player [name=%s, score=%s, position=%s]", mName, mScore, mPosition);
+    }
+
+    @Override
+    public int compareTo(Player other) {
+        int otherScore = other.getScore();
+        if(this.mScore < otherScore)
+            return -1;
+        else if(this.mScore == otherScore)
+            return 0;
+        else
+            return 1;
     }
 }

@@ -136,7 +136,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
                 }
             }
         }));
-        startCountUpTimer(15);
+        startCountDownTimer(15);
         return scene;
     }
 

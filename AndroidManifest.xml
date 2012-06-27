@@ -39,6 +39,9 @@
             android:name=".SettingsActivity"
             android:screenOrientation="landscape" />
         <activity
+            android:name=".FinalResultsActivity"
+            android:screenOrientation="landscape" />
+        <activity
             android:name=".DiceRollActivity"
             android:screenOrientation="landscape" />
         <activity 
@@ -51,7 +54,7 @@
             android:name=".MinigameStartActivity"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".DisplayResultActivity"
+            android:name=".MinigameResultActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".MinigameWhackAMole"

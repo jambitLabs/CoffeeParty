@@ -48,6 +48,7 @@ public class GameBoardActivity extends BaseGameActivity {
     private final static int DICE_ROLLED = 110;
     private final static int MINIGAME_FINISHED = 111;
     private final static int RESULT_DISPLAYED = 112;
+    private final static int END_OF_GAME = 113;
     
     private final static int MAX_SCORE_FIELD_POINTS = 10;
     
@@ -161,7 +162,7 @@ public class GameBoardActivity extends BaseGameActivity {
                 if(negativePoints)
                     points = 0 - points;
                 currentPlayer.changeScoreBy(points);
-                Intent resultIntent = new Intent(this, DisplayResultActivity.class);
+                Intent resultIntent = new Intent(this, MinigameResultActivity.class);
                 resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
                 resultIntent.putExtra(getString(R.string.pointskey), points);
                 startActivityForResult(resultIntent, RESULT_DISPLAYED);
@@ -295,7 +296,6 @@ public class GameBoardActivity extends BaseGameActivity {
             movePlayer(currentPlayer, oldPosition, newPosition);
         }
         else if(requestCode == MINIGAME_FINISHED){
-            // TODO: maybe disable return button in minigames
             int points = 0;
             if(data != null){
                 points = data.getExtras().getInt(getString(R.string.game_result));
@@ -303,8 +303,9 @@ public class GameBoardActivity extends BaseGameActivity {
             }
             else
                 Log.d("GAME_BOARD", "Return button pressed during minigame? Zero points for player " + currentPlayer.getName());
+            
             Log.i("GAME_BOARD", "New score for player " + currentPlayer.getName() + ": " + currentPlayer.getScore());
-            Intent resultIntent = new Intent(this, DisplayResultActivity.class);
+            Intent resultIntent = new Intent(this, MinigameResultActivity.class);
             resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
             resultIntent.putExtra(getString(R.string.pointskey), points);
             startActivityForResult(resultIntent, RESULT_DISPLAYED);
@@ -316,7 +317,13 @@ public class GameBoardActivity extends BaseGameActivity {
             }
             else{
                 Log.d("GAME_BOARD", "End of game");
+                Intent resultIntent = new Intent(this, FinalResultsActivity.class);
+                startActivityForResult(resultIntent, END_OF_GAME);
             }
+        }
+        else if(requestCode == END_OF_GAME){
+            setResult(RESULT_OK);
+            finish();
         }
         
         getPlayerSpriteForPlayer(currentPlayer).updatePoints();
