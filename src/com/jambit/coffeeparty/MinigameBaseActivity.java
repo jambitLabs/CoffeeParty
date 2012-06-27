@@ -105,8 +105,8 @@ public class MinigameBaseActivity extends BaseGameActivity {
     }
     
     protected boolean areCoordinatesInsideSprite(int posX, int posY, Sprite sprite) {
-        if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidth()
-                && posY >= sprite.getY() && posY < sprite.getY() + sprite.getHeight()) {
+        if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidthScaled()
+                && posY >= sprite.getY() && posY < sprite.getY() + sprite.getHeightScaled()) {
         	return true;
         } else {
         	return false;

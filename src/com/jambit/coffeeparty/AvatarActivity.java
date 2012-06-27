@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 public class AvatarActivity extends Activity {
     private static final int TAKE_PHOTO_ACTIONCODE = 0;
-    public static String PLAYERNAME_EXTRA = "playerName";
-    public static String SELECTED_AVATAR_EXTRA = "selected_avatar";
     private Intent data = new Intent();
     private ImageAdapter imageAdapter;
 
@@ -27,14 +25,14 @@ public class AvatarActivity extends Activity {
         Gallery g = (Gallery) findViewById(R.id.gallery1);
         g.setAdapter(imageAdapter);
         TextView playerNameTextView = (TextView) findViewById(R.id.playerNameTextView);
-        CharSequence playerName = getIntent().getCharSequenceExtra(PLAYERNAME_EXTRA);
+        CharSequence playerName = getIntent().getCharSequenceExtra(getString(R.string.playernamekey));
         playerNameTextView.setText(playerName);
-        data.putExtra(PLAYERNAME_EXTRA, playerName);
-        data.putExtra(SELECTED_AVATAR_EXTRA, (Bitmap) imageAdapter.getItem(0));
+        data.putExtra(getString(R.string.playernamekey), playerName);
+        data.putExtra(getString(R.string.selectedavatarkey), (Bitmap) imageAdapter.getItem(0));
 
         g.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(@SuppressWarnings("rawtypes") AdapterView parent, View v, int position, long id) {
-                data.putExtra(SELECTED_AVATAR_EXTRA, (Bitmap) imageAdapter.getItem(position));
+                data.putExtra(getString(R.string.selectedavatarkey), (Bitmap) imageAdapter.getItem(position));
             }
         });
     }
@@ -66,7 +64,7 @@ public class AvatarActivity extends Activity {
                                                       originalBitmap.getHeight(),
                                                       matrix,
                                                       true);
-            data.putExtra(SELECTED_AVATAR_EXTRA, scaledBitmap);
+            data.putExtra(getString(R.string.selectedavatarkey), scaledBitmap);
             imageAdapter.addBitmap(scaledBitmap);
             ((Gallery) findViewById(R.id.gallery1)).setSelection(imageAdapter.getCount());
         }

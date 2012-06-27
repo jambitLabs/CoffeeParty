@@ -46,6 +46,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
     private final static int DICE_ROLLED = 110;
     private final static int MINIGAME_FINISHED = 111;
+    private final static int RESULT_DISPLAYED = 112;
     
     private final static int MAX_SCORE_FIELD_POINTS = 10;
     
@@ -148,8 +149,8 @@ public class GameBoardActivity extends BaseGameActivity {
                 currentPlayer.changeScoreBy(points);
                 Intent resultIntent = new Intent(this, DisplayResultActivity.class);
                 resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
-                resultIntent.putExtra(getString(R.string.scorekey), points);
-                startActivityForResult(resultIntent, MINIGAME_FINISHED);
+                resultIntent.putExtra(getString(R.string.pointskey), points);
+                startActivityForResult(resultIntent, RESULT_DISPLAYED);
                 break;
             case RANDOM_MINIGAME:
                 int gameIndex = r.nextInt(mMinigames.size());
@@ -278,16 +279,28 @@ public class GameBoardActivity extends BaseGameActivity {
         }
         else if(requestCode == MINIGAME_FINISHED){
             // TODO: maybe disable return button in minigames
+            int points = 0;
             if(data != null){
-                int points = data.getExtras().getInt(getString(R.string.game_result));
+                points = data.getExtras().getInt(getString(R.string.game_result));
                 currentPlayer.changeScoreBy(points);
             }
             else
                 Log.d("GAME_BOARD", "Return button pressed during minigame? Zero points for player " + currentPlayer.getName());
             
             Log.i("GAME_BOARD", "New score for player " + currentPlayer.getName() + ": " + currentPlayer.getScore());
-            gameState.nextRound();
-            mDiceEnabled = true;
+            Intent resultIntent = new Intent(this, DisplayResultActivity.class);
+            resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
+            resultIntent.putExtra(getString(R.string.pointskey), points);
+            startActivityForResult(resultIntent, RESULT_DISPLAYED);
+        }
+        else if(requestCode == RESULT_DISPLAYED){
+            if(gameState.getRoundsPlayed() < gameState.getTotalRounds()){
+                gameState.nextPlayer();
+                mDiceEnabled = true;
+            }
+            else{
+                Log.d("GAME_BOARD", "End of game");
+            }
         }
     }
 

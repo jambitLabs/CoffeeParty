@@ -3,9 +3,12 @@ package com.jambit.coffeeparty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
 
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
+import org.anddev.andengine.entity.IEntity;
+import org.anddev.andengine.entity.modifier.DelayModifier;
 import org.anddev.andengine.entity.modifier.ScaleModifier;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
@@ -15,8 +18,13 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
+import org.anddev.andengine.util.modifier.IModifier;
+import org.anddev.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
+
 
 import android.graphics.Point;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MotionEvent;
 
 public class MinigameWhackAMole extends MinigameBaseActivity {
@@ -34,7 +42,18 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
 		public boolean hit() {
 			if (isActive) {
 				isActive = false;
-				sprite.registerEntityModifier(new ScaleModifier(1, sprite.getScaleX(), 0));
+				sprite.registerEntityModifier(this.getHitModifier());
+				score++;
+				updateScoreDisplay();
+				return true;
+			} else {
+				return false;
+			}
+		}
+		public boolean disappear() {
+			if (isActive) {
+				isActive = false;
+				sprite.registerEntityModifier(this.getDisappearModifier());
 				return true;
 			} else {
 				return false;
@@ -45,9 +64,32 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
 				return false;
 			} else {
 				isActive = true;
-				sprite.registerEntityModifier(new ScaleModifier(1, sprite.getScaleX(), targetScale));
+				sprite.registerEntityModifier(this.getAppearModifier());
+				sprite.registerEntityModifier(new DelayModifier(1f, new IEntityModifierListener() {
+					
+					@Override
+					public void onModifierStarted(IModifier<IEntity> pModifier, IEntity pItem) {
+						
+					}
+					
+					@Override
+					public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+						Mole.this.disappear();
+					}
+				}
+				));
+				
 				return true;
 			}
+		}
+		private ScaleModifier getAppearModifier () {
+			return new ScaleModifier(1, 0, targetScale);
+		}
+		private ScaleModifier getDisappearModifier () {
+			return new ScaleModifier(1, targetScale, 0);
+		}
+		private ScaleModifier getHitModifier () {
+			return new ScaleModifier(0.25f, targetScale, 0);
 		}
 	}
     private TextureRegion moleTexture;
@@ -79,15 +121,17 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
 		for (Mole mole : moles) {
 			scene.attachChild(mole.sprite);
 		}
-		
 		scene.registerUpdateHandler(new TimerHandler(0.2f, true, new ITimerCallback() {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
             	Random r = new Random();
             	if (r.nextBoolean()) {
-            		moles.get(r.nextInt(moles.size())).appear();
+            		Mole currentMole = moles.get(r.nextInt(moles.size()));
+            		if (!currentMole.isActive) {
+            			currentMole.appear();
+            		}
             	} else {
-            		moles.get(r.nextInt(moles.size())).hit();
+            		//moles.get(r.nextInt(moles.size())).hit();
             	}
             }
 		}));
@@ -116,8 +160,6 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
 				if (areCoordinatesInsideSprite((int)event.getX(), (int)event.getY(), mole.sprite)) {
 					if (mole.isActive) {
 						mole.hit();
-						score++;
-						updateScoreDisplay();
 					}
 					break;
 				}
