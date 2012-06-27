@@ -40,7 +40,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         final Display display = getWindowManager().getDefaultDisplay();
         cameraWidth = display.getWidth();
         cameraHeight = display.getHeight();
-        this.mCamera = new Camera(0, 0, cameraWidth, cameraHeight);
+        this.mCamera = new Camera(0, 0, 800, 480);
         return new Engine(new EngineOptions(true,
                                             ScreenOrientation.LANDSCAPE,
                                             new RatioResolutionPolicy(cameraWidth, cameraHeight),
