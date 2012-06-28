@@ -75,7 +75,7 @@ public class NumberOfPlayersActivity extends Activity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AVATAR_SET) {
+        if (requestCode == AVATAR_SET && data != null) {
             String name = data.getExtras().get(getString(R.string.playernamekey)).toString();
             Bitmap avatar = (Bitmap)data.getExtras().get(getString(R.string.selectedavatarkey));
             Player player = new Player(name, avatar);

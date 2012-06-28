@@ -118,9 +118,6 @@ public class MainMenuActivity extends Activity {
                 // player data and settings entered. Proceed to board
                 showBoard();
                 }
-            else if (requestCode == GAME_BOARD) {
-                mPlayers.clear();
-            } 
             else if (requestCode == MINIGAME_REQUESTCODE) {
                 int points = data.getExtras().getInt(getString(R.string.game_result));
                 Intent resultIntent = new Intent(this, MinigameResultActivity.class);
@@ -131,6 +128,9 @@ public class MainMenuActivity extends Activity {
                 startActivity(resultIntent);
             }
         }
+        else if (requestCode == GAME_BOARD) {
+            mPlayers.clear();
+        } 
         super.onActivityResult(requestCode, resultCode, data);
     }
     
