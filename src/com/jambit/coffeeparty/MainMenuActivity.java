@@ -126,4 +126,19 @@ public class MainMenuActivity extends Activity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+    
+    public void onTestDB (View v) {
+    	Intent intent = new Intent(this, DisplayHighscoreActivity.class);
+        startActivity(intent);
+    	
+    	/*Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_blue); 
+    	Player p = new Player ("Da Playa", bm);
+    	Random r = new Random();
+    	p.changeScoreBy(r.nextInt(50));
+    	HighscoreDataSource dataSource = new HighscoreDataSource(this);
+    	dataSource.openForWriting();
+    	dataSource.storeHighscore(p.getName(), p.getScore(), new Date(), p.getAvatarId());
+    	dataSource.close();
+    	*/
+    }
 }

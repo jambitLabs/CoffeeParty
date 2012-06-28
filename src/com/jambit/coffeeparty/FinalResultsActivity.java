@@ -52,6 +52,8 @@ public class FinalResultsActivity extends ListActivity {
                         ImageView img = (ImageView) v.findViewById(R.id.avataricon);
                         TextView tt = (TextView) v.findViewById(R.id.playername_toptext);
                         TextView bt = (TextView) v.findViewById(R.id.playerscore_bottomtext);
+                        TextView pr = (TextView) v.findViewById(R.id.player_ranking);
+                        
                         if (tt != null)
                               tt.setText("Player: " + p.getName());  
                         
@@ -60,6 +62,8 @@ public class FinalResultsActivity extends ListActivity {
                         
                         if(img != null)
                             img.setImageBitmap(p.getAvatar());
+                        
+                        pr.setText(new Integer(position + 1).toString());
                 }
                 return v;
             }

@@ -23,6 +23,7 @@ import org.anddev.andengine.util.HorizontalAlign;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Display;
 
 public class MinigameBaseActivity extends BaseGameActivity {
@@ -175,8 +176,9 @@ public class MinigameBaseActivity extends BaseGameActivity {
     }
 
     protected boolean areCoordinatesInsideSprite(int posX, int posY, Sprite sprite) {
-        if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidthScaled() && posY >= sprite.getY()
-                && posY < sprite.getY() + sprite.getHeightScaled()) {
+    	if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidth() * sprite.getScaleX() && posY >= sprite.getY()
+                && posY < sprite.getY() + sprite.getHeight() * sprite.getScaleY()) {
+    		Log.d("HIT", "hit");
             return true;
         } else {
             return false;
@@ -193,7 +195,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         displayTimer = new DisplayTimer(false, maxTimeSecs);
 
     }
-
+    
     protected void startCountDownTimer(float startTimeSecs) {
         if (displayTimer != null) {
             displayTimer.unregisterUpdateHandler();

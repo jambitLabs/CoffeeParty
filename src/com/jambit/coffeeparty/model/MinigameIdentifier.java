@@ -2,6 +2,7 @@ package com.jambit.coffeeparty.model;
 
 import com.jambit.coffeeparty.BallMazeMinigame;
 import com.jambit.coffeeparty.CatchGameActivity;
+import com.jambit.coffeeparty.MinigameFallingBeans;
 import com.jambit.coffeeparty.MinigameWhackAMole;
 
 public enum MinigameIdentifier {
@@ -20,10 +21,17 @@ public enum MinigameIdentifier {
         }
     },
 
-    MINI_GAME_BALLMAZE("Get to the exit, don't fall into the holes", BallMazeMinigame.class) {
+    MINI_GAME_BALLMAZE("Get to the exit, don't fall into the wholes!", BallMazeMinigame.class) {
         @Override
         public String toString() {
             return "Ball Maze";
+        }
+    },
+    
+    MINI_GAME_FALLINGBEANS("Catch the beans but beware the tea bags!", MinigameFallingBeans.class) {
+        @Override
+        public String toString() {
+            return "Falling Beans";
         }
     },
 

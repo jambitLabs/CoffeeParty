@@ -62,5 +62,11 @@
         <activity
             android:name=".BallMazeMinigame"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".DisplayHighscoreActivity"
+            android:screenOrientation="landscape" />
+       	<activity
+            android:name=".MinigameFallingBeans"
+            android:screenOrientation="landscape" />
         </application>
 </manifest>

@@ -6,14 +6,16 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class HighscoreDBHelper extends SQLiteOpenHelper{
 	private static final int DB_VERSION = 1;
-	public static final String DB_NAME = "highscoredb";
-	private static final String TABLE_NAME = "highscores";
+	private static final String DB_NAME = "highscoredb";
+	public static final String TABLE_NAME = "highscores";
 	
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_USERNAME = "username";
 	public static final String COLUMN_SCORE = "score";
 	public static final String COLUMN_TIMESTAMP = "timestamp";
 	public static final String COLUMN_AVATAR = "avatar";
+	
+	public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_USERNAME, COLUMN_SCORE, COLUMN_TIMESTAMP, COLUMN_AVATAR};
 	
 	private static final String DB_CREATE = "CREATE TABLE " + TABLE_NAME + "(" +
 											COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -22,12 +24,10 @@ public class HighscoreDBHelper extends SQLiteOpenHelper{
 											COLUMN_TIMESTAMP + " TEXT, " +
 											COLUMN_AVATAR + " BLOB);";
 											
-	private static final String DB_DROP = "DROP TABLE IF EXISTS " + DB_NAME;
-	
+	private static final String DB_DROP = "DROP TABLE IF EXISTS " + TABLE_NAME;
 	
 	HighscoreDBHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
-		
 	}
 
 	@Override
