@@ -129,7 +129,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             for (Mole mole : moles) {
-                if (areCoordinatesInsideSprite((int) event.getX(), (int) event.getY(), mole.sprite)) {
+                if (areCoordinatesInsideSprite(event.getX(), event.getY(), mole.sprite)) {
                 	mole.hit();
                     addScore(1);
                     updateScoreDisplay();
@@ -137,6 +137,6 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
                 }
             }
         }
-        return true;
+        return super.onTouchEvent(event);
     }
 }

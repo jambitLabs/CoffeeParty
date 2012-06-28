@@ -58,6 +58,8 @@ public class GameBoardActivity extends BaseGameActivity {
     private TiledTextureRegion playerSpriteTexture;
 
     private Font playerNameFont;
+    
+    private final Random r = new Random(System.currentTimeMillis());
 
     private class PlayerSprite extends Entity {
         private final Player player;
@@ -74,7 +76,7 @@ public class GameBoardActivity extends BaseGameActivity {
             this.figure = new AnimatedSprite(-playerSpriteTexture.getWidth() / 2,
                                              -playerSpriteTexture.getHeight() / 2,
                                              playerSpriteTexture);
-            this.figure.animate(new Random().nextInt(10) + 100);
+            this.figure.animate(r.nextInt(10) + 100);
             this.attachChild(figure);
 
             this.figureNameText = new Text(0, -20, playerNameFont, player.getName());
@@ -100,8 +102,8 @@ public class GameBoardActivity extends BaseGameActivity {
     @Override
     protected void onCreate(final Bundle pSavedInstanceState) {
         // find all "real" minigames
-        for (MinigameIdentifier id : MinigameIdentifier.values()) {
-            if (id != MinigameIdentifier.POINTS && id != MinigameIdentifier.RANDOM_MINIGAME)
+        for(MinigameIdentifier id : MinigameIdentifier.values()){
+            if(id != MinigameIdentifier.POINTS && id != MinigameIdentifier.RANDOM_MINIGAME)
                 mMinigames.add(id);
         }
         super.onCreate(pSavedInstanceState);
@@ -118,7 +120,9 @@ public class GameBoardActivity extends BaseGameActivity {
         if (oldPosition == newPosition) {
             Field field = gameMap.getFieldForPosition(newPosition);
             playerSprite.setPosition(field.getX(), field.getY());
-        } else {
+        }
+        else
+        {
             int wayPoints = newPosition - oldPosition + 1;
             Path path = new Path(wayPoints);
 
@@ -126,65 +130,53 @@ public class GameBoardActivity extends BaseGameActivity {
                 Field field = gameMap.getFieldForPosition(position);
                 path.to(field.getX(), field.getY());
             }
+            
+            playerSprite.registerEntityModifier(new PathModifier(wayPoints * 1.0f, path, null, new IPathModifierListener() {
+                @Override
+                public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
+                }
 
-            playerSprite.registerEntityModifier(new PathModifier(wayPoints * 1.0f,
-                                                                 path,
-                                                                 null,
-                                                                 new IPathModifierListener() {
-                                                                     @Override
-                                                                     public void onPathStarted(final PathModifier pPathModifier,
-                                                                                               final IEntity pEntity) {
-                                                                     }
+                @Override
+                public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
+                }
 
-                                                                     @Override
-                                                                     public void onPathWaypointStarted(final PathModifier pPathModifier,
-                                                                                                       final IEntity pEntity,
-                                                                                                       final int pWaypointIndex) {
-                                                                     }
+                @Override
+                public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
+                }
 
-                                                                     @Override
-                                                                     public void onPathWaypointFinished(final PathModifier pPathModifier,
-                                                                                                        final IEntity pEntity,
-                                                                                                        final int pWaypointIndex) {
-                                                                     }
-
-                                                                     @Override
-                                                                     public void onPathFinished(final PathModifier pPathModifier,
-                                                                                                final IEntity pEntity) {
-                                                                         doFieldAction();
-                                                                     }
-                                                                 }));
+                @Override
+                public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
+                    doFieldAction();
+                }
+            }));
         }
     }
-
-    private void doFieldAction() {
-        Random r = new Random(System.currentTimeMillis());
+    
+    private void doFieldAction(){
         Intent minigameIntent = new Intent(this, MinigameStartActivity.class);
-        MinigameIdentifier currentFieldType = getGame().getMap()
-                                                       .getFieldOfPlayer(getGame().getCurrentPlayer())
-                                                       .getType();
-        switch (currentFieldType) {
-        case POINTS:
-            Player currentPlayer = getGame().getCurrentPlayer();
-            boolean negativePoints = r.nextBoolean();
-            int points = r.nextInt(MAX_SCORE_FIELD_POINTS + 1);
-            if (negativePoints)
-                points = 0 - points;
-            currentPlayer.changeScoreBy(points);
-            Intent resultIntent = new Intent(this, MinigameResultActivity.class);
-            resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
-            resultIntent.putExtra(getString(R.string.pointskey), points);
-            startActivityForResult(resultIntent, RESULT_DISPLAYED);
-            break;
-        case RANDOM_MINIGAME:
-            int gameIndex = r.nextInt(mMinigames.size());
-            minigameIntent.putExtra(getString(R.string.minigameidkey), mMinigames.get(gameIndex));
-            startActivityForResult(minigameIntent, MINIGAME_FINISHED);
-            break;
-        default:
-            minigameIntent.putExtra(getString(R.string.minigameidkey), currentFieldType);
-            startActivityForResult(minigameIntent, MINIGAME_FINISHED);
-            break;
+        MinigameIdentifier currentFieldType = getGame().getMap().getFieldOfPlayer(getGame().getCurrentPlayer()).getType();
+        switch(currentFieldType){
+            case POINTS:
+                Player currentPlayer = getGame().getCurrentPlayer();
+                boolean negativePoints = r.nextBoolean();
+                int points = r.nextInt(MAX_SCORE_FIELD_POINTS + 1);
+                if(negativePoints)
+                    points = 0 - points;
+                currentPlayer.changeScoreBy(points);
+                Intent resultIntent = new Intent(this, MinigameResultActivity.class);
+                resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
+                resultIntent.putExtra(getString(R.string.pointskey), points);
+                startActivityForResult(resultIntent, RESULT_DISPLAYED);
+                break;
+            case RANDOM_MINIGAME:
+                int gameIndex = r.nextInt(mMinigames.size());
+                minigameIntent.putExtra(getString(R.string.minigameidkey), mMinigames.get(gameIndex));
+                startActivityForResult(minigameIntent, MINIGAME_FINISHED);
+                break;
+            default:
+                minigameIntent.putExtra(getString(R.string.minigameidkey), currentFieldType);
+                startActivityForResult(minigameIntent, MINIGAME_FINISHED);
+                break;
         }
     }
 
@@ -196,10 +188,8 @@ public class GameBoardActivity extends BaseGameActivity {
         int cameraHeight = display.getHeight();
 
         Camera camera = new Camera(0, 0, 800, 480);
-        return new Engine(new EngineOptions(true,
-                                            ScreenOrientation.LANDSCAPE,
-                                            new RatioResolutionPolicy(cameraWidth, cameraHeight),
-                                            camera));
+        return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(cameraWidth,
+                cameraHeight), camera));
     }
 
     @Override
@@ -207,24 +197,13 @@ public class GameBoardActivity extends BaseGameActivity {
         String boardImage = getGame().getMap().getBoardImage();
 
         BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
-
-        this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas,
-                                                                                        this,
-                                                                                        boardImage,
-                                                                                        0,
-                                                                                        0);
+        
+        this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas, this,
+                boardImage, 0, 0);
         this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas,
-                                                                                               this,
-                                                                                               "face_box_tiled.png",
-                                                                                               132,
-                                                                                               180,
-                                                                                               2,
-                                                                                               1);
-        this.jambitBeanTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas,
-                                                                                        this,
-                                                                                        "jambitbean.png",
-                                                                                        0,
-                                                                                        0);
+                this, "face_box_tiled.png", 132, 180, 2, 1);
+        this.jambitBeanTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas, this,
+                "jambitbean.png", 0, 0);
 
         this.mEngine.getTextureManager().loadTexture(bitmapTextureAtlas);
 
@@ -309,9 +288,10 @@ public class GameBoardActivity extends BaseGameActivity {
             currentPlayer.setPosition(currentPlayer.getPosition() + diceResult);
             int newPosition = currentPlayer.getPosition();
             movePlayer(currentPlayer, oldPosition, newPosition);
-        } else if (requestCode == MINIGAME_FINISHED) {
+        }
+        else if(requestCode == MINIGAME_FINISHED){
             int points = 0;
-            if (data != null) {
+            if(data != null){
                 points = data.getExtras().getInt(getString(R.string.game_result));
                 currentPlayer.changeScoreBy(points);
             } else
@@ -323,8 +303,9 @@ public class GameBoardActivity extends BaseGameActivity {
             resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
             resultIntent.putExtra(getString(R.string.pointskey), points);
             startActivityForResult(resultIntent, RESULT_DISPLAYED);
-        } else if (requestCode == RESULT_DISPLAYED) {
-            if (gameState.getRoundsPlayed() < gameState.getTotalRounds()) {
+        }
+        else if(requestCode == RESULT_DISPLAYED){
+            if(gameState.getRoundsPlayed() < gameState.getTotalRounds()){
                 gameState.nextPlayer();
                 showReadyToDiceOverlay();
             } else {
@@ -332,7 +313,8 @@ public class GameBoardActivity extends BaseGameActivity {
                 Intent resultIntent = new Intent(this, FinalResultsActivity.class);
                 startActivityForResult(resultIntent, END_OF_GAME);
             }
-        } else if (requestCode == END_OF_GAME) {
+        }
+        else if(requestCode == END_OF_GAME){
             setResult(RESULT_OK);
             finish();
         }

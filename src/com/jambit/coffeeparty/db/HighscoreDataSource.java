@@ -3,6 +3,7 @@ package com.jambit.coffeeparty.db;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import com.jambit.coffeeparty.model.Player;
 
@@ -11,7 +12,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 public class HighscoreDataSource {
 	private HighscoreDBHelper dbHelper;
@@ -31,7 +31,37 @@ public class HighscoreDataSource {
 		dbHelper.close();
 	}
 	
-	public int storeHighscore (Player p) {
+	public HashMap<Player, Integer> storeHighscore(Player[] players) {
+		float[] rowIds = new float[players.length];
+		HashMap<Player, Integer> toReturn = new HashMap<Player, Integer>();
+		
+		for (int i = 0; i < players.length; i++) {
+			rowIds[i] = this.storeHighscore(players[i]);
+		}
+		//now, iterate again to get the rank
+		for (int i = 0; i < players.length; i++) {
+			toReturn.put(players[i], this.getRankForId(rowIds[i]));
+		}
+
+		return toReturn;
+	}
+	
+	private int getRankForId(float id) {
+		Cursor cursor = getAllScores();
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			if (cursor.getInt(cursor.getColumnIndex(HighscoreDBHelper.COLUMN_ID)) == id) {
+				int toReturn = cursor.getPosition() + 1;
+				cursor.close();
+				return toReturn;
+			}
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return -1;
+	}
+	
+	private float storeHighscore (Player p) {
 		
 		Date timestamp = new Date();
 		ContentValues values = new ContentValues();
@@ -41,25 +71,17 @@ public class HighscoreDataSource {
 		values.put(HighscoreDBHelper.COLUMN_TIMESTAMP, dateFormat.format(timestamp));
 		values.put(HighscoreDBHelper.COLUMN_AVATAR, bitmapToByteArray(p.getAvatar()));
 		
-		database.insert(HighscoreDBHelper.TABLE_NAME, null, values);
-		
-		
-		Cursor cursor = getAllHighscores();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			if (cursor.getString(cursor.getColumnIndex(HighscoreDBHelper.COLUMN_USERNAME)).equals(p.getName()) &&
-					cursor.getString(cursor.getColumnIndex(HighscoreDBHelper.COLUMN_TIMESTAMP)).equals(dateFormat.format(timestamp))) {
-				return cursor.getPosition() + 1;
-			}
-			cursor.moveToNext();
-		}
-		
-		return -1;
+		return database.insert(HighscoreDBHelper.TABLE_NAME, null, values);
 	}
 	
 	public Cursor getAllHighscores() {
 		return database.query(HighscoreDBHelper.TABLE_NAME, HighscoreDBHelper.ALL_COLUMNS, 
 				null, null, null, null, HighscoreDBHelper.COLUMN_SCORE + " DESC", "10");
+	}
+	
+	private Cursor getAllScores() {
+		return database.query(HighscoreDBHelper.TABLE_NAME, HighscoreDBHelper.ALL_COLUMNS, 
+				null, null, null, null, HighscoreDBHelper.COLUMN_SCORE + " DESC");
 	}
 	
 	private byte[] bitmapToByteArray (Bitmap bmp) {

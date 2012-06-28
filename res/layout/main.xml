@@ -17,7 +17,13 @@
         android:onClick="onStartNewGame"
         android:text="@string/newGameButton" 
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
+    <Button
+        android:id="@+id/showHighscoreButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onShowHighscores"
+        android:text="@string/highscores"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
@@ -30,11 +36,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
         android:textAppearance="?android:attr/textAppearanceLarge" />
-	<Button
-        android:id="@+id/testDB"
+    <Button
+        android:id="@+id/addRandomPlayerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onTestDB"
-        android:text="@string/test_db_"
+        android:onClick="onAddRandomPlayer"
+        android:text="@string/add_random_player"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 </LinearLayout>

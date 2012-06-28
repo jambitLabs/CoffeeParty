@@ -26,7 +26,7 @@ import android.graphics.Typeface;
 import android.util.Log;
 import android.view.Display;
 
-public class MinigameBaseActivity extends BaseGameActivity {
+public abstract class MinigameBaseActivity extends BaseGameActivity {
 
     public static String name;
     public static String description;
@@ -151,6 +151,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
 
     protected void addScore(int i) {
         score += i;
+        updateScoreDisplay();
     }
 
     protected void reduceScore(int i) {
@@ -158,6 +159,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         if (score < 0) {
             score = 0;
         }
+        updateScoreDisplay();
     }
 
     protected void setScore(int i) {
@@ -175,7 +177,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         finish();
     }
 
-    protected boolean areCoordinatesInsideSprite(int posX, int posY, Sprite sprite) {
+    protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite) {
     	if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidth() * sprite.getScaleX() && posY >= sprite.getY()
                 && posY < sprite.getY() + sprite.getHeight() * sprite.getScaleY()) {
     		Log.d("HIT", "hit");

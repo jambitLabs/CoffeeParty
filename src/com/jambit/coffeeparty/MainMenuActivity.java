@@ -2,12 +2,16 @@ package com.jambit.coffeeparty;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import javax.xml.xpath.XPathExpressionException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +21,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.jambit.coffeeparty.db.HighscoreDataSource;
 import com.jambit.coffeeparty.model.MinigameIdentifier;
 import com.jambit.coffeeparty.model.Player;
 
@@ -40,12 +45,12 @@ public class MainMenuActivity extends Activity {
 
         startDirectGameSpinner = (Spinner) findViewById(R.id.startDirectGame);
 
-        ArrayAdapter<MinigameIdentifier> adapter = new ArrayAdapter<MinigameIdentifier>(this,
-                                                                                        android.R.layout.simple_spinner_item);
+        ArrayAdapter<MinigameIdentifier> adapter = new ArrayAdapter<MinigameIdentifier>(this, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         for (MinigameIdentifier minigameIdentifier : MinigameIdentifier.values()) {
-            adapter.add(minigameIdentifier);
+            if(minigameIdentifier != MinigameIdentifier.RANDOM_MINIGAME)
+                adapter.add(minigameIdentifier);
         }
 
         startDirectGameSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -92,15 +97,15 @@ public class MainMenuActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == NUM_PLAYERS_SET) {
-            for (Object player : (Object[]) data.getExtras().get("players")) {
-                Log.d("MAIN_MENU", player.toString());
-                mPlayers.add((Player) player);
+        if (data != null){
+            if (requestCode == NUM_PLAYERS_SET) {
+                for (Object player : (Object[]) data.getExtras().get("players")) {
+                    Log.d("MAIN_MENU", player.toString());
+                    mPlayers.add((Player) player);
+                }
+                showSettings();
             }
-            showSettings();
-        } else if (requestCode == GAME_SETTINGS) {
-            if (data != null) {
+            else if (requestCode == GAME_SETTINGS) {
                 int numRounds = data.getExtras().getInt("numRounds");
                 int mapId = data.getExtras().getInt("mapId");
                 InputStream mapXml = this.getResources().openRawResource(mapId);
@@ -112,33 +117,45 @@ public class MainMenuActivity extends Activity {
                 }
                 // player data and settings entered. Proceed to board
                 showBoard();
+                }
+            else if (requestCode == GAME_BOARD) {
+                mPlayers.clear();
+            } 
+            else if (requestCode == MINIGAME_REQUESTCODE) {
+                int points = data.getExtras().getInt(getString(R.string.game_result));
+                Intent resultIntent = new Intent(this, MinigameResultActivity.class);
+                resultIntent.putExtra(getString(R.string.playerkey),
+                                      new Player(DEVELOPER,
+                                                 ((BitmapDrawable) this.getResources().getDrawable(R.drawable.droid_green)).getBitmap()));
+                resultIntent.putExtra(getString(R.string.pointskey), points);
+                startActivity(resultIntent);
             }
-        } else if (requestCode == GAME_BOARD) {
-            // Nothing to do now
-        } else if (requestCode == MINIGAME_REQUESTCODE) {
-            int points = data.getExtras().getInt(getString(R.string.game_result));
-            Intent resultIntent = new Intent(this, MinigameResultActivity.class);
-            resultIntent.putExtra(getString(R.string.playerkey),
-                                  new Player(DEVELOPER,
-                                             ((BitmapDrawable) this.getResources().getDrawable(R.drawable.droid_green)).getBitmap()));
-            resultIntent.putExtra(getString(R.string.pointskey), points);
-            startActivity(resultIntent);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
     
-    public void onTestDB (View v) {
+    public void onShowHighscores (View v) {
     	Intent intent = new Intent(this, DisplayHighscoreActivity.class);
         startActivity(intent);
+    }
+    
+    public void onAddRandomPlayer (View v) {
+    	Player[] ps = new Player[3];
+    	for (int i = 0; i < 3; i++) {
+    		Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_red); 
+        	Player p = new Player ("(Random)", bm);
+        	Random r = new Random();
+        	p.changeScoreBy(r.nextInt(50));
+        	ps[i] = p;
+    	}
     	
-    	/*Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_blue); 
-    	Player p = new Player ("Da Playa", bm);
-    	Random r = new Random();
-    	p.changeScoreBy(r.nextInt(50));
     	HighscoreDataSource dataSource = new HighscoreDataSource(this);
     	dataSource.openForWriting();
-    	dataSource.storeHighscore(p.getName(), p.getScore(), new Date(), p.getAvatarId());
+    	HashMap<Player, Integer> hashMap = dataSource.storeHighscore(ps);
     	dataSource.close();
-    	*/
+    	
+    	for (Player p : hashMap.keySet()) {
+    		Log.d("Player result", "Rank for " + p.getName() + ": " + hashMap.get(p));
+    	}
     }
 }
