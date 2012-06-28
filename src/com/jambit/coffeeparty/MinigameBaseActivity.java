@@ -106,7 +106,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         return new Engine(new EngineOptions(true,
                                             ScreenOrientation.LANDSCAPE,
                                             new RatioResolutionPolicy(cameraWidth, cameraHeight),
-                                            this.mCamera));
+                                            this.mCamera).setNeedsSound(true));
     }
 
     @Override
