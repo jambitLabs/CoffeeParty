@@ -31,7 +31,7 @@ public class HighscoreDataSource {
 		dbHelper.close();
 	}
 	
-	public void storeHighscore (Player p) {
+	public int storeHighscore (Player p) {
 		
 		Date timestamp = new Date();
 		ContentValues values = new ContentValues();
@@ -41,8 +41,20 @@ public class HighscoreDataSource {
 		values.put(HighscoreDBHelper.COLUMN_TIMESTAMP, dateFormat.format(timestamp));
 		values.put(HighscoreDBHelper.COLUMN_AVATAR, bitmapToByteArray(p.getAvatar()));
 		
-		float result = database.insert(HighscoreDBHelper.TABLE_NAME, null, values);
-		Log.d("Test", ""+result);
+		database.insert(HighscoreDBHelper.TABLE_NAME, null, values);
+		
+		
+		Cursor cursor = getAllHighscores();
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			if (cursor.getString(cursor.getColumnIndex(HighscoreDBHelper.COLUMN_USERNAME)).equals(p.getName()) &&
+					cursor.getString(cursor.getColumnIndex(HighscoreDBHelper.COLUMN_TIMESTAMP)).equals(dateFormat.format(timestamp))) {
+				return cursor.getPosition() + 1;
+			}
+			cursor.moveToNext();
+		}
+		
+		return -1;
 	}
 	
 	public Cursor getAllHighscores() {
