@@ -34,7 +34,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 
 public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerometerListener, ContactListener {
 
-    private BitmapTextureAtlas bitmapTextureAtlas;
+    private BitmapTextureAtlas backgroundTextureAtlas;
     private BitmapTextureAtlas ballTextureAtlas;
     private TextureRegion backgroundTexture;
     private TextureRegion ballSpriteTexture;
@@ -153,10 +153,10 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
     @Override
     public void onLoadResources() {
 
-        this.bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
+        this.backgroundTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         ballTextureAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR);
 
-        this.backgroundTexture = (TextureRegion) BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas,
+        this.backgroundTexture = (TextureRegion) BitmapTextureAtlasTextureRegionFactory.createFromAsset(backgroundTextureAtlas,
                                                                                                         this,
                                                                                                         "ballmaze.png",
                                                                                                         0,
@@ -168,7 +168,7 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
                                                                                                         0,
                                                                                                         0);
 
-        this.mEngine.getTextureManager().loadTexture(this.bitmapTextureAtlas);
+        this.mEngine.getTextureManager().loadTexture(this.backgroundTextureAtlas);
         this.mEngine.getTextureManager().loadTexture(this.ballTextureAtlas);
         super.onLoadResources();
     }

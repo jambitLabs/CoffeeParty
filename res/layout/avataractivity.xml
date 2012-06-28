@@ -73,25 +73,27 @@
 
         </RelativeLayout>
     </RelativeLayout>
-
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:gravity="right" >
-
+
         <RelativeLayout
             android:id="@+id/RelativeLayout1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
+            android:layout_width="80dp"
+            android:layout_height="fill_parent" >
+
             <Button
                 android:id="@+id/avatarApplyButton"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true"
+                android:background="@drawable/jog_tab_bar_left_end_confirm_yellow"
                 android:onClick="applyButtonOnClick"
-                android:text="@string/apply" android:background="@drawable/jog_tab_bar_left_end_confirm_yellow"/>
+                android:text="@string/apply" />
+
         </RelativeLayout>
     </LinearLayout>
 
