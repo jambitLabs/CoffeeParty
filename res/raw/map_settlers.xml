@@ -35,7 +35,7 @@
             <y>147</y>
         </field>
         <field id="6">
-            <type>RANDOM_MINIGAME</type>
+            <type>MINI_GAME_FALLINGBEANS</type>
             <x>613</x>
             <y>184</y>
         </field>
@@ -65,7 +65,7 @@
             <y>462</y>
         </field>
         <field id="12">
-            <type>MINI_GAME_WHACKAMOLE</type>
+            <type>MINI_GAME_FALLINGBEANS</type>
             <x>517</x>
             <y>419</y>
         </field>

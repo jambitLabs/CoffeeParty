@@ -60,6 +60,8 @@ public class GameBoardActivity extends BaseGameActivity {
     private TiledTextureRegion playerSpriteTexture;
 
     private Font playerNameFont;
+    
+    private final Random r = new Random(System.currentTimeMillis());
 
     private class PlayerSprite extends Entity {
         private final Player player;
@@ -75,7 +77,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
             this.figure = new AnimatedSprite(-playerSpriteTexture.getWidth() / 2, -playerSpriteTexture.getHeight() / 2,
                     playerSpriteTexture);
-            this.figure.animate(new Random().nextInt(10) + 100);
+            this.figure.animate(r.nextInt(10) + 100);
             this.attachChild(figure);
 
             this.figureNameText = new Text(0, -20, playerNameFont, player.getName());
@@ -151,7 +153,6 @@ public class GameBoardActivity extends BaseGameActivity {
     }
     
     private void doFieldAction(){
-        Random r = new Random(System.currentTimeMillis());
         Intent minigameIntent = new Intent(this, MinigameStartActivity.class);
         MinigameIdentifier currentFieldType = getGame().getMap().getFieldOfPlayer(getGame().getCurrentPlayer()).getType();
         switch(currentFieldType){

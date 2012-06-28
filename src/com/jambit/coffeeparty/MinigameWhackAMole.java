@@ -161,7 +161,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
         Random r = new Random();
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             for (Mole mole : moles) {
-                if (areCoordinatesInsideSprite((int) event.getX(), (int) event.getY(), mole.sprite)) {
+                if (areCoordinatesInsideSprite(event.getX(), event.getY(), mole.sprite)) {
                     if (mole.isActive) {
                         mole.hit();
                     }

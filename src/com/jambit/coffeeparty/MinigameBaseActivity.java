@@ -25,7 +25,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Display;
 
-public class MinigameBaseActivity extends BaseGameActivity {
+public abstract class MinigameBaseActivity extends BaseGameActivity {
 
     public static String name;
     public static String description;
@@ -97,6 +97,10 @@ public class MinigameBaseActivity extends BaseGameActivity {
             return ((float) (new Date().getTime() - startDate.getTime()))
                     / ((float) (endDate.getTime() - startDate.getTime()));
         }
+        
+        public float getSecondsPassed(){
+            return ((float) (new Date().getTime() - startDate.getTime()) / 1000);
+        }
     }
 
     @Override
@@ -150,6 +154,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
 
     protected void addScore(int i) {
         score += i;
+        updateScoreDisplay();
     }
 
     protected void reduceScore(int i) {
@@ -157,6 +162,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         if (score < 0) {
             score = 0;
         }
+        updateScoreDisplay();
     }
 
     protected void setScore(int i) {
@@ -174,7 +180,7 @@ public class MinigameBaseActivity extends BaseGameActivity {
         finish();
     }
 
-    protected boolean areCoordinatesInsideSprite(int posX, int posY, Sprite sprite) {
+    protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite) {
         if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidthScaled() && posY >= sprite.getY()
                 && posY < sprite.getY() + sprite.getHeightScaled()) {
             return true;
@@ -215,6 +221,13 @@ public class MinigameBaseActivity extends BaseGameActivity {
         } else {
             return displayTimer.getFractionOfPassedTime();
         }
+    }
+    
+    protected float getSecondsPassed(){
+        if(displayTimer == null)
+            return 0;
+        else
+            return displayTimer.getSecondsPassed();
     }
 
 }

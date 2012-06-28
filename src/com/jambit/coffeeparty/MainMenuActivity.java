@@ -40,12 +40,12 @@ public class MainMenuActivity extends Activity {
 
         startDirectGameSpinner = (Spinner) findViewById(R.id.startDirectGame);
 
-        ArrayAdapter<MinigameIdentifier> adapter = new ArrayAdapter<MinigameIdentifier>(this,
-                                                                                        android.R.layout.simple_spinner_item);
+        ArrayAdapter<MinigameIdentifier> adapter = new ArrayAdapter<MinigameIdentifier>(this, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         for (MinigameIdentifier minigameIdentifier : MinigameIdentifier.values()) {
-            adapter.add(minigameIdentifier);
+            if(minigameIdentifier != MinigameIdentifier.RANDOM_MINIGAME)
+                adapter.add(minigameIdentifier);
         }
 
         startDirectGameSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -92,15 +92,15 @@ public class MainMenuActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == NUM_PLAYERS_SET) {
-            for (Object player : (Object[]) data.getExtras().get("players")) {
-                Log.d("MAIN_MENU", player.toString());
-                mPlayers.add((Player) player);
+        if (data != null){
+            if (requestCode == NUM_PLAYERS_SET) {
+                for (Object player : (Object[]) data.getExtras().get("players")) {
+                    Log.d("MAIN_MENU", player.toString());
+                    mPlayers.add((Player) player);
+                }
+                showSettings();
             }
-            showSettings();
-        } else if (requestCode == GAME_SETTINGS) {
-            if (data != null) {
+            else if (requestCode == GAME_SETTINGS) {
                 int numRounds = data.getExtras().getInt("numRounds");
                 int mapId = data.getExtras().getInt("mapId");
                 InputStream mapXml = this.getResources().openRawResource(mapId);
@@ -112,17 +112,19 @@ public class MainMenuActivity extends Activity {
                 }
                 // player data and settings entered. Proceed to board
                 showBoard();
+                }
+            else if (requestCode == GAME_BOARD) {
+                mPlayers.clear();
+            } 
+            else if (requestCode == MINIGAME_REQUESTCODE) {
+                int points = data.getExtras().getInt(getString(R.string.game_result));
+                Intent resultIntent = new Intent(this, MinigameResultActivity.class);
+                resultIntent.putExtra(getString(R.string.playerkey),
+                                      new Player(DEVELOPER,
+                                                 ((BitmapDrawable) this.getResources().getDrawable(R.drawable.droid_green)).getBitmap()));
+                resultIntent.putExtra(getString(R.string.pointskey), points);
+                startActivity(resultIntent);
             }
-        } else if (requestCode == GAME_BOARD) {
-            // Nothing to do now
-        } else if (requestCode == MINIGAME_REQUESTCODE) {
-            int points = data.getExtras().getInt(getString(R.string.game_result));
-            Intent resultIntent = new Intent(this, MinigameResultActivity.class);
-            resultIntent.putExtra(getString(R.string.playerkey),
-                                  new Player(DEVELOPER,
-                                             ((BitmapDrawable) this.getResources().getDrawable(R.drawable.droid_green)).getBitmap()));
-            resultIntent.putExtra(getString(R.string.pointskey), points);
-            startActivity(resultIntent);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
