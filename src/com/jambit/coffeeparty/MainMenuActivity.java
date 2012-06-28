@@ -2,12 +2,16 @@ package com.jambit.coffeeparty;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import javax.xml.xpath.XPathExpressionException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +21,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.jambit.coffeeparty.db.HighscoreDataSource;
 import com.jambit.coffeeparty.model.MinigameIdentifier;
 import com.jambit.coffeeparty.model.Player;
 
@@ -129,18 +134,28 @@ public class MainMenuActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
     
-    public void onTestDB (View v) {
+    public void onShowHighscores (View v) {
     	Intent intent = new Intent(this, DisplayHighscoreActivity.class);
         startActivity(intent);
+    }
+    
+    public void onAddRandomPlayer (View v) {
+    	Player[] ps = new Player[3];
+    	for (int i = 0; i < 3; i++) {
+    		Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_red); 
+        	Player p = new Player ("(Random)", bm);
+        	Random r = new Random();
+        	p.changeScoreBy(r.nextInt(50));
+        	ps[i] = p;
+    	}
     	
-    	/*Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_blue); 
-    	Player p = new Player ("Da Playa", bm);
-    	Random r = new Random();
-    	p.changeScoreBy(r.nextInt(50));
     	HighscoreDataSource dataSource = new HighscoreDataSource(this);
     	dataSource.openForWriting();
-    	dataSource.storeHighscore(p.getName(), p.getScore(), new Date(), p.getAvatarId());
+    	HashMap<Player, Integer> hashMap = dataSource.storeHighscore(ps);
     	dataSource.close();
-    	*/
+    	
+    	for (Player p : hashMap.keySet()) {
+    		Log.d("Player result", "Rank for " + p.getName() + ": " + hashMap.get(p));
+    	}
     }
 }

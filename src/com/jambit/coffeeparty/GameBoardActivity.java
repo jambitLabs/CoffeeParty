@@ -35,7 +35,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
-import android.view.MotionEvent;
 
 import com.jambit.coffeeparty.model.Field;
 import com.jambit.coffeeparty.model.Game;
@@ -45,16 +44,15 @@ import com.jambit.coffeeparty.model.Player;
 
 public class GameBoardActivity extends BaseGameActivity {
 
-    private final static int DICE_ROLLED = 110;
+    public final static int DICE_ROLLED = 110;
     private final static int MINIGAME_FINISHED = 111;
     private final static int RESULT_DISPLAYED = 112;
     private final static int END_OF_GAME = 113;
-    
+
     private final static int MAX_SCORE_FIELD_POINTS = 10;
-    
-    private boolean mDiceEnabled = false;
+
     private List<MinigameIdentifier> mMinigames = new ArrayList<MinigameIdentifier>();
-    
+
     private TextureRegion backgroundTexture;
     private TextureRegion jambitBeanTexture;
     private TiledTextureRegion playerSpriteTexture;
@@ -75,8 +73,9 @@ public class GameBoardActivity extends BaseGameActivity {
             super(x, y);
             this.player = player;
 
-            this.figure = new AnimatedSprite(-playerSpriteTexture.getWidth() / 2, -playerSpriteTexture.getHeight() / 2,
-                    playerSpriteTexture);
+            this.figure = new AnimatedSprite(-playerSpriteTexture.getWidth() / 2,
+                                             -playerSpriteTexture.getHeight() / 2,
+                                             playerSpriteTexture);
             this.figure.animate(r.nextInt(10) + 100);
             this.attachChild(figure);
 
@@ -94,12 +93,12 @@ public class GameBoardActivity extends BaseGameActivity {
         public Player getPlayer() {
             return player;
         }
-        
+
         public void updatePoints() {
             playerPointsText.setText(Integer.toString(this.player.getScore()));
         }
     }
-    
+
     @Override
     protected void onCreate(final Bundle pSavedInstanceState) {
         // find all "real" minigames
@@ -111,11 +110,13 @@ public class GameBoardActivity extends BaseGameActivity {
     }
 
     private List<PlayerSprite> playerSprites = new ArrayList<PlayerSprite>();
+    private Scene mainScene;
+    private ReadyToDiceOverlay readyToDiceOverlay;
 
     private void movePlayer(Player player, int oldPosition, int newPosition) {
         Map gameMap = getGame().getMap();
         PlayerSprite playerSprite = getPlayerSpriteForPlayer(player);
-        
+
         if (oldPosition == newPosition) {
             Field field = gameMap.getFieldForPosition(newPosition);
             playerSprite.setPosition(field.getX(), field.getY());
@@ -124,9 +125,8 @@ public class GameBoardActivity extends BaseGameActivity {
         {
             int wayPoints = newPosition - oldPosition + 1;
             Path path = new Path(wayPoints);
-            
-            for (int position = oldPosition; position <= newPosition; position++)
-            {
+
+            for (int position = oldPosition; position <= newPosition; position++) {
                 Field field = gameMap.getFieldForPosition(position);
                 path.to(field.getX(), field.getY());
             }
@@ -195,7 +195,7 @@ public class GameBoardActivity extends BaseGameActivity {
     @Override
     public void onLoadResources() {
         String boardImage = getGame().getMap().getBoardImage();
-                
+
         BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         
         this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas, this,
@@ -208,8 +208,11 @@ public class GameBoardActivity extends BaseGameActivity {
         this.mEngine.getTextureManager().loadTexture(bitmapTextureAtlas);
 
         BitmapTextureAtlas fontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        this.playerNameFont = new Font(fontTexture, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 20, true,
-                Color.BLACK);
+        this.playerNameFont = new Font(fontTexture,
+                                       Typeface.create(Typeface.DEFAULT, Typeface.BOLD),
+                                       20,
+                                       true,
+                                       Color.BLACK);
 
         this.mEngine.getTextureManager().loadTexture(fontTexture);
         this.mEngine.getFontManager().loadFont(this.playerNameFont);
@@ -220,25 +223,27 @@ public class GameBoardActivity extends BaseGameActivity {
         reset();
 
         this.mEngine.registerUpdateHandler(new FPSLogger());
-        
-        final Scene scene = new Scene();
-        // scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
-        scene.setBackground(new SpriteBackground(new Sprite(0, 0, backgroundTexture)));
 
-        createPlayers(scene);
+        mainScene = new Scene();
+        // scene.setBackground(new ColorBackground(0.09804f, 0.6274f, 0.8784f));
+        mainScene.setBackground(new SpriteBackground(new Sprite(0, 0, backgroundTexture)));
+
+        createPlayers(mainScene);
         placePlayers();
-           
-        mDiceEnabled = true;
-        return scene;
+
+        mainScene.setTouchAreaBindingEnabled(true);
+        readyToDiceOverlay = new ReadyToDiceOverlay(this, mainScene);
+        readyToDiceOverlay.setPosition(-50, 280);
+        mainScene.attachChild(readyToDiceOverlay);
+
+        return mainScene;
     }
 
-    private void reset()
-    {
+    private void reset() {
         playerSprites.clear();
     }
-    
-    private Game getGame()
-    {
+
+    private Game getGame() {
         return ((CoffeePartyApplication) getApplication()).getGameState();
     }
 
@@ -247,7 +252,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
         for (Player player : gameState.getPlayers()) {
             Field fieldOfPlayer = gameState.getMap().getFieldOfPlayer(player);
-            
+
             PlayerSprite playerSprite = new PlayerSprite(player, fieldOfPlayer.getX(), fieldOfPlayer.getY());
             playerSprites.add(playerSprite);
             scene.attachChild(playerSprite);
@@ -273,23 +278,11 @@ public class GameBoardActivity extends BaseGameActivity {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP && mDiceEnabled)
-        {
-            mDiceEnabled = false;
-            Intent intent = new Intent(this, DiceRollActivity.class);
-            startActivityForResult(intent, DICE_ROLLED);
-            return true;
-        }
-        return false;
-    }
-    
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Game gameState = getGame();
         Player currentPlayer = gameState.getCurrentPlayer();
-        
-        if(requestCode == DICE_ROLLED){
+
+        if (requestCode == DICE_ROLLED) {
             int diceResult = data.getExtras().getInt(getString(R.string.dice_result));
             int oldPosition = currentPlayer.getPosition();
             currentPlayer.setPosition(currentPlayer.getPosition() + diceResult);
@@ -301,10 +294,10 @@ public class GameBoardActivity extends BaseGameActivity {
             if(data != null){
                 points = data.getExtras().getInt(getString(R.string.game_result));
                 currentPlayer.changeScoreBy(points);
-            }
-            else
-                Log.d("GAME_BOARD", "Return button pressed during minigame? Zero points for player " + currentPlayer.getName());
-            
+            } else
+                Log.d("GAME_BOARD",
+                      "Return button pressed during minigame? Zero points for player " + currentPlayer.getName());
+
             Log.i("GAME_BOARD", "New score for player " + currentPlayer.getName() + ": " + currentPlayer.getScore());
             Intent resultIntent = new Intent(this, MinigameResultActivity.class);
             resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
@@ -314,9 +307,8 @@ public class GameBoardActivity extends BaseGameActivity {
         else if(requestCode == RESULT_DISPLAYED){
             if(gameState.getRoundsPlayed() < gameState.getTotalRounds()){
                 gameState.nextPlayer();
-                mDiceEnabled = true;
-            }
-            else{
+                showReadyToDiceOverlay();
+            } else {
                 Log.d("GAME_BOARD", "End of game");
                 Intent resultIntent = new Intent(this, FinalResultsActivity.class);
                 startActivityForResult(resultIntent, END_OF_GAME);
@@ -326,12 +318,18 @@ public class GameBoardActivity extends BaseGameActivity {
             setResult(RESULT_OK);
             finish();
         }
-        
+
         getPlayerSpriteForPlayer(currentPlayer).updatePoints();
     }
 
     @Override
     public void onLoadComplete() {
+        showReadyToDiceOverlay();
+    }
 
+    private void showReadyToDiceOverlay() {
+        String name = getGame().getCurrentPlayer().getName();
+        readyToDiceOverlay.setPlayerNameText(name);
+        readyToDiceOverlay.setVisible(true);
     }
 }

@@ -23,6 +23,7 @@ import org.anddev.andengine.util.HorizontalAlign;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.Display;
 
 public abstract class MinigameBaseActivity extends BaseGameActivity {
@@ -96,10 +97,6 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
         public float getFractionOfPassedTime() {
             return ((float) (new Date().getTime() - startDate.getTime()))
                     / ((float) (endDate.getTime() - startDate.getTime()));
-        }
-        
-        public float getSecondsPassed(){
-            return ((float) (new Date().getTime() - startDate.getTime()) / 1000);
         }
     }
 
@@ -181,8 +178,9 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
     }
 
     protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite) {
-        if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidthScaled() && posY >= sprite.getY()
-                && posY < sprite.getY() + sprite.getHeightScaled()) {
+    	if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidth() * sprite.getScaleX() && posY >= sprite.getY()
+                && posY < sprite.getY() + sprite.getHeight() * sprite.getScaleY()) {
+    		Log.d("HIT", "hit");
             return true;
         } else {
             return false;
@@ -221,13 +219,6 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
         } else {
             return displayTimer.getFractionOfPassedTime();
         }
-    }
-    
-    protected float getSecondsPassed(){
-        if(displayTimer == null)
-            return 0;
-        else
-            return displayTimer.getSecondsPassed();
     }
 
 }

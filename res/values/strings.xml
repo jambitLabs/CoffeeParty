@@ -27,5 +27,7 @@
     <string name="avatar_descr">Player avatar</string>
     <string name="test_db_">Test DB!</string>
     <string name="avatar_image">Avatar Image</string>
+    <string name="highscores">Highscores</string>
+    <string name="add_random_player">Add Random Player To Highscore List</string>
 
 </resources>
