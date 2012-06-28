@@ -8,19 +8,31 @@ import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.entity.modifier.ScaleModifier;
 import org.anddev.andengine.entity.scene.Scene;
+import org.anddev.andengine.entity.scene.background.SpriteBackground;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class MinigameWhackAMole extends MinigameBaseActivity {
 
+	private SoundPool soundPool;
+	private int soundIDWhack1;
+	private int soundIDWhack2;
+	private int soundIDWhack3;
+	private int soundIDWhack4;
+	
+	Random r;
+    
     private class Mole {
         private Sprite sprite;
-        final float targetScale = 2.0f;
+        final float targetScale = 0.4f;
 
         public Mole(Sprite s) {
             s.setScale(0.0f);
@@ -28,7 +40,8 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
         }
 
         public void hit() {
-                sprite.registerEntityModifier(this.getHitModifier());
+        	sprite.clearEntityModifiers();
+            sprite.registerEntityModifier(this.getHitModifier());
         }
 
         public void disappear() {
@@ -62,11 +75,16 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
 
     private TextureRegion moleTexture;
     private TextureRegion holeSpriteTexture;
-
+    private TextureRegion backgroundTexture;
+    
     private List<Mole> moles;
 
     public Scene onLoadScene() {
         final Scene scene = super.onLoadScene();
+        Sprite bgSprite = new Sprite (0, 0, backgroundTexture);
+        scene.setBackground(new SpriteBackground(bgSprite));
+        
+        
         float maxX = mCamera.getMaxX();
         float maxY = mCamera.getMaxY();
 
@@ -74,7 +92,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 float x = maxX / 4 + i * maxX / 4;
-                float y = maxY / 4 + j * maxY / 4;
+                float y = maxY / 4 + j * maxY / 4; 
                 moles.add(new Mole(new Sprite(x - moleTexture.getWidth() / 2,
                                               y - moleTexture.getHeight() / 2,
                                               moleTexture)));
@@ -114,15 +132,41 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
         super.onLoadResources();
         BitmapTextureAtlas moleAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         BitmapTextureAtlas holeAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
-        this.moleTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(moleAtlas, this, "face_box.png", 0, 0);
+        BitmapTextureAtlas bgAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
+        this.moleTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(moleAtlas, this, "jambitbean_big.png", 0, 0);
         this.holeSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(holeAtlas,
                                                                                         this,
                                                                                         "hole.png",
                                                                                         0,
                                                                                         0);
+        this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bgAtlas, this, "mole_hills.jpg", 0, 0);
 
         this.mEngine.getTextureManager().loadTexture(moleAtlas);
         this.mEngine.getTextureManager().loadTexture(holeAtlas);
+        this.mEngine.getTextureManager().loadTexture(bgAtlas);
+        
+        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+        soundIDWhack1 = soundPool.load(this, R.raw.sharppunch, 1);
+        soundIDWhack2 = soundPool.load(this, R.raw.strongpunch, 1);
+        soundIDWhack3 = soundPool.load(this, R.raw.whack, 1);
+        soundIDWhack4 = soundPool.load(this, R.raw.woodwhack, 1);
+        r = new Random();
+    }
+    
+    private int getRandomSoundID () {
+    	int i = r.nextInt(4);
+    	switch (i){
+    	case 0:
+    		return soundIDWhack1;
+    	case 1:
+    		return soundIDWhack2;
+    	case 2:
+    		return soundIDWhack3;
+    	case 3:
+    		return soundIDWhack4;
+    	default:
+    		return soundIDWhack1;
+    	}
     }
 
     @Override
@@ -133,6 +177,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
                 	mole.hit();
                     addScore(1);
                     updateScoreDisplay();
+                    soundPool.play(this.getRandomSoundID(), 1f, 1f, 1, 0, 1f);
                     break;
                 }
             }

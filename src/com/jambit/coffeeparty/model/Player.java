@@ -9,6 +9,7 @@ public final class Player implements Parcelable, Comparable<Player>{
     private final Bitmap mAvatar;
     private int mScore;
     private int mPosition;
+    private int mRank;
     
     public static final Parcelable.Creator<Player> CREATOR = new Parcelable.Creator<Player>() {
         public Player createFromParcel(Parcel in) {
@@ -25,6 +26,7 @@ public final class Player implements Parcelable, Comparable<Player>{
         this.mName = name;
         this.mAvatar = avatar;
         this.mScore = 0;
+        this.mRank = -1;
     }
     
     private Player(Parcel in){
@@ -32,6 +34,7 @@ public final class Player implements Parcelable, Comparable<Player>{
         mAvatar = in.readParcelable(Bitmap.class.getClassLoader());
         mScore = in.readInt();
         mPosition = in.readInt();
+        mRank = in.readInt();
     }
     
     public int getScore() {
@@ -56,6 +59,14 @@ public final class Player implements Parcelable, Comparable<Player>{
         return mAvatar;
     }
     
+    public void setRank(int rank) {
+    	mRank = rank;
+    }
+    
+    public int getRank() {
+    	return mRank;
+    }
+    
     @Override
     public int describeContents() {
         return 0;
@@ -67,6 +78,7 @@ public final class Player implements Parcelable, Comparable<Player>{
         dest.writeParcelable(mAvatar, 0);
         dest.writeInt(mScore);
         dest.writeInt(mPosition);
+        dest.writeInt(mRank);
     }
 
     @Override
@@ -76,6 +88,7 @@ public final class Player implements Parcelable, Comparable<Player>{
         result = prime * result + ((mName == null) ? 0 : mName.hashCode());
         result = prime * result + mPosition;
         result = prime * result + mScore;
+        result = prime * result + mRank;
         return result;
     }
 
@@ -97,12 +110,14 @@ public final class Player implements Parcelable, Comparable<Player>{
             return false;
         if (mScore != other.mScore)
             return false;
+        if (mRank != other.mRank)
+        	return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return String.format("Player [name=%s, score=%s, position=%s]", mName, mScore, mPosition);
+        return String.format("Player [name=%s, score=%s, position=%s, rank=%s]", mName, mScore, mPosition, mRank);
     }
 
     @Override

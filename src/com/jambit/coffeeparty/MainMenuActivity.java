@@ -140,13 +140,13 @@ public class MainMenuActivity extends Activity {
     }
     
     public void onAddRandomPlayer (View v) {
-    	Player[] ps = new Player[3];
+    	ArrayList<Player> ps = new ArrayList<Player>();
     	for (int i = 0; i < 3; i++) {
     		Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_red); 
         	Player p = new Player ("(Random)", bm);
         	Random r = new Random();
         	p.changeScoreBy(r.nextInt(50));
-        	ps[i] = p;
+        	ps.add(p);
     	}
     	
     	HighscoreDataSource dataSource = new HighscoreDataSource(this);
