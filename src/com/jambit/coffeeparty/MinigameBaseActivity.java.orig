@@ -179,6 +179,11 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
     }
 
     protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite) {
+<<<<<<< Updated upstream
+    	if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidth() * sprite.getScaleX() && posY >= sprite.getY()
+                && posY < sprite.getY() + sprite.getHeight() * sprite.getScaleY()) {
+    		Log.d("HIT", "hit");
+=======
     	
     	float realXMin = sprite.getX() + (sprite.getWidth() - sprite.getWidthScaled()) / 2;
     	float realYMin = sprite.getY() + (sprite.getHeight() - sprite.getHeightScaled()) / 2;
@@ -189,6 +194,7 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
     	
     	if (posX >= realXMin && posX < realXMax && 
     			posY >= realYMin && posY < realYMax) {
+>>>>>>> Stashed changes
             return true;
         } else {
             return false;

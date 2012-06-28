@@ -9,7 +9,8 @@
     
     <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+	<uses-permission android:name="android.permission.RECORD_AUDIO" />
     
 
     <application
@@ -64,6 +65,9 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".BallMazeMinigame"
+            android:screenOrientation="landscape" />
+		<activity
+            android:name=".MinigameClapYourHands"
             android:screenOrientation="landscape" />
         <activity
             android:name=".DisplayHighscoreActivity"

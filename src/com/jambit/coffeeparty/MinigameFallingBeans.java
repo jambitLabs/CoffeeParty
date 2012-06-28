@@ -21,7 +21,7 @@ import org.anddev.andengine.sensor.accelerometer.IAccelerometerListener;
 public class MinigameFallingBeans extends MinigameBaseActivity implements IAccelerometerListener {
     
     private static final float MAX_BEAN_VELOCITY = 250.0f;
-    private static int POINTS_PER_BEAN = 2;
+    private static int POINTS_PER_BEAN = 1;
     
     private TextureRegion mBeanTextureRegion;
     private TextureRegion mTeabagTextureRegion;

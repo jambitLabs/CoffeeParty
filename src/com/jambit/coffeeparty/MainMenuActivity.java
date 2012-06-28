@@ -130,6 +130,9 @@ public class MainMenuActivity extends Activity {
                 startActivity(resultIntent);
             }
         }
+        else if (requestCode == GAME_BOARD) {
+            mPlayers.clear();
+        } 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -139,23 +142,23 @@ public class MainMenuActivity extends Activity {
     }
 
     public void onAddRandomPlayer() {
-        Player[] ps = new Player[3];
-        for (int i = 0; i < 3; i++) {
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_red);
-            Player p = new Player("(Random)", bm);
-            Random r = new Random();
-            p.changeScoreBy(r.nextInt(50));
-            ps[i] = p;
-        }
-
-        HighscoreDataSource dataSource = new HighscoreDataSource(this);
-        dataSource.openForWriting();
-        HashMap<Player, Integer> hashMap = dataSource.storeHighscore(ps);
-        dataSource.close();
-
-        for (Player p : hashMap.keySet()) {
-            Log.d("Player result", "Rank for " + p.getName() + ": " + hashMap.get(p));
-        }
+    	ArrayList<Player> ps = new ArrayList<Player>();
+    	for (int i = 0; i < 3; i++) {
+    		Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_red); 
+        	Player p = new Player ("(Random)", bm);
+        	Random r = new Random();
+        	p.changeScoreBy(r.nextInt(50));
+        	ps.add(p);
+    	}
+    	
+    	HighscoreDataSource dataSource = new HighscoreDataSource(this);
+    	dataSource.openForWriting();
+    	HashMap<Player, Integer> hashMap = dataSource.storeHighscore(ps);
+    	dataSource.close();
+    	
+    	for (Player p : hashMap.keySet()) {
+    		Log.d("Player result", "Rank for " + p.getName() + ": " + hashMap.get(p));
+    	}
     }
 
     public void onDebugButton(View v) {
