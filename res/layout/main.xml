@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:background="@drawable/kaffeebohnen"
+    android:gravity="bottom|right"
+    android:orientation="vertical"
+    android:scaleType="fitCenter" android:paddingTop="30dp">
 
     <TextView
+        android:id="@+id/TextView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello" 
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignParentTop="true"
+        android:background="@drawable/toast_frame"
+        android:text="@string/hello"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#221d1b" android:layout_alignParentRight="true" android:layout_marginBottom="30dp"/>
 
     <Button
         android:id="@+id/newGame"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/TextView1"
         android:onClick="onStartNewGame"
-        android:text="@string/newGameButton" 
+        android:text="@string/newGameButton"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
     <Button
         android:id="@+id/showHighscoreButton"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/newGame"
         android:onClick="onShowHighscores"
         android:text="@string/highscores"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    <TextView
-        android:id="@+id/textView1"
+
+
+
+    <Button
+        android:id="@+id/debugButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/directgame" 
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:onClick="onDebugButton"
+        android:text="@string/debugging_options"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    
-    <Spinner
-        android:id="@+id/startDirectGame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    <Button
-        android:id="@+id/addRandomPlayerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onAddRandomPlayer"
-        android:text="@string/add_random_player"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-</LinearLayout>
+
+</RelativeLayout>

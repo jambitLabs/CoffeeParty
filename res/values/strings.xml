@@ -29,5 +29,6 @@
     <string name="avatar_image">Avatar Image</string>
     <string name="highscores">Highscores</string>
     <string name="add_random_player">Add Random Player To Highscore List</string>
+    <string name="debugging_options">Debugging options</string>
 
 </resources>

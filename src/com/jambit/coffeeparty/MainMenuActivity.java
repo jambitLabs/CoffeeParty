@@ -15,10 +15,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.jambit.coffeeparty.db.HighscoreDataSource;
@@ -43,31 +43,32 @@ public class MainMenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        startDirectGameSpinner = (Spinner) findViewById(R.id.startDirectGame);
-
-        ArrayAdapter<MinigameIdentifier> adapter = new ArrayAdapter<MinigameIdentifier>(this, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        for (MinigameIdentifier minigameIdentifier : MinigameIdentifier.values()) {
-            if(minigameIdentifier != MinigameIdentifier.RANDOM_MINIGAME)
-                adapter.add(minigameIdentifier);
-        }
-
-        startDirectGameSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                MinigameIdentifier minigameIdentifier = (MinigameIdentifier) parent.getItemAtPosition(pos);
-                onStartGameDirectly(minigameIdentifier);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        startDirectGameSpinner.setAdapter(adapter);
-        startDirectGameSpinner.setSelection(adapter.getPosition(MinigameIdentifier.POINTS));
+        // startDirectGameSpinner = (Spinner) findViewById(R.id.startDirectGame);
+        //
+        // ArrayAdapter<MinigameIdentifier> adapter = new ArrayAdapter<MinigameIdentifier>(this,
+        // android.R.layout.simple_spinner_item);
+        // adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //
+        // for (MinigameIdentifier minigameIdentifier : MinigameIdentifier.values()) {
+        // if (minigameIdentifier != MinigameIdentifier.RANDOM_MINIGAME)
+        // adapter.add(minigameIdentifier);
+        // }
+        //
+        // startDirectGameSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+        //
+        // @Override
+        // public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        // MinigameIdentifier minigameIdentifier = (MinigameIdentifier) parent.getItemAtPosition(pos);
+        // onStartGameDirectly(minigameIdentifier);
+        // }
+        //
+        // @Override
+        // public void onNothingSelected(AdapterView<?> parent) {
+        // }
+        // });
+        //
+        // startDirectGameSpinner.setAdapter(adapter);
+        // startDirectGameSpinner.setSelection(adapter.getPosition(MinigameIdentifier.POINTS));
     }
 
     public void onStartNewGame(View v) {
@@ -97,15 +98,14 @@ public class MainMenuActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null){
+        if (data != null) {
             if (requestCode == NUM_PLAYERS_SET) {
                 for (Object player : (Object[]) data.getExtras().get("players")) {
                     Log.d("MAIN_MENU", player.toString());
                     mPlayers.add((Player) player);
                 }
                 showSettings();
-            }
-            else if (requestCode == GAME_SETTINGS) {
+            } else if (requestCode == GAME_SETTINGS) {
                 int numRounds = data.getExtras().getInt("numRounds");
                 int mapId = data.getExtras().getInt("mapId");
                 InputStream mapXml = this.getResources().openRawResource(mapId);
@@ -117,45 +117,83 @@ public class MainMenuActivity extends Activity {
                 }
                 // player data and settings entered. Proceed to board
                 showBoard();
-                }
-            else if (requestCode == GAME_BOARD) {
+            } else if (requestCode == GAME_BOARD) {
                 mPlayers.clear();
-            } 
-            else if (requestCode == MINIGAME_REQUESTCODE) {
+            } else if (requestCode == MINIGAME_REQUESTCODE) {
                 int points = data.getExtras().getInt(getString(R.string.game_result));
                 Intent resultIntent = new Intent(this, MinigameResultActivity.class);
                 resultIntent.putExtra(getString(R.string.playerkey),
                                       new Player(DEVELOPER,
-                                                 ((BitmapDrawable) this.getResources().getDrawable(R.drawable.droid_green)).getBitmap()));
+                                                 ((BitmapDrawable) this.getResources()
+                                                                       .getDrawable(R.drawable.droid_green)).getBitmap()));
                 resultIntent.putExtra(getString(R.string.pointskey), points);
                 startActivity(resultIntent);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
-    public void onShowHighscores (View v) {
-    	Intent intent = new Intent(this, DisplayHighscoreActivity.class);
+
+    public void onShowHighscores(View v) {
+        Intent intent = new Intent(this, DisplayHighscoreActivity.class);
         startActivity(intent);
     }
-    
-    public void onAddRandomPlayer (View v) {
-    	Player[] ps = new Player[3];
-    	for (int i = 0; i < 3; i++) {
-    		Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_red); 
-        	Player p = new Player ("(Random)", bm);
-        	Random r = new Random();
-        	p.changeScoreBy(r.nextInt(50));
-        	ps[i] = p;
-    	}
-    	
-    	HighscoreDataSource dataSource = new HighscoreDataSource(this);
-    	dataSource.openForWriting();
-    	HashMap<Player, Integer> hashMap = dataSource.storeHighscore(ps);
-    	dataSource.close();
-    	
-    	for (Player p : hashMap.keySet()) {
-    		Log.d("Player result", "Rank for " + p.getName() + ": " + hashMap.get(p));
-    	}
+
+    public void onAddRandomPlayer() {
+        Player[] ps = new Player[3];
+        for (int i = 0; i < 3; i++) {
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.droid_red);
+            Player p = new Player("(Random)", bm);
+            Random r = new Random();
+            p.changeScoreBy(r.nextInt(50));
+            ps[i] = p;
+        }
+
+        HighscoreDataSource dataSource = new HighscoreDataSource(this);
+        dataSource.openForWriting();
+        HashMap<Player, Integer> hashMap = dataSource.storeHighscore(ps);
+        dataSource.close();
+
+        for (Player p : hashMap.keySet()) {
+            Log.d("Player result", "Rank for " + p.getName() + ": " + hashMap.get(p));
+        }
+    }
+
+    public void onDebugButton(View v) {
+        this.openOptionsMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.debug_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        MinigameIdentifier minigameIdentifier;
+        switch (item.getItemId()) {
+        case R.id.addRandomPlayerButton:
+            onAddRandomPlayer();
+            break;
+        case R.id.MiniGame_BallMaze:
+            minigameIdentifier = MinigameIdentifier.MINI_GAME_BALLMAZE;
+            onStartGameDirectly(minigameIdentifier);
+            break;
+        case R.id.MiniGame_Catch:
+            minigameIdentifier = MinigameIdentifier.MINI_GAME_CATCHTHEFLY;
+            onStartGameDirectly(minigameIdentifier);
+            break;
+        case R.id.MiniGame_FallingBeans:
+            minigameIdentifier = MinigameIdentifier.MINI_GAME_FALLINGBEANS;
+            onStartGameDirectly(minigameIdentifier);
+            break;
+        case R.id.MiniGame_WhackAMole:
+            minigameIdentifier = MinigameIdentifier.MINI_GAME_WHACKAMOLE;
+            onStartGameDirectly(minigameIdentifier);
+            break;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 }

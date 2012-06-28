@@ -29,9 +29,12 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
@@ -58,7 +61,10 @@ public class GameBoardActivity extends BaseGameActivity {
     private TiledTextureRegion playerSpriteTexture;
 
     private Font playerNameFont;
-    
+
+    private SoundPool soundPool;
+    private int footStepsSoundID;
+
     private final Random r = new Random(System.currentTimeMillis());
 
     private class PlayerSprite extends Entity {
@@ -102,8 +108,8 @@ public class GameBoardActivity extends BaseGameActivity {
     @Override
     protected void onCreate(final Bundle pSavedInstanceState) {
         // find all "real" minigames
-        for(MinigameIdentifier id : MinigameIdentifier.values()){
-            if(id != MinigameIdentifier.POINTS && id != MinigameIdentifier.RANDOM_MINIGAME)
+        for (MinigameIdentifier id : MinigameIdentifier.values()) {
+            if (id != MinigameIdentifier.POINTS && id != MinigameIdentifier.RANDOM_MINIGAME)
                 mMinigames.add(id);
         }
         super.onCreate(pSavedInstanceState);
@@ -112,6 +118,7 @@ public class GameBoardActivity extends BaseGameActivity {
     private List<PlayerSprite> playerSprites = new ArrayList<PlayerSprite>();
     private Scene mainScene;
     private ReadyToDiceOverlay readyToDiceOverlay;
+    private int streamID;
 
     private void movePlayer(Player player, int oldPosition, int newPosition) {
         Map gameMap = getGame().getMap();
@@ -120,63 +127,88 @@ public class GameBoardActivity extends BaseGameActivity {
         if (oldPosition == newPosition) {
             Field field = gameMap.getFieldForPosition(newPosition);
             playerSprite.setPosition(field.getX(), field.getY());
-        }
-        else
-        {
+        } else {
             int wayPoints = newPosition - oldPosition + 1;
             Path path = new Path(wayPoints);
-
+            startFootSteps();
             for (int position = oldPosition; position <= newPosition; position++) {
+
                 Field field = gameMap.getFieldForPosition(position);
                 path.to(field.getX(), field.getY());
             }
-            
-            playerSprite.registerEntityModifier(new PathModifier(wayPoints * 1.0f, path, null, new IPathModifierListener() {
-                @Override
-                public void onPathStarted(final PathModifier pPathModifier, final IEntity pEntity) {
-                }
+            stopFootSteps();
 
-                @Override
-                public void onPathWaypointStarted(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
-                }
+            playerSprite.registerEntityModifier(new PathModifier(wayPoints * 1.0f,
+                                                                 path,
+                                                                 null,
+                                                                 new IPathModifierListener() {
+                                                                     @Override
+                                                                     public void onPathStarted(final PathModifier pPathModifier,
+                                                                                               final IEntity pEntity) {
+                                                                     }
 
-                @Override
-                public void onPathWaypointFinished(final PathModifier pPathModifier, final IEntity pEntity, final int pWaypointIndex) {
-                }
+                                                                     @Override
+                                                                     public void onPathWaypointStarted(final PathModifier pPathModifier,
+                                                                                                       final IEntity pEntity,
+                                                                                                       final int pWaypointIndex) {
+                                                                     }
 
-                @Override
-                public void onPathFinished(final PathModifier pPathModifier, final IEntity pEntity) {
-                    doFieldAction();
-                }
-            }));
+                                                                     @Override
+                                                                     public void onPathWaypointFinished(final PathModifier pPathModifier,
+                                                                                                        final IEntity pEntity,
+                                                                                                        final int pWaypointIndex) {
+                                                                     }
+
+                                                                     @Override
+                                                                     public void onPathFinished(final PathModifier pPathModifier,
+                                                                                                final IEntity pEntity) {
+                                                                         doFieldAction();
+                                                                     }
+                                                                 }));
         }
     }
-    
-    private void doFieldAction(){
+
+    private void startFootSteps() {
+        AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        float streamVolumeCurrent = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+        float streamVolumeMax = mgr.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        float volume = streamVolumeCurrent / streamVolumeMax;
+        /* Play the sound with the correct volume */
+        streamID = soundPool.play(footStepsSoundID, volume * 0.1f, volume * 0.1f, 1, 0, 1f);
+
+    }
+
+    private void stopFootSteps() {
+        soundPool.stop(streamID);
+    }
+
+    private void doFieldAction() {
         Intent minigameIntent = new Intent(this, MinigameStartActivity.class);
-        MinigameIdentifier currentFieldType = getGame().getMap().getFieldOfPlayer(getGame().getCurrentPlayer()).getType();
-        switch(currentFieldType){
-            case POINTS:
-                Player currentPlayer = getGame().getCurrentPlayer();
-                boolean negativePoints = r.nextBoolean();
-                int points = r.nextInt(MAX_SCORE_FIELD_POINTS + 1);
-                if(negativePoints)
-                    points = 0 - points;
-                currentPlayer.changeScoreBy(points);
-                Intent resultIntent = new Intent(this, MinigameResultActivity.class);
-                resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
-                resultIntent.putExtra(getString(R.string.pointskey), points);
-                startActivityForResult(resultIntent, RESULT_DISPLAYED);
-                break;
-            case RANDOM_MINIGAME:
-                int gameIndex = r.nextInt(mMinigames.size());
-                minigameIntent.putExtra(getString(R.string.minigameidkey), mMinigames.get(gameIndex));
-                startActivityForResult(minigameIntent, MINIGAME_FINISHED);
-                break;
-            default:
-                minigameIntent.putExtra(getString(R.string.minigameidkey), currentFieldType);
-                startActivityForResult(minigameIntent, MINIGAME_FINISHED);
-                break;
+        MinigameIdentifier currentFieldType = getGame().getMap()
+                                                       .getFieldOfPlayer(getGame().getCurrentPlayer())
+                                                       .getType();
+        switch (currentFieldType) {
+        case POINTS:
+            Player currentPlayer = getGame().getCurrentPlayer();
+            boolean negativePoints = r.nextBoolean();
+            int points = r.nextInt(MAX_SCORE_FIELD_POINTS + 1);
+            if (negativePoints)
+                points = 0 - points;
+            currentPlayer.changeScoreBy(points);
+            Intent resultIntent = new Intent(this, MinigameResultActivity.class);
+            resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
+            resultIntent.putExtra(getString(R.string.pointskey), points);
+            startActivityForResult(resultIntent, RESULT_DISPLAYED);
+            break;
+        case RANDOM_MINIGAME:
+            int gameIndex = r.nextInt(mMinigames.size());
+            minigameIntent.putExtra(getString(R.string.minigameidkey), mMinigames.get(gameIndex));
+            startActivityForResult(minigameIntent, MINIGAME_FINISHED);
+            break;
+        default:
+            minigameIntent.putExtra(getString(R.string.minigameidkey), currentFieldType);
+            startActivityForResult(minigameIntent, MINIGAME_FINISHED);
+            break;
         }
     }
 
@@ -188,24 +220,41 @@ public class GameBoardActivity extends BaseGameActivity {
         int cameraHeight = display.getHeight();
 
         Camera camera = new Camera(0, 0, 800, 480);
-        return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE, new RatioResolutionPolicy(cameraWidth,
-                cameraHeight), camera));
+        return new Engine(new EngineOptions(true,
+                                            ScreenOrientation.LANDSCAPE,
+                                            new RatioResolutionPolicy(cameraWidth, cameraHeight),
+                                            camera));
     }
 
     @Override
     public void onLoadResources() {
         String boardImage = getGame().getMap().getBoardImage();
 
-        BitmapTextureAtlas bitmapTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
-        
-        this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas, this,
-                boardImage, 0, 0);
-        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas,
-                this, "face_box_tiled.png", 132, 180, 2, 1);
-        this.jambitBeanTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bitmapTextureAtlas, this,
-                "jambitbean.png", 0, 0);
+        BitmapTextureAtlas backgroundTextureAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
+        BitmapTextureAtlas playerTextureAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR);
+        BitmapTextureAtlas jambitTextureAtlas = new BitmapTextureAtlas(64, 64, TextureOptions.BILINEAR);
 
-        this.mEngine.getTextureManager().loadTexture(bitmapTextureAtlas);
+        this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backgroundTextureAtlas,
+                                                                                        this,
+                                                                                        boardImage,
+                                                                                        0,
+                                                                                        0);
+        this.playerSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(playerTextureAtlas,
+                                                                                               this,
+                                                                                               "face_box_tiled.png",
+                                                                                               0,
+                                                                                               0,
+                                                                                               2,
+                                                                                               1);
+        this.jambitBeanTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(jambitTextureAtlas,
+                                                                                        this,
+                                                                                        "jambitbean.png",
+                                                                                        0,
+                                                                                        0);
+
+        this.mEngine.getTextureManager().loadTexture(backgroundTextureAtlas);
+        this.mEngine.getTextureManager().loadTexture(playerTextureAtlas);
+        this.mEngine.getTextureManager().loadTexture(jambitTextureAtlas);
 
         BitmapTextureAtlas fontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         this.playerNameFont = new Font(fontTexture,
@@ -216,6 +265,11 @@ public class GameBoardActivity extends BaseGameActivity {
 
         this.mEngine.getTextureManager().loadTexture(fontTexture);
         this.mEngine.getFontManager().loadFont(this.playerNameFont);
+
+        soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+
+        footStepsSoundID = soundPool.load(this, R.raw.footsteps, 1);
+
     }
 
     @Override
@@ -288,10 +342,9 @@ public class GameBoardActivity extends BaseGameActivity {
             currentPlayer.setPosition(currentPlayer.getPosition() + diceResult);
             int newPosition = currentPlayer.getPosition();
             movePlayer(currentPlayer, oldPosition, newPosition);
-        }
-        else if(requestCode == MINIGAME_FINISHED){
+        } else if (requestCode == MINIGAME_FINISHED) {
             int points = 0;
-            if(data != null){
+            if (data != null) {
                 points = data.getExtras().getInt(getString(R.string.game_result));
                 currentPlayer.changeScoreBy(points);
             } else
@@ -303,9 +356,8 @@ public class GameBoardActivity extends BaseGameActivity {
             resultIntent.putExtra(getString(R.string.playerkey), currentPlayer);
             resultIntent.putExtra(getString(R.string.pointskey), points);
             startActivityForResult(resultIntent, RESULT_DISPLAYED);
-        }
-        else if(requestCode == RESULT_DISPLAYED){
-            if(gameState.getRoundsPlayed() < gameState.getTotalRounds()){
+        } else if (requestCode == RESULT_DISPLAYED) {
+            if (gameState.getRoundsPlayed() < gameState.getTotalRounds()) {
                 gameState.nextPlayer();
                 showReadyToDiceOverlay();
             } else {
@@ -313,8 +365,7 @@ public class GameBoardActivity extends BaseGameActivity {
                 Intent resultIntent = new Intent(this, FinalResultsActivity.class);
                 startActivityForResult(resultIntent, END_OF_GAME);
             }
-        }
-        else if(requestCode == END_OF_GAME){
+        } else if (requestCode == END_OF_GAME) {
             setResult(RESULT_OK);
             finish();
         }

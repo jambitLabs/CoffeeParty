@@ -1,5 +1,7 @@
 package com.jambit.coffeeparty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -80,7 +82,7 @@ public class DiceRollActivity extends BaseGameActivity implements SensorEventLis
 
     private static final FixtureDef WALL_FIXTURE_DEF = PhysicsFactory.createFixtureDef(0, 0.2f, 0.2f);
     private float[] gravities = { 0f, 0f, 0f };
-    private Body groundWall;
+    private List<Body> walls = new ArrayList();
     private boolean disableTrigger = false;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -154,7 +156,7 @@ public class DiceRollActivity extends BaseGameActivity implements SensorEventLis
             public void run() {
                 finishDiceRoll();
             }
-        }, 5000);
+        }, 3000);
     }
 
     private void playRollSound() {
@@ -256,10 +258,10 @@ public class DiceRollActivity extends BaseGameActivity implements SensorEventLis
         scene.attachChild(diceSprite);
 
         // outer walls
-        groundWall = createWall(0, cameraHeight - 2, cameraWidth, 2, scene, WALL_FIXTURE_DEF);
-        createWall(0, 0, cameraWidth, 2, scene, WALL_FIXTURE_DEF);
-        createWall(0, 0, 2, cameraHeight, scene, WALL_FIXTURE_DEF);
-        createWall(cameraWidth - 2, 0, 2, cameraHeight, scene, WALL_FIXTURE_DEF);
+        walls.add(createWall(0, cameraHeight - 2, cameraWidth, 2, scene, WALL_FIXTURE_DEF));
+        walls.add(createWall(0, 0, cameraWidth, 2, scene, WALL_FIXTURE_DEF));
+        walls.add(createWall(0, 0, 2, cameraHeight, scene, WALL_FIXTURE_DEF));
+        walls.add(createWall(cameraWidth - 2, 0, 2, cameraHeight, scene, WALL_FIXTURE_DEF));
 
         createLineBody(100, 200, 125, 450, scene);
         createLineBody(300, 200, 275, 450, scene);
@@ -292,7 +294,7 @@ public class DiceRollActivity extends BaseGameActivity implements SensorEventLis
     @Override
     public void beginContact(Contact contact) {
         playRollSound();
-        if (contact.getFixtureA().getBody().equals(groundWall) || contact.getFixtureB().getBody().equals(groundWall)) {
+        if (walls.contains(contact.getFixtureA().getBody()) || walls.contains(contact.getFixtureB().getBody())) {
             // end dice activity
             if (!disableTrigger) {
                 disableAccelerometerSensor();
