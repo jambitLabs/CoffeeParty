@@ -1,10 +1,12 @@
 package com.jambit.coffeeparty;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.anddev.andengine.audio.sound.Sound;
 import org.anddev.andengine.audio.sound.SoundFactory;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
+import org.anddev.andengine.entity.Entity;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.sprite.AnimatedSprite;
@@ -27,7 +29,7 @@ import com.jambit.coffeeparty.clapyourhandsgame.ClapDetector.ClapDetectorListene
 
 public class MinigameClapYourHands extends MinigameBaseActivity implements ClapDetectorListener {
 
-    private class SemiBeat {
+    private static class SemiBeat {
         private boolean hit = false;
 
         public SemiBeat(boolean hit) {
@@ -44,7 +46,7 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
         }
     }
 
-    private class Beat {
+    private static class Beat {
         private ArrayList<SemiBeat> semiBeats = new ArrayList<SemiBeat>();
 
         public Beat(String beatAsString) {
@@ -85,10 +87,17 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
     private enum CurrentState {
         PLAYING, RECORDING
     };
+    
+    private static Beat[] BEATZ = { 
+        new Beat("* * * * "), 
+        new Beat("*   * * *   *   "), 
+        new Beat("* * *   * * *   ") 
+    };
 
     private CurrentState state = CurrentState.PLAYING;
 
-    private Beat currentBeat = new Beat("*   * * *   *   ");
+    private int currentBeatzIndex = -1;
+    private Beat currentBeat = new Beat(1);
     private Beat recordedBeat;
     float semiBeatsPerMinute = 80.0f * 4.0f;
     private int currentSemiBeatIndex = -8;
@@ -98,12 +107,17 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
     private TiledTextureRegion dotTexture;
     private TiledTextureRegion dot2Texture;
     private AnimatedSprite playHeadSprite;
+    private List<Entity> temporaryEntities = new ArrayList<Entity>();
 
     private Sound tickSound;
 
     @Override
     public Scene onLoadScene() {
         final Scene scene = super.onLoadScene();
+
+        PointF semiBeatPosition = getPositionForSemiBeat(currentSemiBeatIndex);
+        playHeadSprite = new AnimatedSprite(semiBeatPosition.x, semiBeatPosition.y + 20, dot2Texture);
+        scene.attachChild(playHeadSprite);
 
         mEngine.registerUpdateHandler(new IUpdateHandler() {
 
@@ -140,6 +154,7 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
 
         PointF semiBeatPosition = getPositionForSemiBeat(currentSemiBeatIndex);
         playHeadSprite.setPosition(semiBeatPosition.x, semiBeatPosition.y + 20);
+        playHeadSprite.setCurrentTileIndex(currentBeat.isHit(currentSemiBeatIndex) ? 1 : 0);
 
         if (state == CurrentState.PLAYING) {
             if (currentBeat.isHit(currentSemiBeatIndex))
@@ -148,6 +163,10 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
             if (currentSemiBeatIndex == currentBeat.numSemiBeats() - 1)
                 switchToRecordingState();
         } else if (state == CurrentState.RECORDING) {
+            if (currentBeat.isHit(currentSemiBeatIndex - 1) && !recordedBeat.isHit(currentSemiBeatIndex - 1)) {
+                reduceScore(3);
+            }
+            
             if (currentSemiBeatIndex == currentBeat.numSemiBeats() - 1)
                 switchToPlayingState();
         }
@@ -163,12 +182,19 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
     }
 
     private void switchToPlayingState() {
-        currentSemiBeatIndex = -8;
-
-        // TODO: Create a new Beat
+        currentBeatzIndex++;
+        if (currentBeatzIndex >= BEATZ.length)
+        {
+            super.onGameFinished();
+            return;
+        }        
+        currentBeat = BEATZ[currentBeatzIndex];
         recordedBeat = new Beat(currentBeat.numSemiBeats());
 
+        currentSemiBeatIndex = -8;
+
         mEngine.getScene().setBackground(new ColorBackground(0, 0, 0.8784f));
+        removeTemporaryEntities(mEngine.getScene());
         drawBeat(mEngine.getScene());
 
         state = CurrentState.PLAYING;
@@ -180,20 +206,26 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
         float xScale = (mCamera.getWidth() - 2 * xMargin) / currentBeat.numSemiBeats();
         return new PointF(xMargin + semiBeatIndex * xScale, yMargin);
     }
+    
+    private void removeTemporaryEntities(Scene scene)
+    {
+        for (Entity entity : temporaryEntities) {
+            scene.detachChild(entity);
+        }
+        temporaryEntities.clear();
+    }
 
     private void drawBeat(Scene scene) {
-        scene.detachChildren();
+        
         for (int semiBeatIndex = 0; semiBeatIndex < currentBeat.numSemiBeats(); semiBeatIndex++) {
             if (currentBeat.isHit(semiBeatIndex))
             {
                 PointF semiBeatPosition = getPositionForSemiBeat(semiBeatIndex);
-                scene.attachChild(new AnimatedSprite(semiBeatPosition.x, semiBeatPosition.y, dotTexture));
+                AnimatedSprite semiBeatSprite = new AnimatedSprite(semiBeatPosition.x, semiBeatPosition.y, dotTexture);
+                temporaryEntities.add(semiBeatSprite);
+                scene.attachChild(semiBeatSprite);
             }
         }
-
-        PointF semiBeatPosition = getPositionForSemiBeat(currentSemiBeatIndex);
-        playHeadSprite = new AnimatedSprite(semiBeatPosition.x, semiBeatPosition.y + 20, dot2Texture);
-        mEngine.getScene().attachChild(playHeadSprite);
     }
 
     @Override
@@ -205,7 +237,7 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
         this.dotTexture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas, this,
                 "dot.png", 0, 0, 2, 1);
         this.dot2Texture = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(bitmapTextureAtlas, this,
-                "dot2.png", 0, 0, 2, 1);
+                "dot2.png", 0, 40, 2, 1);
 
         this.mEngine.getTextureManager().loadTexture(bitmapTextureAtlas);
 
@@ -235,16 +267,28 @@ public class MinigameClapYourHands extends MinigameBaseActivity implements ClapD
     public void onClapDetected(double time) {
 
         int newSemiBeat = (int) (time / 60 * semiBeatsPerMinute);
-        Log.d("clap", "onClapDetected at beat index " + currentSemiBeatIndex + " newSemiBeat=" + newSemiBeat);
+//        Log.d("clap", "onClapDetected at beat index " + currentSemiBeatIndex + " newSemiBeat=" + newSemiBeat);
         
         if (state == CurrentState.RECORDING) {
             if (currentSemiBeatIndex >= 0 && currentSemiBeatIndex < currentBeat.numSemiBeats()) {
-                recordedBeat.setHit(currentSemiBeatIndex, true);
-                PointF semiBeatPosition = getPositionForSemiBeat(currentSemiBeatIndex);
+                boolean alreadyClapped = recordedBeat.isHit(currentSemiBeatIndex);
                 
-                AnimatedSprite clapIndicator = new AnimatedSprite(semiBeatPosition.x, semiBeatPosition.y + 40, dotTexture);
-                clapIndicator.setCurrentTileIndex(currentBeat.isHit(currentSemiBeatIndex) ? 1 : 0);
-                mEngine.getScene().attachChild(clapIndicator);
+                if (!alreadyClapped)
+                {
+                    boolean wasCorrect = currentBeat.isHit(currentSemiBeatIndex);
+                    recordedBeat.setHit(currentSemiBeatIndex, true);
+                    PointF semiBeatPosition = getPositionForSemiBeat(currentSemiBeatIndex);
+                    
+                    AnimatedSprite clapIndicator = new AnimatedSprite(semiBeatPosition.x, semiBeatPosition.y + 40, dotTexture);
+                    clapIndicator.setCurrentTileIndex(wasCorrect ? 1 : 0);
+                    mEngine.getScene().attachChild(clapIndicator);
+                    temporaryEntities.add(clapIndicator);
+
+                    if (!wasCorrect)
+                        reduceScore(3);
+                    else
+                        addScore(5);
+                }
             }
         }
     }
