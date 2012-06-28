@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.jambit.coffeeparty.model.Player;
 
@@ -31,7 +32,8 @@ public class HighscoreDataSource {
 		dbHelper.close();
 	}
 	
-	public HashMap<Player, Integer> storeHighscore(Player[] players) {
+	public HashMap<Player, Integer> storeHighscore(List<Player> playersList) {
+		Player[] players = (Player[]) playersList.toArray();
 		float[] rowIds = new float[players.length];
 		HashMap<Player, Integer> toReturn = new HashMap<Player, Integer>();
 		
@@ -59,6 +61,11 @@ public class HighscoreDataSource {
 		}
 		cursor.close();
 		return -1;
+	}
+	
+	public int addPlayerToScores(Player p) {
+		float id = storeHighscore(p);
+		return getRankForId(id);
 	}
 	
 	private float storeHighscore (Player p) {

@@ -1,6 +1,8 @@
 package com.jambit.coffeeparty;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -29,6 +31,7 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -36,6 +39,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 
+import com.jambit.coffeeparty.db.HighscoreDataSource;
 import com.jambit.coffeeparty.model.Field;
 import com.jambit.coffeeparty.model.Game;
 import com.jambit.coffeeparty.model.Map;
@@ -283,7 +287,12 @@ public class GameBoardActivity extends BaseGameActivity {
         Player currentPlayer = gameState.getCurrentPlayer();
 
         if (requestCode == DICE_ROLLED) {
-            int diceResult = data.getExtras().getInt(getString(R.string.dice_result));
+        	int diceResult;
+        	if (resultCode != Activity.RESULT_OK) {
+        		diceResult = 1; //in case a player presses the back button
+        	} else {
+        		diceResult = data.getExtras().getInt(getString(R.string.dice_result));	
+        	}
             int oldPosition = currentPlayer.getPosition();
             currentPlayer.setPosition(currentPlayer.getPosition() + diceResult);
             int newPosition = currentPlayer.getPosition();
@@ -310,6 +319,19 @@ public class GameBoardActivity extends BaseGameActivity {
                 showReadyToDiceOverlay();
             } else {
                 Log.d("GAME_BOARD", "End of game");
+                // already sort here so the returned rank is not changed
+                
+                Game game = getGame();
+                Collections.sort(game.getPlayers());
+                Collections.reverse(game.getPlayers());
+                
+                HighscoreDataSource dataSource = new HighscoreDataSource(this);
+                dataSource.openForWriting();
+                for (Player p : game.getPlayers()) {
+                	int rank = dataSource.addPlayerToScores(p);
+                	p.setRank(rank);
+                }
+                dataSource.close();
                 Intent resultIntent = new Intent(this, FinalResultsActivity.class);
                 startActivityForResult(resultIntent, END_OF_GAME);
             }
@@ -320,6 +342,14 @@ public class GameBoardActivity extends BaseGameActivity {
         }
 
         getPlayerSpriteForPlayer(currentPlayer).updatePoints();
+    }
+    
+    private HashMap<Player, Integer> storeResultsInDatabaseForRanks() {
+    	HighscoreDataSource dataSource = new HighscoreDataSource(this);
+    	dataSource.openForWriting();
+    	HashMap<Player, Integer> hashMap = dataSource.storeHighscore(getGame().getPlayers());
+    	dataSource.close();
+    	return hashMap;
     }
 
     @Override
