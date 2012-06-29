@@ -79,10 +79,10 @@ public class BallMazeMinigame extends MinigameBaseActivity implements IAccelerom
         scene.attachChild(ballSprite);
 
         // outer walls
-        createWall(0, cameraHeight - 25, cameraWidth, 25, scene, WALL_FIXTURE_DEF);
-        createWall(0, 0, cameraWidth, 25, scene, WALL_FIXTURE_DEF);
-        createWall(0, 0, 25, cameraHeight, scene, WALL_FIXTURE_DEF);
-        createWall(cameraWidth - 25, 0, 25, cameraHeight, scene, WALL_FIXTURE_DEF);
+        createWall(0, 480 - 25, 800, 25, scene, WALL_FIXTURE_DEF);
+        createWall(0, 0, 800, 25, scene, WALL_FIXTURE_DEF);
+        createWall(0, 0, 25, 480, scene, WALL_FIXTURE_DEF);
+        createWall(800 - 25, 0, 25, 480, scene, WALL_FIXTURE_DEF);
 
         //
         createWall(90, 25, 40, 60, scene, WALL_FIXTURE_DEF);
