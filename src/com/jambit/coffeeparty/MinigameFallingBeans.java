@@ -183,7 +183,7 @@ public class MinigameFallingBeans extends MinigameBaseActivity implements IAccel
         public boolean isInsideCup(){
             // calc only if not in cup already
             if(!this.mInsideCup)
-                this.mInsideCup = areCoordinatesInsideSprite(this.getX(), this.getY(), mCupSprite);
+                this.mInsideCup = areCoordinatesInsideSprite(this.getX(), this.getY(), mCupSprite, false);
             return this.mInsideCup;
         }
         

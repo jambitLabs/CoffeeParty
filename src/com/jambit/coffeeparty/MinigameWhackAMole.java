@@ -183,7 +183,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             for (Mole mole : moles) {
-                if (areCoordinatesInsideSprite(event.getX(), event.getY(), mole.sprite)) {
+                if (areCoordinatesInsideSprite(event.getX(), event.getY(), mole.sprite, true)) {
                 	mole.hit();
                     addScore(1);
                     updateScoreDisplay();
