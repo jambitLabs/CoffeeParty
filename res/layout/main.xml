@@ -6,7 +6,7 @@
     android:background="@drawable/kaffeebohnen"
     android:gravity="bottom|right"
     android:orientation="vertical"
-    android:scaleType="fitCenter" android:paddingTop="30dp">
+    android:scaleType="fitCenter" android:paddingTop="25dp">
 
     <TextView
         android:id="@+id/TextView1"
@@ -16,7 +16,7 @@
         android:background="@drawable/toast_frame"
         android:text="@string/hello"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ffffffff" android:layout_alignParentRight="true" android:layout_marginBottom="20dp"/>
+        android:textColor="#ffffffff" android:layout_alignParentRight="true" android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/newGame"
@@ -25,23 +25,28 @@
         android:layout_below="@+id/TextView1"
         android:onClick="onStartNewGame"
         android:text="@string/newGameButton"/>
+    
+    <Button
+        android:id="@+id/resumeGame"
+		style="@style/MenuButtonStyle"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/newGame"
+        android:onClick="onResumeGame"
+        android:text="@string/resumeGameButton"/>
 
     <Button
         android:id="@+id/showHighscoreButton"
         style="@style/MenuButtonStyle"
-
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/newGame"
+        android:layout_below="@+id/resumeGame"
         android:onClick="onShowHighscores"
         android:text="@string/highscores" />
-
-
 
     <Button
         android:id="@+id/debugButton"
         style="@style/MenuButtonStyle"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/showHighscoreButton"
         android:onClick="onDebugButton"
         android:text="@string/debugging_options"
         android:textAppearance="?android:attr/textAppearanceSmall" />
