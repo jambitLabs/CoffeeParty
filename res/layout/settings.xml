@@ -2,13 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
+    android:orientation="vertical">
+	
+    <RelativeLayout
+        android:orientation="horizontal"
+        layout_width="wrap_content"
+        layout_height="wrap_content"
+        >
     <TextView
+        android:id="@+id/TextViewRounds"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/numRounds" />
+        android:text="@string/numRounds"
+        android:layout_alignParentTop="true" />
 
     <EditText
         android:id="@+id/inputRounds"
@@ -17,18 +24,29 @@
         android:inputType="number"
         android:text="@string/defaultrounds"
         android:hint="@string/numRounds"
-        android:imeOptions="actionDone" />
+        android:imeOptions="actionDone"
+        android:layout_toRightOf="@+id/TextViewRounds" />
+    </RelativeLayout>
     
+    <RelativeLayout
+        android:orientation="horizontal"
+        layout_width="wrap_content"
+        layout_height="wrap_content"
+        >
     <TextView
+        android:id="@+id/TextViewMap"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/choose_map"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/TextViewRounds" />
     
     <Spinner 
 		android:id="@+id/mapChoices"
 		android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/TextViewMap" />
+    </RelativeLayout>
     
     <Button
        android:id="@+id/buttonSettingsOk"
