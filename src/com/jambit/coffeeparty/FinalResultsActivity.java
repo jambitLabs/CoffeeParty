@@ -1,7 +1,5 @@
 package com.jambit.coffeeparty;
 
-import java.util.Collections;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.media.MediaPlayer;
