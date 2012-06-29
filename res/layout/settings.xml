@@ -2,20 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
-	
-    <RelativeLayout
-        android:orientation="horizontal"
-        layout_width="wrap_content"
-        layout_height="wrap_content"
-        >
+    android:orientation="vertical" >
+
     <TextView
-        android:id="@+id/TextViewRounds"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/numRounds"
-        android:layout_alignParentTop="true" />
+        android:text="@string/numRounds" />
 
     <EditText
         android:id="@+id/inputRounds"
@@ -24,29 +17,18 @@
         android:inputType="number"
         android:text="@string/defaultrounds"
         android:hint="@string/numRounds"
-        android:imeOptions="actionDone"
-        android:layout_toRightOf="@+id/TextViewRounds" />
-    </RelativeLayout>
+        android:imeOptions="actionDone" />
     
-    <RelativeLayout
-        android:orientation="horizontal"
-        layout_width="wrap_content"
-        layout_height="wrap_content"
-        >
     <TextView
-        android:id="@+id/TextViewMap"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/choose_map"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_below="@+id/TextViewRounds" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
     
     <Spinner 
 		android:id="@+id/mapChoices"
 		android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/TextViewMap" />
-    </RelativeLayout>
+        android:layout_height="wrap_content" />
     
     <Button
        android:id="@+id/buttonSettingsOk"
@@ -54,6 +36,5 @@
        android:layout_height="wrap_content"
        android:text="@string/button_confirm"
        android:onClick="onButtonConfirmClicked" />
-<!--        style="@android:style/Widget.Button.Transparent" /> -->
 
 </LinearLayout>
