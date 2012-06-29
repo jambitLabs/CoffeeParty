@@ -83,8 +83,6 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
     private TextureRegion backgroundTexture;
     private TextureRegion particleTexture;
     
-    private ParticleSystem particleSystem;
-    
     private List<Mole> moles;
 
     public Scene onLoadScene() {
@@ -142,6 +140,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
         BitmapTextureAtlas moleAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         BitmapTextureAtlas holeAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         BitmapTextureAtlas bgAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
+        BitmapTextureAtlas particleAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR);
         
         this.moleTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(moleAtlas, this, "jambitbean_big.png", 0, 0);
         this.holeSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(holeAtlas,
@@ -150,7 +149,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
                                                                                         0,
                                                                                         0);
         this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bgAtlas, this, "mole_hills.jpg", 0, 0);
-        this.particleTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bgAtlas, this, "jambitbean.png", 0, 0);
+        this.particleTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(particleAtlas, this, "jambitbean.png", 0, 0);
 
         this.mEngine.getTextureManager().loadTexture(moleAtlas);
         this.mEngine.getTextureManager().loadTexture(holeAtlas);
