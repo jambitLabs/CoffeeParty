@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,11 +59,17 @@ public class ImageAdapter extends BaseAdapter {
 
         ImageView imageView = new ImageView(mContext);
         imageView.setId(IMAGEVIEW_ID);
+        LayoutParams params = parent.getLayoutParams();
+        params.height = LayoutParams.FILL_PARENT;
+        params.width = LayoutParams.WRAP_CONTENT;
+        imageView.setLayoutParams(params);
 
         imageView.setImageBitmap(bitmaps.get(position));
         FrameLayout borderImg = new FrameLayout(mContext);
+
         borderImg.setPadding(1, 1, 1, 1);
         borderImg.setBackgroundResource(R.drawable.avatarbackground);
+
         borderImg.addView(imageView);
 
         return borderImg;
