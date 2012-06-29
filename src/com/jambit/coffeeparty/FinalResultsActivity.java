@@ -27,9 +27,6 @@ public class FinalResultsActivity extends ListActivity {
         setContentView(R.layout.final_results);
         
         Game game = ((CoffeePartyApplication)getApplication()).getGameState();
-        // determine order of players: highest score first (reverse natural ordering)
-        Collections.sort(game.getPlayers());
-        Collections.reverse(game.getPlayers());
         
         ArrayAdapter<Player> adapter = new ArrayAdapter<Player>(this, R.layout.ranking_entry, game.getPlayers()){
             
@@ -61,7 +58,7 @@ public class FinalResultsActivity extends ListActivity {
                               tt.setText("Player: " + p.getName());  
                         
                         if(bt != null)
-                              bt.setText("Score: " + p.getScore());
+                              bt.setText("Score: " + p.getScore() + ", Global Rank: " + p.getRank());
                         
                         if(img != null)
                             img.setImageBitmap(p.getAvatar());

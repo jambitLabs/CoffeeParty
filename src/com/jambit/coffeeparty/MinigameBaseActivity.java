@@ -11,6 +11,7 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
+import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.entity.text.ChangeableText;
 import org.anddev.andengine.entity.util.FPSLogger;
@@ -109,7 +110,7 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
         return new Engine(new EngineOptions(true,
                                             ScreenOrientation.LANDSCAPE,
                                             new RatioResolutionPolicy(cameraWidth, cameraHeight),
-                                            this.mCamera));
+                                            this.mCamera).setNeedsSound(true));
     }
 
     @Override
@@ -178,9 +179,16 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
     }
 
     protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite) {
-    	if (posX >= sprite.getX() && posX < sprite.getX() + sprite.getWidth() * sprite.getScaleX() && posY >= sprite.getY()
-                && posY < sprite.getY() + sprite.getHeight() * sprite.getScaleY()) {
-    		Log.d("HIT", "hit");
+    	
+    	float realXMin = sprite.getX() + (sprite.getWidth() - sprite.getWidthScaled()) / 2;
+    	float realYMin = sprite.getY() + (sprite.getHeight() - sprite.getHeightScaled()) / 2;
+    	
+    	float realXMax = realXMin + sprite.getWidthScaled();
+    	float realYMax = realYMin + sprite.getHeightScaled();
+    	
+    	
+    	if (posX >= realXMin && posX < realXMax && 
+    			posY >= realYMin && posY < realYMax) {
             return true;
         } else {
             return false;

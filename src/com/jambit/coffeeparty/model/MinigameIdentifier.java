@@ -2,6 +2,7 @@ package com.jambit.coffeeparty.model;
 
 import com.jambit.coffeeparty.BallMazeMinigame;
 import com.jambit.coffeeparty.CatchGameActivity;
+import com.jambit.coffeeparty.MinigameClapYourHands;
 import com.jambit.coffeeparty.MinigameFallingBeans;
 import com.jambit.coffeeparty.MinigameWhackAMole;
 
@@ -34,7 +35,14 @@ public enum MinigameIdentifier {
             return "Falling Beans";
         }
     },
-
+    
+	MINI_GAME_IDENTIFIER_CLAPYOURHANDS("Clap your hands", MinigameClapYourHands.class) {
+        @Override
+        public String toString() {
+            return "Clap your hands";
+        }
+    },
+    
     RANDOM_MINIGAME("Random minigame", null) {
         @Override
         public String toString() {

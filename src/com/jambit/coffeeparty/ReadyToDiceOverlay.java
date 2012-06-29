@@ -18,7 +18,7 @@ import android.util.Log;
 
 public class ReadyToDiceOverlay extends Entity {
 
-    private static final String GET_READY = "Get ready :";
+    private static final String GET_READY = "Get ready: ";
     private Sprite diceButtonSprite;
     private Sprite overlaySprite;
     private float pX = 0;
@@ -83,9 +83,9 @@ public class ReadyToDiceOverlay extends Entity {
         BitmapTextureAtlas fontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         this.playerNameFont = new Font(fontTexture,
                                        Typeface.create(Typeface.DEFAULT, Typeface.BOLD),
-                                       20,
+                                       25,
                                        true,
-                                       Color.BLACK);
+                                       Color.WHITE);
 
         context.getEngine().getTextureManager().loadTexture(fontTexture);
         context.getEngine().getFontManager().loadFont(this.playerNameFont);
