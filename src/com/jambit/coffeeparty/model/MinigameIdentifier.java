@@ -14,10 +14,10 @@ public enum MinigameIdentifier {
         }
     },
 
-    MINI_GAME_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class) {
+    MINI_GAME_CATCHTHEFLY("Try to catch the bumble-bee as fast as you can!", CatchGameActivity.class) {
         @Override
         public String toString() {
-            return "Catch-The-Fly";
+            return "Catch-The-Bumble-Bee";
         }
     },
 
