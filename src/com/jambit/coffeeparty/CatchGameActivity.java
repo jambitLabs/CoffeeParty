@@ -50,8 +50,8 @@ public class CatchGameActivity extends MinigameBaseActivity {
     }
 
     private void jumpToNewLocation() {
-        int newX = new Random().nextInt((int) (mCamera.getWidth() - thingToCatchSprite.getWidth()));
-        int newY = new Random().nextInt((int) (mCamera.getHeight() - thingToCatchSprite.getHeight()));
+        int newX = random.nextInt((int) (mCamera.getWidth() - thingToCatchSprite.getWidth()));
+        int newY = random.nextInt((int) (mCamera.getHeight() - thingToCatchSprite.getHeight()));
 
         thingToCatchSprite.registerEntityModifier(new MoveModifier(0.1f, thingToCatchSprite.getX(), newX,
                 thingToCatchSprite.getY(), newY, EaseSineInOut.getInstance()));
@@ -135,7 +135,6 @@ public class CatchGameActivity extends MinigameBaseActivity {
         scene.setBackground(new SpriteBackground(new Sprite(0, 0, backgroundTexture)));
 
         thingToCatchSprite = new Sprite(100, 100, theThingToCatchTexture);
-        thingToCatchSprite.setSize(50, 50);
         scene.attachChild(thingToCatchSprite);
 
         jumpToNewLocation();
