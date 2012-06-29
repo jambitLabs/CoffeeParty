@@ -110,6 +110,7 @@ public class GameBoardActivity extends BaseGameActivity {
     }
 
     private List<PlayerSprite> playerSprites = new ArrayList<PlayerSprite>();
+    private List<TextureRegion> fieldTextures = new ArrayList<TextureRegion>();
     private Scene mainScene;
     private ReadyToDiceOverlay readyToDiceOverlay;
 
@@ -207,7 +208,7 @@ public class GameBoardActivity extends BaseGameActivity {
 
         this.mEngine.getTextureManager().loadTexture(bitmapTextureAtlas);
 
-        BitmapTextureAtlas fontTexture = new BitmapTextureAtlas(256, 256, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        BitmapTextureAtlas fontTexture = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         this.playerNameFont = new Font(fontTexture,
                                        Typeface.create(Typeface.DEFAULT, Typeface.BOLD),
                                        20,
@@ -216,6 +217,15 @@ public class GameBoardActivity extends BaseGameActivity {
 
         this.mEngine.getTextureManager().loadTexture(fontTexture);
         this.mEngine.getFontManager().loadFont(this.playerNameFont);
+        
+        Map map = getGame().getMap();
+        for(Field field : map.getBoard()){
+            BitmapTextureAtlas iconAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+            TextureRegion iconTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(iconAtlas, this, 
+                    field.getIconName(), field.getX() + map.getFieldIconOffsetX(), field.getY() + map.getFieldIconOffsetY());
+            this.mEngine.getTextureManager().loadTexture(iconAtlas);
+            fieldTextures.add(iconTexture);
+        }
     }
 
     @Override
@@ -230,6 +240,11 @@ public class GameBoardActivity extends BaseGameActivity {
 
         createPlayers(mainScene);
         placePlayers();
+        
+        for(TextureRegion iconTexture : fieldTextures){
+            Sprite iconSprite = new Sprite(iconTexture.getTexturePositionX(), iconTexture.getTexturePositionY(), iconTexture);
+            mainScene.attachChild(iconSprite);
+        }
 
         mainScene.setTouchAreaBindingEnabled(true);
         readyToDiceOverlay = new ReadyToDiceOverlay(this, mainScene);
