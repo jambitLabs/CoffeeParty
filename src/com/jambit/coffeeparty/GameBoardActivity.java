@@ -92,7 +92,7 @@ public class GameBoardActivity extends BaseGameActivity {
             this.figureNameText = new Text(0, -20, playerNameFont, player.getName());
             this.attachChild(figureNameText);
 
-            this.playerPointsText = new ChangeableText(25, 0, playerNameFont, "0       ");
+            this.playerPointsText = new ChangeableText(25, 0, playerNameFont, this.player.getScore() + "       ");
             this.attachChild(playerPointsText);
 
             this.bean = new Sprite(5, 5, jambitBeanTexture);
@@ -297,7 +297,6 @@ public class GameBoardActivity extends BaseGameActivity {
         mainScene.setBackground(new SpriteBackground(new Sprite(0, 0, backgroundTexture)));
 
         createPlayers(mainScene);
-        placePlayers();
         
         for(TextureRegion iconTexture : fieldTextures){
             Sprite iconSprite = new Sprite(iconTexture.getTexturePositionX(), iconTexture.getTexturePositionY(), iconTexture);
@@ -329,14 +328,6 @@ public class GameBoardActivity extends BaseGameActivity {
             PlayerSprite playerSprite = new PlayerSprite(player, fieldOfPlayer.getX(), fieldOfPlayer.getY());
             playerSprites.add(playerSprite);
             scene.attachChild(playerSprite);
-        }
-    }
-
-    private void placePlayers() {
-        Game gameState = getGame();
-
-        for (Player player : gameState.getPlayers()) {
-            movePlayer(player, 0, 0);
         }
     }
 

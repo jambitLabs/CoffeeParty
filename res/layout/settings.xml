@@ -7,6 +7,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/numRounds" />
 
     <EditText
@@ -17,6 +18,12 @@
         android:text="@string/defaultrounds"
         android:hint="@string/numRounds"
         android:imeOptions="actionDone" />
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/choose_map"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
     
     <Spinner 
 		android:id="@+id/mapChoices"
@@ -29,5 +36,6 @@
        android:layout_height="wrap_content"
        android:text="@string/button_confirm"
        android:onClick="onButtonConfirmClicked" />
+<!--        style="@android:style/Widget.Button.Transparent" /> -->
 
 </LinearLayout>

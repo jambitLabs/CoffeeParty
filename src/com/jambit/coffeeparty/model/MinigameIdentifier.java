@@ -2,7 +2,6 @@ package com.jambit.coffeeparty.model;
 
 import com.jambit.coffeeparty.BallMazeMinigame;
 import com.jambit.coffeeparty.CatchGameActivity;
-import com.jambit.coffeeparty.MinigameClapYourHands;
 import com.jambit.coffeeparty.MinigameFallingBeans;
 import com.jambit.coffeeparty.MinigameWhackAMole;
 
@@ -15,10 +14,10 @@ public enum MinigameIdentifier {
         }
     },
 
-    MINI_GAME_CATCHTHEFLY("Try to catch the fly as fast as you can!", CatchGameActivity.class) {
+    MINI_GAME_CATCHTHEFLY("Try to catch the bumble-bee as fast as you can!", CatchGameActivity.class) {
         @Override
         public String toString() {
-            return "Catch-The-Fly";
+            return "Catch-The-Bumble-Bee";
         }
     },
 
@@ -36,12 +35,12 @@ public enum MinigameIdentifier {
         }
     },
     
-	MINI_GAME_IDENTIFIER_CLAPYOURHANDS("Clap your hands", MinigameClapYourHands.class) {
-        @Override
-        public String toString() {
-            return "Clap your hands";
-        }
-    },
+//	MINI_GAME_IDENTIFIER_CLAPYOURHANDS("Clap your hands", MinigameClapYourHands.class) {
+//        @Override
+//        public String toString() {
+//            return "Clap your hands";
+//        }
+//    },
     
     RANDOM_MINIGAME("Random minigame", null) {
         @Override

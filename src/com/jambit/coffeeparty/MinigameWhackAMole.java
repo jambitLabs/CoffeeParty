@@ -7,6 +7,12 @@ import java.util.Random;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.entity.modifier.ScaleModifier;
+import org.anddev.andengine.entity.particle.ParticleSystem;
+import org.anddev.andengine.entity.particle.emitter.PointParticleEmitter;
+import org.anddev.andengine.entity.particle.initializer.GravityInitializer;
+import org.anddev.andengine.entity.particle.initializer.VelocityInitializer;
+import org.anddev.andengine.entity.particle.modifier.AlphaModifier;
+import org.anddev.andengine.entity.particle.modifier.ExpireModifier;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.SpriteBackground;
 import org.anddev.andengine.entity.sprite.Sprite;
@@ -17,7 +23,6 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class MinigameWhackAMole extends MinigameBaseActivity {
@@ -76,6 +81,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
     private TextureRegion moleTexture;
     private TextureRegion holeSpriteTexture;
     private TextureRegion backgroundTexture;
+    private TextureRegion particleTexture;
     
     private List<Mole> moles;
 
@@ -111,7 +117,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
         for (Mole mole : moles) {
             scene.attachChild(mole.sprite);
         }
-        scene.registerUpdateHandler(new TimerHandler(0.2f, true, new ITimerCallback() {
+        scene.registerUpdateHandler(new TimerHandler(0.3f, true, new ITimerCallback() {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 Random r = new Random();
@@ -123,6 +129,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
                 }
             }
         }));
+
         startCountDownTimer(15);
         return scene;
     }
@@ -133,6 +140,8 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
         BitmapTextureAtlas moleAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         BitmapTextureAtlas holeAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
         BitmapTextureAtlas bgAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR);
+        BitmapTextureAtlas particleAtlas = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR);
+        
         this.moleTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(moleAtlas, this, "jambitbean_big.png", 0, 0);
         this.holeSpriteTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(holeAtlas,
                                                                                         this,
@@ -140,6 +149,7 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
                                                                                         0,
                                                                                         0);
         this.backgroundTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bgAtlas, this, "mole_hills.jpg", 0, 0);
+        this.particleTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(particleAtlas, this, "jambitbean.png", 0, 0);
 
         this.mEngine.getTextureManager().loadTexture(moleAtlas);
         this.mEngine.getTextureManager().loadTexture(holeAtlas);
@@ -173,15 +183,77 @@ public class MinigameWhackAMole extends MinigameBaseActivity {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             for (Mole mole : moles) {
-                if (areCoordinatesInsideSprite(event.getX(), event.getY(), mole.sprite)) {
+                if (areCoordinatesInsideSprite(event.getX(), event.getY(), mole.sprite, true)) {
                 	mole.hit();
                     addScore(1);
                     updateScoreDisplay();
                     soundPool.play(this.getRandomSoundID(), 1f, 1f, 1, 0, 1f);
+                    showParticles(event.getX(), event.getY());
                     break;
                 }
             }
         }
         return super.onTouchEvent(event);
+    }
+    
+    private ParticleSystem createParticleSystem (float particlesXSpawn, float particlesYSpawn, final TextureRegion particleTextureRegion) {
+
+        //Max & min rate are the maximum particles per second and the minimum particles per second.
+        final float maxRate = 100;
+        final float minRate = 80;
+
+        //This variable determines the maximum particles in the particle system.
+        final int maxParticles = 500;
+
+        //Particle emitter which will set all of the particles at a ertain point when they are initialized.
+        final PointParticleEmitter pointParticleEmtitter = new PointParticleEmitter(particlesXSpawn, particlesYSpawn);
+
+        //Creating the particle system.
+        final ParticleSystem particleSystem = new ParticleSystem(pointParticleEmtitter, maxRate, minRate, maxParticles, particleTextureRegion);
+
+        //And now, lets create the initiallizers and modifiers.
+        //Velocity initiallizer - will pick a random velocity from -20 to 20 on the x & y axes. Play around with this value.
+        particleSystem.addParticleInitializer(new VelocityInitializer(-1000, 1000, -1000, 1000));
+
+        //Acceleration initializer - gives all the particles the earth gravity (so they accelerate down).
+        particleSystem.addParticleInitializer(new GravityInitializer());
+
+        //And now, adding an alpha modifier, so particles slowly fade out. This makes a particle go from alpha = 1 to alpha = 0 in 3 seconds, starting exactly when the particle is spawned.
+        particleSystem.addParticleModifier(new AlphaModifier(1, 0, 0, 0.5f));
+
+        //Lastly, expire modifier. Make particles die after 3 seconds - their alpha reached 0.
+        particleSystem.addParticleModifier(new ExpireModifier(0.25f));
+
+        return particleSystem;
+
+    }
+    
+    private void showParticles(float x, float y) {
+    	final ParticleSystem particleSystem = createParticleSystem(x, y, particleTexture);
+    	
+    	final Scene scene = mEngine.getScene();
+    	
+    	if (particleSystem.hasParent()) {
+    		particleSystem.detachSelf();
+    	}
+    	particleSystem.setPosition(x, y);
+    	
+    	scene.attachChild(particleSystem);
+        
+        scene.registerUpdateHandler(new TimerHandler(0.25f, new ITimerCallback() {
+        	@Override
+        	public void onTimePassed(TimerHandler pTimerHandler) {
+        		particleSystem.setParticlesSpawnEnabled(false);
+        		scene.unregisterUpdateHandler(pTimerHandler);
+        	}
+        }));
+
+        scene.registerUpdateHandler(new TimerHandler(0.5f, new ITimerCallback() {
+        	@Override
+        	public void onTimePassed(TimerHandler pTimerHandler) {
+        		scene.detachChild(particleSystem);
+        		scene.unregisterUpdateHandler(pTimerHandler);
+        	}
+        }));
     }
 }

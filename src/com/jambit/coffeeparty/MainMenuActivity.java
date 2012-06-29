@@ -30,18 +30,17 @@ public class MainMenuActivity extends Activity {
     private static final String DEVELOPER = "Developer";
     private final static int NUM_PLAYERS_SET = 0;
     private final static int GAME_SETTINGS = 1;
-    private final static int GAME_BOARD = 2;
+    private final static int GAME_ENDED = 2;
     private static final int MINIGAME_REQUESTCODE = 3;
 
     private List<Player> mPlayers = new ArrayList<Player>();
-
-    private Spinner startDirectGameSpinner;
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        findViewById(R.id.resumeGame).setEnabled(false);
 
         // startDirectGameSpinner = (Spinner) findViewById(R.id.startDirectGame);
         //
@@ -72,8 +71,15 @@ public class MainMenuActivity extends Activity {
     }
 
     public void onStartNewGame(View v) {
+        mPlayers.clear();
+        findViewById(R.id.resumeGame).setEnabled(false);
         Intent intent = new Intent(this, NumberOfPlayersActivity.class);
         startActivityForResult(intent, NUM_PLAYERS_SET);
+    }
+    
+    public void onResumeGame(View v){
+        // no checks here because button should only be enabled if a game is running
+        showBoard();
     }
 
     public void onStartGameDirectly(MinigameIdentifier minigame) {
@@ -88,7 +94,7 @@ public class MainMenuActivity extends Activity {
 
     private void showBoard() {
         Intent intent = new Intent(this, GameBoardActivity.class);
-        startActivityForResult(intent, GAME_BOARD);
+        startActivityForResult(intent, GAME_ENDED);
     }
 
     private void showSettings() {
@@ -112,13 +118,11 @@ public class MainMenuActivity extends Activity {
                 try {
                     ((CoffeePartyApplication) getApplication()).getGameState().startGame(mPlayers, numRounds, mapXml);
                 } catch (XPathExpressionException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 // player data and settings entered. Proceed to board
+                findViewById(R.id.resumeGame).setEnabled(true);
                 showBoard();
-            } else if (requestCode == GAME_BOARD) {
-                mPlayers.clear();
             } else if (requestCode == MINIGAME_REQUESTCODE) {
                 int points = data.getExtras().getInt(getString(R.string.game_result));
                 Intent resultIntent = new Intent(this, MinigameResultActivity.class);
@@ -130,8 +134,8 @@ public class MainMenuActivity extends Activity {
                 startActivity(resultIntent);
             }
         }
-        else if (requestCode == GAME_BOARD) {
-            mPlayers.clear();
+        else if (requestCode == GAME_ENDED && resultCode == RESULT_OK) {
+            findViewById(R.id.resumeGame).setEnabled(false);
         } 
         super.onActivityResult(requestCode, resultCode, data);
     }
