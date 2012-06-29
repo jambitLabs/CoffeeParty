@@ -33,7 +33,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/newGame"
         android:onClick="onShowHighscores"
-        android:text="@string/highscores" />
+        android:text="@string/highscores"/>
 
 
 

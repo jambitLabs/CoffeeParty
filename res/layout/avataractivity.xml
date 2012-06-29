@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" android:background="@drawable/android_wallpaper">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
-        android:paddingTop="20dp" >
+        android:paddingTop="20dp" android:background="@drawable/fastscroll_label_right_holo_light" android:paddingLeft="20dp">
 
         <TextView
             android:id="@+id/textView1"
@@ -20,47 +20,46 @@
             android:id="@+id/playerNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PlayerName" />
+            android:text="PlayerName" android:layout_marginRight="10dp" android:maxWidth="300dp"/>
     </LinearLayout>
-
-    <RelativeLayout
+
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.30"
+        android:layout_weight="1.0"
+        android:paddingBottom="10dp"
         android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingTop="20dp" >
-
+        android:paddingRight="20dp"
+        android:paddingTop="20dp" android:weightSum="1">
+
         <Gallery
             android:id="@+id/gallery1"
-            android:layout_width="350dp"
+            style="@style/AvatarButtonStyle"
             android:layout_height="fill_parent"
-            android:background="@drawable/spinner_press"
+            android:layout_weight="0.7"
             android:padding="5dp"
             android:soundEffectsEnabled="true"
             android:spacing="5dp"
-            android:unselectedAlpha="0.5" />
-
+            android:unselectedAlpha="0.5" android:layout_width="0dp"/>
+
         <RelativeLayout
-            android:layout_width="200dp"
+            style="@style/AvatarRightButtonStyle"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/gallery1" >
+            android:layout_weight="0.3" android:layout_width="0dp">
 
             <Button
                 android:id="@+id/cameraButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:background="@drawable/jog_tab_bar_right_end_confirm_yellow"
+                android:background="#00000000"
                 android:contentDescription="@string/take_a_photo"
                 android:onClick="cameraButtonOnClick"
                 android:paddingRight="50dp"
-                android:text="@string/take_a_photo" />
+                android:text="@string/take_a_photo"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <ImageView
                 android:id="@+id/imageView1"
@@ -70,31 +69,19 @@
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/take_a_photo"
                 android:src="@drawable/ic_menu_camera" />
-
         </RelativeLayout>
-    </RelativeLayout>
-
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:gravity="right" >
-
-        <RelativeLayout
-            android:id="@+id/RelativeLayout1"
-            android:layout_width="80dp"
-            android:layout_height="fill_parent" >
-
-            <Button
-                android:id="@+id/avatarApplyButton"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/jog_tab_bar_left_end_confirm_yellow"
-                android:onClick="applyButtonOnClick"
-                android:text="@string/apply" />
 
-        </RelativeLayout>
+        <Button
+            android:id="@+id/avatarApplyButton"
+            style="@style/AvatarButtonStyle"
+            android:onClick="applyButtonOnClick"
+            android:text="@string/apply" />
     </LinearLayout>
 
 </LinearLayout>
