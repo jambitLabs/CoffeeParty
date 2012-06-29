@@ -13,7 +13,6 @@ import org.anddev.andengine.entity.particle.ParticleSystem;
 import org.anddev.andengine.entity.particle.emitter.PointParticleEmitter;
 import org.anddev.andengine.entity.particle.initializer.GravityInitializer;
 import org.anddev.andengine.entity.particle.initializer.VelocityInitializer;
-import org.anddev.andengine.entity.particle.modifier.AlphaModifier;
 import org.anddev.andengine.entity.particle.modifier.ExpireModifier;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.SpriteBackground;
@@ -45,14 +44,7 @@ public class CatchGameActivity extends MinigameBaseActivity {
     private static Random random = new Random();
 
     private void catchTheThing() {
-        long now = System.currentTimeMillis();
-        long timeToCatch = now - lastMovement;
-
-        long score = (1000 - timeToCatch) / 100;
-        if (score > 0) {
-            addScore((int) score);
-        }
-
+        addScore(1);
         jumpToNewLocation();
     }
 
