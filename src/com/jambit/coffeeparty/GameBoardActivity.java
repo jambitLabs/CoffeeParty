@@ -31,8 +31,8 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
-import android.content.Context;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -120,6 +120,7 @@ public class GameBoardActivity extends BaseGameActivity {
     }
 
     private List<PlayerSprite> playerSprites = new ArrayList<PlayerSprite>();
+    private List<TextureRegion> fieldTextures = new ArrayList<TextureRegion>();
     private Scene mainScene;
     private ReadyToDiceOverlay readyToDiceOverlay;
     private int streamID;
@@ -269,6 +270,15 @@ public class GameBoardActivity extends BaseGameActivity {
 
         this.mEngine.getTextureManager().loadTexture(fontTexture);
         this.mEngine.getFontManager().loadFont(this.playerNameFont);
+        
+        Map map = getGame().getMap();
+        for(Field field : map.getBoard()){
+            BitmapTextureAtlas iconAtlas = new BitmapTextureAtlas(1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+            TextureRegion iconTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(iconAtlas, this, 
+                    field.getIconName(), field.getX() + map.getFieldIconOffsetX(), field.getY() + map.getFieldIconOffsetY());
+            this.mEngine.getTextureManager().loadTexture(iconAtlas);
+            fieldTextures.add(iconTexture);
+        }
 
         soundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
 
@@ -288,6 +298,11 @@ public class GameBoardActivity extends BaseGameActivity {
 
         createPlayers(mainScene);
         placePlayers();
+        
+        for(TextureRegion iconTexture : fieldTextures){
+            Sprite iconSprite = new Sprite(iconTexture.getTexturePositionX(), iconTexture.getTexturePositionY(), iconTexture);
+            mainScene.attachChild(iconSprite);
+        }
 
         mainScene.setTouchAreaBindingEnabled(true);
         readyToDiceOverlay = new ReadyToDiceOverlay(this, mainScene);
