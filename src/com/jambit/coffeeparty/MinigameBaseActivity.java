@@ -191,10 +191,12 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
         finish();
     }
 
-    protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite) {
+    protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite, boolean shouldConvertForResolution) {
     	
-    	posX = posX * resolutionFactorX;
-    	posY = posY * resolutionFactorY;
+    	if (shouldConvertForResolution) {
+    		posX = posX * resolutionFactorX;
+        	posY = posY * resolutionFactorY;	
+    	}
     	
     	float realXMin = sprite.getX() + (sprite.getWidth() - sprite.getWidthScaled()) / 2;
     	float realYMin = sprite.getY() + (sprite.getHeight() - sprite.getHeightScaled()) / 2;

@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 public class ImageAdapter extends BaseAdapter {
     private static final int IMAGEVIEW_ID = 0;
@@ -55,14 +57,28 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
 
-        ImageView imageView = new ImageView(mContext);
+        ImageView imageView = new ImageView(mContext) {
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                setMinimumWidth((int) (parent.getHeight() * 0.8));
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            }
+
+            @Override
+            protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+                setMinimumWidth((int) (parent.getHeight() * 0.8));
+                super.onLayout(changed, left, top, right, bottom);
+            }
+
+        };
         imageView.setId(IMAGEVIEW_ID);
-        LayoutParams params = parent.getLayoutParams();
-        params.height = LayoutParams.FILL_PARENT;
-        params.width = LayoutParams.WRAP_CONTENT;
-        imageView.setLayoutParams(params);
+        LayoutParams params = new Gallery.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT);
+        LayoutParams imageParams = new Gallery.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        imageView.setLayoutParams(imageParams);
+        // imageView.setMinimumWidth((int) (parent.getHeight() * 0.8));
+        imageView.setScaleType(ScaleType.FIT_CENTER);
 
         imageView.setImageBitmap(bitmaps.get(position));
         FrameLayout borderImg = new FrameLayout(mContext);
@@ -70,10 +86,10 @@ public class ImageAdapter extends BaseAdapter {
         borderImg.setPadding(1, 1, 1, 1);
         borderImg.setBackgroundResource(R.drawable.avatarbackground);
 
+        borderImg.setLayoutParams(params);
         borderImg.addView(imageView);
 
         return borderImg;
 
     }
-
 }
