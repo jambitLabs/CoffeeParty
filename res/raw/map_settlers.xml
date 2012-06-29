@@ -1,123 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <map>
-    <boardImage>gameboard.png</boardImage>
+    <boardImage>map_settlers.png</boardImage>
+    <fieldIconOffsetX>-15</fieldIconOffsetX>
+    <fieldIconOffsetY>-20</fieldIconOffsetY>
     
     <fields>
         <field id="0">
             <type>POINTS</type>
             <x>284</x>
             <y>180</y>
+            <icon>flag_finish.png</icon>
         </field>
         <field id="1">
             <type>RANDOM_MINIGAME</type>
             <x>320</x>
             <y>110</y>
+            <icon>flag_random.png</icon>
         </field>
         <field id="2">
             <type>POINTS</type>
             <x>359</x>
             <y>69</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="3">
             <type>MINI_GAME_BALLMAZE</type>
             <x>432</x>
             <y>21</y>
+            <icon>flag_maze.png</icon>
         </field>
         <field id="4">
             <type>MINI_GAME_WHACKAMOLE</type>
             <x>474</x>
             <y>108</y>
+            <icon>flag_mole.png</icon>
         </field>
         <field id="5">
             <type>POINTS</type>
             <x>537</x>
             <y>147</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="6">
             <type>MINI_GAME_FALLINGBEANS</type>
             <x>613</x>
             <y>184</y>
+            <icon>flag_beans.png</icon>
         </field>
         <field id="7">
             <type>POINTS</type>
             <x>681</x>
             <y>214</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="8">
             <type>MINI_GAME_CATCHTHEFLY</type>
             <x>716</x>
             <y>283</y>
+            <icon>flag_fly.png</icon>
         </field>
         <field id="9">
             <type>RANDOM_MINIGAME</type>
             <x>722</x>
             <y>359</y>
+            <icon>flag_random.png</icon>
         </field>
         <field id="10">
             <type>POINTS</type>
             <x>691</x>
             <y>438</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="11">
             <type>MINI_GAME_BALLMAZE</type>
             <x>605</x>
             <y>462</y>
+            <icon>flag_maze.png</icon>
         </field>
         <field id="12">
             <type>MINI_GAME_FALLINGBEANS</type>
             <x>517</x>
             <y>419</y>
+            <icon>flag_beans.png</icon>
         </field>
         <field id="13">
             <type>POINTS</type>
             <x>483</x>
             <y>353</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="14">
             <type>POINTS</type>
             <x>430</x>
             <y>323</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="15">
             <type>MINI_GAME_CATCHTHEFLY</type>
             <x>348</x>
             <y>356</y>
+            <icon>flag_fly.png</icon>
         </field>
         <field id="16">
             <type>MINI_GAME_WHACKAMOLE</type>
             <x>273</x>
             <y>310</y>
+            <icon>flag_mole.png</icon>
         </field>
         <field id="17">
             <type>POINTS</type>
             <x>188</x>
             <y>264</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="18">
             <type>MINI_GAME_BALLMAZE</type>
             <x>65</x>
             <y>255</y>
+            <icon>flag_maze.png</icon>
         </field>
         <field id="19">
             <type>RANDOM_MINIGAME</type>
             <x>50</x>
             <y>152</y>
+            <icon>flag_random.png</icon>
         </field>
         <field id="20">
             <type>POINTS</type>
             <x>105</x>
             <y>94</y>
+            <icon>flag_points.png</icon>
         </field>
         <field id="21">
             <type>MINI_GAME_WHACKAMOLE</type>
             <x>137</x>
             <y>173</y>
+            <icon>flag_mole.png</icon>
         </field>
         <field id="22">
             <type>POINTS</type>
             <x>207</x>
             <y>199</y>
+            <icon>flag_points.png</icon>
         </field>
     </fields>
     
