@@ -182,8 +182,8 @@ public class CatchGameActivity extends MinigameBaseActivity {
     private ParticleSystem createParticleSystem (float particlesXSpawn, float particlesYSpawn, final TextureRegion particleTextureRegion) {
 
         //Max & min rate are the maximum particles per second and the minimum particles per second.
-        final float maxRate = 40;
-        final float minRate = 20;
+        final float maxRate = 120;
+        final float minRate = 80;
 
         //This variable determines the maximum particles in the particle system.
         final int maxParticles = 150;
@@ -196,15 +196,12 @@ public class CatchGameActivity extends MinigameBaseActivity {
 
         //And now, lets create the initiallizers and modifiers.
         //Velocity initiallizer - will pick a random velocity from -20 to 20 on the x & y axes. Play around with this value.
-        particleSystem.addParticleInitializer(new VelocityInitializer(-100, 100, -100, 100));
+        particleSystem.addParticleInitializer(new VelocityInitializer(-200, 200, -200, 200));
 
         //Acceleration initializer - gives all the particles the earth gravity (so they accelerate down).
         GravityInitializer gravity = new GravityInitializer();
         gravity.setAcceleration(0, 0, 980f, 980f);
         particleSystem.addParticleInitializer(gravity);
-
-        //And now, adding an alpha modifier, so particles slowly fade out. This makes a particle go from alpha = 1 to alpha = 0 in 3 seconds, starting exactly when the particle is spawned.
-        particleSystem.addParticleModifier(new AlphaModifier(1, 0, 0.5f, 1.5f));
 
         //Lastly, expire modifier. Make particles die after 3 seconds - their alpha reached 0.
         particleSystem.addParticleModifier(new ExpireModifier(1.5f));
@@ -225,7 +222,7 @@ public class CatchGameActivity extends MinigameBaseActivity {
         
         scene.attachChild(particleSystem);
         
-        scene.registerUpdateHandler(new TimerHandler(0.25f, new ITimerCallback() {
+        scene.registerUpdateHandler(new TimerHandler(0.12f, new ITimerCallback() {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
                 particleSystem.setParticlesSpawnEnabled(false);
