@@ -258,10 +258,10 @@ public class DiceRollActivity extends BaseGameActivity implements SensorEventLis
         scene.attachChild(diceSprite);
 
         // outer walls
-        walls.add(createWall(0, cameraHeight - 2, cameraWidth, 2, scene, WALL_FIXTURE_DEF));
-        walls.add(createWall(0, 0, cameraWidth, 2, scene, WALL_FIXTURE_DEF));
-        walls.add(createWall(0, 0, 2, cameraHeight, scene, WALL_FIXTURE_DEF));
-        walls.add(createWall(cameraWidth - 2, 0, 2, cameraHeight, scene, WALL_FIXTURE_DEF));
+        walls.add(createWall(0, 480 - 2, 800, 2, scene, WALL_FIXTURE_DEF));
+        walls.add(createWall(0, 0, 800, 2, scene, WALL_FIXTURE_DEF));
+        walls.add(createWall(0, 0, 2, 480, scene, WALL_FIXTURE_DEF));
+        walls.add(createWall(800 - 2, 0, 2, 480, scene, WALL_FIXTURE_DEF));
 
         createLineBody(100, 200, 125, 450, scene);
         createLineBody(300, 200, 275, 450, scene);

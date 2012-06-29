@@ -42,13 +42,13 @@
         android:onClick="onShowHighscores"
         android:text="@string/highscores" />
 
-    <Button
-        android:id="@+id/debugButton"
-        style="@style/MenuButtonStyle"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/showHighscoreButton"
-        android:onClick="onDebugButton"
-        android:text="@string/debugging_options"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+<!--     <Button -->
+<!--         android:id="@+id/debugButton" -->
+<!--         style="@style/MenuButtonStyle" -->
+<!--         android:layout_alignParentRight="true" -->
+<!--         android:layout_below="@+id/showHighscoreButton" -->
+<!--         android:onClick="onDebugButton" -->
+<!--         android:text="@string/debugging_options" -->
+<!--         android:textAppearance="?android:attr/textAppearanceSmall" /> -->
 
 </RelativeLayout>
