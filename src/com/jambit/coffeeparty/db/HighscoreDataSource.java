@@ -33,7 +33,7 @@ public class HighscoreDataSource {
 	}
 	
 	public HashMap<Player, Integer> storeHighscore(List<Player> playersList) {
-		Player[] players = (Player[]) playersList.toArray();
+		Player[] players = playersList.toArray(new Player[playersList.size()]);
 		float[] rowIds = new float[players.length];
 		HashMap<Player, Integer> toReturn = new HashMap<Player, Integer>();
 		

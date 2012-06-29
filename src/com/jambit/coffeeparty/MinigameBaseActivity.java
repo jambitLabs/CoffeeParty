@@ -21,11 +21,13 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 import org.anddev.andengine.util.HorizontalAlign;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.Display;
+import android.view.WindowManager;
 
 public abstract class MinigameBaseActivity extends BaseGameActivity {
 
@@ -46,6 +48,9 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
 
     protected int cameraWidth;
     protected int cameraHeight;
+    
+    protected float resolutionFactorX;
+    protected float resolutionFactorY;
 
     private class DisplayTimer {
         private Date startDate;
@@ -131,6 +136,14 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
 
     @Override
     public Scene onLoadScene() {
+    	
+    	Display d = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+    	float width = d.getWidth();
+    	float height = d.getHeight();
+    	
+    	resolutionFactorX = 800 / width;
+    	resolutionFactorY = 480 / height;
+    	
         this.mEngine.registerUpdateHandler(new FPSLogger());
 
         final Scene scene = new Scene();
@@ -179,6 +192,9 @@ public abstract class MinigameBaseActivity extends BaseGameActivity {
     }
 
     protected boolean areCoordinatesInsideSprite(float posX, float posY, Sprite sprite) {
+    	
+    	posX = posX * resolutionFactorX;
+    	posY = posY * resolutionFactorY;
     	
     	float realXMin = sprite.getX() + (sprite.getWidth() - sprite.getWidthScaled()) / 2;
     	float realYMin = sprite.getY() + (sprite.getHeight() - sprite.getHeightScaled()) / 2;

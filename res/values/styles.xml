@@ -6,10 +6,14 @@
 		<item name="android:typeface">monospace</item>
 
 		<item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
-		<item name="android:background">@drawable/buttonselector</item>
+		<item name="android:background">@drawable/left_arrow_buttonselector</item>
 		<item name="android:layout_marginRight">0dp</item>
-		        
 	</style>
 
+	<style name="AvatarButtonStyle" parent="MenuButtonStyle">
 	    
+	</style>
+	<style name="AvatarRightButtonStyle" parent="AvatarButtonStyle">
+		<item name="android:background">@drawable/right_arrow_buttonselector</item>    
+	</style>
 </resources>
