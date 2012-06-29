@@ -4,6 +4,7 @@
     <string name="hello">Welcome to Coffee Party!</string>
     <string name="app_name">Coffee Party</string>
     <string name="newGameButton">New Game</string>
+    <string name="resumeGameButton">Resume Game</string>
     <string name="enterNumPlayers">Enter number of players</string>
     <string name="apply">Apply</string>
     <string name="numRounds">Enter number of rounds</string>
